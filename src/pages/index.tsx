@@ -12,6 +12,22 @@ const Home: NextPage = () => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <AuthShowcase />
+
+      <div className="mx-auto mt-5 w-56 rounded-lg border py-5 px-10">
+        <label
+          htmlFor="schoolCode"
+          className="mb-2 block text-sm font-medium text-gray-900"
+        >
+          Enter school code
+        </label>
+        <input
+          type="text"
+          id="schoolCode"
+          className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500"
+          placeholder="School Code"
+          required
+        />
+      </div>
     </>
   );
 };
