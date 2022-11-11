@@ -5,7 +5,7 @@ import { ViewColumnsIcon, UserGroupIcon, PencilSquareIcon, AcademicCapIcon } fro
 import useAuth from '../../hooks/useAuth';
 
 // TODO: Connect useAuth hook and show the user in navbar
-const AdminLayout: FC<PropsWithChildren> = ({ children }) => {
+const TeacherLayout: FC<PropsWithChildren> = ({ children }) => {
 	const { user } = useAuth();
 
 	return (
@@ -47,4 +47,4 @@ const AdminLayout: FC<PropsWithChildren> = ({ children }) => {
 	);
 };
 
-export default AdminLayout;
+export default TeacherLayout;

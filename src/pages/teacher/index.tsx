@@ -1,11 +1,11 @@
 import { type NextPage } from 'next';
 import { useSession } from 'next-auth/react';
-import AdminLayout from '../../components/layouts/admin.layout';
+import TeacherLayout from '../../components/layouts/teacher.layout';
 import { trpc } from '../../utils/trpc';
 
 const App: NextPage = () => {
 	return (
-		<AdminLayout>
+		<TeacherLayout>
 			<div className="flex flex-col items-center justify-center gap-2">
 				<div>
 					<h1>Admin Home</h1>
@@ -16,7 +16,7 @@ const App: NextPage = () => {
 				</div>
 				<AuthShowcase />
 			</div>
-		</AdminLayout>
+		</TeacherLayout>
 	);
 };
 
