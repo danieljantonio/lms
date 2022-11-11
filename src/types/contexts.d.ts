@@ -1,6 +1,15 @@
 export interface IAuthProviderContext {
-	user: any;
+	user: IUser;
+	isLoading: boolean;
+	isAuthenticated: boolean;
+	token?: string;
 }
 export interface IProvider {
 	children: React.ReactNode;
+}
+
+export interface IUser {
+	id: string;
+	email: string;
+	name: string;
 }
