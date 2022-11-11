@@ -1,8 +1,9 @@
 import React, { FC, PropsWithChildren } from 'react';
-import { Navbar, Sidebar } from 'flowbite-react';
+import { Dropdown, Navbar, Sidebar } from 'flowbite-react';
 import GlobalLayout from './global.layout';
 import { ViewColumnsIcon, UserGroupIcon, PencilSquareIcon, AcademicCapIcon } from '@heroicons/react/24/solid';
 import useAuth from '../../hooks/useAuth';
+import { signOut } from 'next-auth/react';
 
 // TODO: Connect useAuth hook and show the user in navbar
 const TeacherLayout: FC<PropsWithChildren> = ({ children }) => {
@@ -19,7 +20,11 @@ const TeacherLayout: FC<PropsWithChildren> = ({ children }) => {
 					<Navbar.Link href="/navbars" active={true}>
 						Home
 					</Navbar.Link>
-					<Navbar.Link href="/navbars">Hi, {user?.name}</Navbar.Link>
+					<Dropdown label={`Hi, ${user?.name}`} inline={true}>
+						<Dropdown.Item>Settings</Dropdown.Item>
+						<Dropdown.Item onClick={() => signOut()}>Sign out</Dropdown.Item>
+					</Dropdown>
+					<Navbar.Link href="/navbars"></Navbar.Link>
 				</Navbar.Collapse>
 			</Navbar>
 			<div className="mt-4 flex">
