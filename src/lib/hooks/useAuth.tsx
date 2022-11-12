@@ -1,6 +1,6 @@
 import { useSession } from 'next-auth/react';
-import { createContext, FC, PropsWithChildren, useContext, useState } from 'react';
-import { IAuthProviderContext } from '../types/contexts';
+import { createContext, PropsWithChildren, useContext } from 'react';
+import { IAuthProviderContext } from '../../types/contexts';
 
 const useProvideAuth = () => {
 	const session = useSession();

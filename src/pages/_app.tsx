@@ -2,10 +2,10 @@ import { type AppType } from 'next/app';
 import { type Session } from 'next-auth';
 import { SessionProvider } from 'next-auth/react';
 
-import { trpc } from '../utils/trpc';
+import { trpc } from '../lib/trpc';
 
 import '../styles/globals.css';
-import { AuthProvider } from '../hooks/useAuth';
+import { AuthProvider } from '../lib/hooks/useAuth';
 
 const MyApp: AppType<{ session: Session | null }> = ({ Component, pageProps: { session, ...pageProps } }) => {
 	return (

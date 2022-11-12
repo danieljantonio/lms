@@ -2,7 +2,7 @@ import React, { FC, PropsWithChildren } from 'react';
 import { Dropdown, Navbar, Sidebar } from 'flowbite-react';
 import GlobalLayout from './global.layout';
 import { ViewColumnsIcon, UserGroupIcon, PencilSquareIcon, AcademicCapIcon } from '@heroicons/react/24/solid';
-import useAuth from '../../hooks/useAuth';
+import useAuth from '../../lib/hooks/useAuth';
 import { signOut } from 'next-auth/react';
 
 interface Props {
