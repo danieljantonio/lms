@@ -1,7 +1,7 @@
 import { type NextPage } from 'next';
 import TeacherLayout from '../../components/layouts/teacher.layout';
 
-const App: NextPage = () => {
+const TeacherPanel: NextPage = () => {
 	return (
 		<TeacherLayout>
 			<div className="flex flex-col items-center justify-center gap-2">
@@ -17,4 +17,4 @@ const App: NextPage = () => {
 	);
 };
 
-export default App;
+export default TeacherPanel;

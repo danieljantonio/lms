@@ -12,4 +12,13 @@ export interface IUser {
 	id: string;
 	email: string;
 	name: string;
+	role: Roles;
+}
+
+enum Roles {
+	SUPERADMIN,
+	ADMIN,
+	PRINCIPAL,
+	TEACHER,
+	STUDENT,
 }

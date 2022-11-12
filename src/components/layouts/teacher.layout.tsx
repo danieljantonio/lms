@@ -5,15 +5,21 @@ import { ViewColumnsIcon, UserGroupIcon, PencilSquareIcon, AcademicCapIcon } fro
 import useAuth from '../../hooks/useAuth';
 import { signOut } from 'next-auth/react';
 
+interface Props {
+	active?: string;
+}
+
 // TODO: Connect useAuth hook and show the user in navbar
-const TeacherLayout: FC<PropsWithChildren> = ({ children }) => {
-	const { user } = useAuth();
+const TeacherLayout: FC<PropsWithChildren<Props>> = ({ children }) => {
+	const { user, isLoading } = useAuth();
+
+	if (isLoading) return <div>Loading...</div>;
 
 	return (
 		<GlobalLayout>
 			<Navbar fluid={true} rounded={true} className="border">
 				<Navbar.Brand href="/">
-					<span className="self-center whitespace-nowrap text-xl font-semibold">Ignosi</span>
+					<span className="self-center whitespace-nowrap text-xl font-semibold">Ignosis</span>
 				</Navbar.Brand>
 				<Navbar.Collapse>
 					<Navbar.Link href="/navbars" active={true}>
@@ -29,16 +35,16 @@ const TeacherLayout: FC<PropsWithChildren> = ({ children }) => {
 				<Sidebar className="min-w-sidebar rounded-md border">
 					<Sidebar.Items>
 						<Sidebar.ItemGroup>
-							<Sidebar.Item href="#" icon={ViewColumnsIcon}>
+							<Sidebar.Item href="/teacher" icon={ViewColumnsIcon}>
 								Dashboard
 							</Sidebar.Item>
-							<Sidebar.Item href="#" icon={UserGroupIcon} label="2">
+							<Sidebar.Item href="/teacher/classes" icon={UserGroupIcon} label="2">
 								Manage Classes
 							</Sidebar.Item>
-							<Sidebar.Item href="#" icon={PencilSquareIcon} label="3">
+							<Sidebar.Item href="/teacher/tests" icon={PencilSquareIcon} label="3">
 								Manage Tests
 							</Sidebar.Item>
-							<Sidebar.Item href="#" icon={AcademicCapIcon} label="40">
+							<Sidebar.Item href="/teacher/students" icon={AcademicCapIcon} label="40">
 								Manage Students
 							</Sidebar.Item>
 						</Sidebar.ItemGroup>
