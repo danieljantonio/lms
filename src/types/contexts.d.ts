@@ -1,5 +1,5 @@
 export interface IAuthProviderContext {
-	user: IUser;
+	user?: IUser;
 	isLoading: boolean;
 	isAuthenticated: boolean;
 	token?: string;

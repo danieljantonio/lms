@@ -1,4 +1,5 @@
 import { type DefaultSession } from 'next-auth';
+import { Roles } from './contexts';
 
 declare module 'next-auth' {
 	/**
@@ -10,6 +11,7 @@ declare module 'next-auth' {
 			id: string;
 			name: string;
 			email: string;
+			role: Roles;
 		} & DefaultSession['user'];
 	}
 }
