@@ -1,7 +1,5 @@
 import { type NextPage } from 'next';
-import { useSession } from 'next-auth/react';
 import TeacherLayout from '../../components/layouts/teacher.layout';
-import { trpc } from '../../utils/trpc';
 
 const App: NextPage = () => {
 	return (

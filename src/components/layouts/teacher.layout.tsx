@@ -15,7 +15,6 @@ const TeacherLayout: FC<PropsWithChildren> = ({ children }) => {
 				<Navbar.Brand href="/">
 					<span className="self-center whitespace-nowrap text-xl font-semibold">Ignosi</span>
 				</Navbar.Brand>
-				<Navbar.Toggle />
 				<Navbar.Collapse>
 					<Navbar.Link href="/navbars" active={true}>
 						Home
@@ -24,7 +23,6 @@ const TeacherLayout: FC<PropsWithChildren> = ({ children }) => {
 						<Dropdown.Item>Settings</Dropdown.Item>
 						<Dropdown.Item onClick={() => signOut()}>Sign out</Dropdown.Item>
 					</Dropdown>
-					<Navbar.Link href="/navbars"></Navbar.Link>
 				</Navbar.Collapse>
 			</Navbar>
 			<div className="mt-4 flex">
