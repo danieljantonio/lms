@@ -31,7 +31,7 @@ const TeacherLayout: FC<PropsWithChildren<Props>> = ({ children }) => {
 					</Dropdown>
 				</Navbar.Collapse>
 			</Navbar>
-			<div className="mt-4 flex">
+			<div className="space-between mt-4 flex w-full">
 				<Sidebar className="min-w-sidebar rounded-md border">
 					<Sidebar.Items>
 						<Sidebar.ItemGroup>
@@ -50,7 +50,7 @@ const TeacherLayout: FC<PropsWithChildren<Props>> = ({ children }) => {
 						</Sidebar.ItemGroup>
 					</Sidebar.Items>
 				</Sidebar>
-				<main className="m-4">{children}</main>
+				<main className="m-4 w-full">{children}</main>
 			</div>
 		</GlobalLayout>
 	);
