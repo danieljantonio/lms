@@ -26,9 +26,12 @@ const Home: NextPage = () => {
 					required
 				/>
 			</div>
-			<div className="mt-10 flex">
-				<Link href="/teacher" className="mx-auto">
+			<div className="mt-10 flex flex-col">
+				<Link href="/teacher" className="mx-auto my-2 rounded-lg border p-4 hover:bg-cyan-50">
 					Go to Teacher's Panel
+				</Link>
+				<Link href="/admin" className="mx-auto my-2 rounded-lg border p-4 hover:bg-cyan-50">
+					Go to Admin's Panel
 				</Link>
 			</div>
 		</>
