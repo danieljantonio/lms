@@ -124,7 +124,6 @@ model UsersOnClasses {
 }
 
 enum Role {
-  SUPERADMIN
   ADMIN
   PRINCIPAL
   TEACHER
