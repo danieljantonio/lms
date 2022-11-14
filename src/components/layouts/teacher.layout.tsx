@@ -1,7 +1,12 @@
 import React, { FC, PropsWithChildren } from 'react';
 import { Card, Dropdown, Navbar, Sidebar } from 'flowbite-react';
-import GlobalLayout from './global.layout';
-import { ViewColumnsIcon, UserGroupIcon, PencilSquareIcon, AcademicCapIcon } from '@heroicons/react/24/solid';
+import {
+	ViewColumnsIcon,
+	UserGroupIcon,
+	PencilSquareIcon,
+	BuildingLibraryIcon,
+	UsersIcon,
+} from '@heroicons/react/24/solid';
 import useAuth from '../../lib/hooks/useAuth';
 import { signOut } from 'next-auth/react';
 import { useCustomRoute } from '../../lib/hooks/useCustomRoute';
@@ -12,7 +17,9 @@ interface Props {
 }
 
 const TeacherLayout: FC<PropsWithChildren<Props>> = ({ children }) => {
-	const { user, isLoading, isAuthenticated } = useAuth();
+	const { user, isLoading, isAuthenticated, role } = useAuth();
+	console.log(role);
+
 	const { basePath, getNewRoute } = useCustomRoute();
 	const router = useRouter();
 
@@ -31,7 +38,7 @@ const TeacherLayout: FC<PropsWithChildren<Props>> = ({ children }) => {
 						Home
 					</Navbar.Link>
 					<Dropdown label={`Hi, ${user?.name}`} inline={true} placement="bottom">
-						<Dropdown.Item>Settings</Dropdown.Item>
+						<Dropdown.Item onClick={() => router.push('/settings')}>Settings</Dropdown.Item>
 						<Dropdown.Item onClick={() => signOut()}>Sign out</Dropdown.Item>
 					</Dropdown>
 				</Navbar.Collapse>
@@ -43,15 +50,22 @@ const TeacherLayout: FC<PropsWithChildren<Props>> = ({ children }) => {
 							<Sidebar.Item href={basePath} icon={ViewColumnsIcon}>
 								Dashboard
 							</Sidebar.Item>
+							{role === 'ADMIN' || role === 'PRINCIPAL' ? (
+								<Sidebar.Item href={getNewRoute('schools')} icon={BuildingLibraryIcon}>
+									School
+								</Sidebar.Item>
+							) : null}
 							<Sidebar.Item href={getNewRoute('classes')} icon={UserGroupIcon} label="2">
 								Classes
 							</Sidebar.Item>
 							<Sidebar.Item href={getNewRoute('tests')} icon={PencilSquareIcon} label="3">
 								Tests
 							</Sidebar.Item>
-							<Sidebar.Item href={getNewRoute('students')} icon={AcademicCapIcon} label="40">
-								Students
-							</Sidebar.Item>
+							{role !== 'STUDENT' ? (
+								<Sidebar.Item href={getNewRoute('students')} icon={UsersIcon} label="40">
+									Students
+								</Sidebar.Item>
+							) : null}
 						</Sidebar.ItemGroup>
 					</Sidebar.Items>
 				</Sidebar>
