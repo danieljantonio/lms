@@ -11,9 +11,6 @@ declare module 'next-auth' {
 			id: string;
 			name: string;
 			email: string;
-			role: Roles;
-			school: string; //TODO: change this to the appropriate type once it is set up
-			schoolId: string; //TODO: change this to the appropriate type once it is set up
 		} & DefaultSession['user'];
 	}
 }
