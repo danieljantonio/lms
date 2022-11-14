@@ -1,3 +1,4 @@
+import { User } from '@prisma/client';
 import { TRPCError } from '@trpc/server';
 import { z } from 'zod';
 import { protectedProcedure, router } from '../trpc';
@@ -36,9 +37,9 @@ export const schoolRouter = router({
 					code: 'NOT_FOUND',
 					message: `School with invite code ${input.invite} not found.`,
 				});
-			const updateUser = await ctx.prisma.user.update({
+			const updateUser: User = await ctx.prisma.user.update({
 				where: { id },
-				data: { schoolId: school.id },
+				data: { school: { connect: { id: school.id } } },
 			});
 			return updateUser;
 		}),
