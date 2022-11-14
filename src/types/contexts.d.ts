@@ -1,18 +1,14 @@
+import { User } from 'next-auth';
+
 export interface IAuthProviderContext {
-	user?: IUser;
+	user?: User;
 	isLoading: boolean;
 	isAuthenticated: boolean;
 	token?: string;
 }
+
 export interface IProvider {
 	children: React.ReactNode;
-}
-
-export interface IUser {
-	id: string;
-	email: string;
-	name: string;
-	role: Roles;
 }
 
 enum Roles {
