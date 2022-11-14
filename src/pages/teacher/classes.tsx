@@ -8,14 +8,12 @@ const ClassesPanel: NextPage = () => {
 	if (isLoading) return <div>Loading...</div>;
 
 	return (
-		<TeacherLayout>
-			<div className="flex flex-col items-center justify-center gap-2">
-				<div>
-					<h1>This page will list all the classes</h1>
-					<p>You have {data} classes</p>
-				</div>
+		<div className="flex flex-col items-center justify-center gap-2">
+			<div>
+				<h1>This page will list all the classes</h1>
+				<p>You have {data} classes</p>
 			</div>
-		</TeacherLayout>
+		</div>
 	);
 };
 
