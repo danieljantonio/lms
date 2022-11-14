@@ -26,10 +26,11 @@ const MyApp: AppType<{ session: Session | null }> = ({ Component, pageProps: { s
 };
 
 const CustomRouter: FC<PropsWithChildren> = ({ children }) => {
-	const { isAuthenticated, isLoading, user } = useAuth();
-
+	const { isAuthenticated, isLoading } = useAuth();
 	const router = useRouter();
 	const basePath = router.pathname.split('/')[1];
+
+	if (!isLoading && !isAuthenticated && basePath !== '') router.push('/');
 
 	switch (basePath) {
 		case 'admin':
