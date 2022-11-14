@@ -1,4 +1,4 @@
-import { User } from '@prisma/client';
+import { School, User } from '@prisma/client';
 import { TRPCError } from '@trpc/server';
 import { z } from 'zod';
 import { protectedProcedure, router } from '../trpc';
@@ -18,6 +18,7 @@ export const schoolRouter = router({
 
 			return school;
 		}),
+
 	join: protectedProcedure
 		.input(
 			z.object({
@@ -25,22 +26,46 @@ export const schoolRouter = router({
 			}),
 		)
 		.mutation(async ({ input, ctx }) => {
-			const { id, schoolId } = ctx.session.user;
+			const { id } = ctx.session.user;
+
+			const { schoolId } = (await ctx.prisma.user.findUnique({ where: { id } })) as User;
+
 			if (schoolId)
 				throw new TRPCError({
 					code: 'PRECONDITION_FAILED',
 					message: 'The user is already in a school',
 				});
+
 			const school = await ctx.prisma.school.findUnique({ where: { invite: input.invite } });
+
 			if (!school)
 				throw new TRPCError({
 					code: 'NOT_FOUND',
 					message: `School with invite code ${input.invite} not found.`,
 				});
+
 			const updateUser: User = await ctx.prisma.user.update({
 				where: { id },
-				data: { school: { connect: { id: school.id } } },
+				data: { schoolId: school.id },
 			});
+
 			return updateUser;
 		}),
+
+	get: protectedProcedure.query(async ({ ctx }) => {
+		const { id } = ctx.session.user;
+
+		const { schoolId } = (await ctx.prisma.user.findUnique({ where: { id } })) as User;
+
+		if (!schoolId)
+			return {
+				id: '',
+				name: 'No School',
+				invite: '',
+			} as School;
+
+		const school = await ctx.prisma.school.findUnique({ where: { id: schoolId } });
+		if (!school) throw new TRPCError({ code: 'INTERNAL_SERVER_ERROR', message: 'School not found' });
+		return school;
+	}),
 });
