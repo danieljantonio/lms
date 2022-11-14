@@ -21,7 +21,7 @@ const JoinSchoolCard: FC = () => {
 					setInvite(e.target.value);
 				}}
 			/>
-			<Button onClick={() => createSchool.mutate({ invite })}>Create School</Button>
+			<Button onClick={() => createSchool.mutate({ invite })}>Join School</Button>
 		</Card>
 	);
 };

@@ -9,7 +9,6 @@ interface Props {
 	active?: string;
 }
 
-// TODO: Connect useAuth hook and show the user in navbar
 const TeacherLayout: FC<PropsWithChildren<Props>> = ({ children }) => {
 	const { user, isLoading } = useAuth();
 
@@ -22,7 +21,7 @@ const TeacherLayout: FC<PropsWithChildren<Props>> = ({ children }) => {
 					<span className="self-center whitespace-nowrap text-xl font-semibold">Ignosis</span>
 				</Navbar.Brand>
 				<Navbar.Collapse>
-					<Navbar.Link href="/navbars" active={true}>
+					<Navbar.Link href="/" active={true}>
 						Home
 					</Navbar.Link>
 					<Dropdown label={`Hi, ${user?.name}`} inline={true}>
