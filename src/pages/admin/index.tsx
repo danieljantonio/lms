@@ -1,7 +1,7 @@
 import { Card } from 'flowbite-react';
 import { type NextPage } from 'next';
-import CreateSchoolCard from '../../components/layouts/admin/school/create-card.school';
-import JoinSchoolCard from '../../components/layouts/admin/school/join-card.school';
+import CreateSchoolCard from '../../components/admin/school/create-card.school';
+import JoinSchoolCard from '../../components/admin/school/join-card.school';
 import TeacherLayout from '../../components/layouts/teacher.layout';
 
 const TeacherPanel: NextPage = () => {
