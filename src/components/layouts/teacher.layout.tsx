@@ -21,7 +21,7 @@ const TeacherLayout: FC<PropsWithChildren<Props>> = ({ children }) => {
 	if (!isAuthenticated) router.push('/');
 
 	return (
-		<GlobalLayout>
+		<>
 			<Navbar fluid={true} className="rounded-lg border">
 				<Navbar.Brand href={basePath}>
 					<span className="self-center whitespace-nowrap text-xl font-semibold">Ignosis</span>
@@ -59,7 +59,7 @@ const TeacherLayout: FC<PropsWithChildren<Props>> = ({ children }) => {
 					<Card className="shadow-sm">{children}</Card>
 				</main>
 			</div>
-		</GlobalLayout>
+		</>
 	);
 };
 

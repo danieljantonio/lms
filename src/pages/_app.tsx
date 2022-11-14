@@ -9,13 +9,16 @@ import useAuth, { AuthProvider } from '../lib/hooks/useAuth';
 import { useRouter } from 'next/router';
 import { FC, PropsWithChildren } from 'react';
 import TeacherLayout from '../components/layouts/teacher.layout';
+import GlobalLayout from '../components/layouts/global.layout';
 
 const MyApp: AppType<{ session: Session | null }> = ({ Component, pageProps: { session, ...pageProps } }) => {
 	return (
 		<SessionProvider session={session}>
 			<AuthProvider>
 				<CustomRouter>
-					<Component {...pageProps} />
+					<GlobalLayout>
+						<Component {...pageProps} />
+					</GlobalLayout>
 				</CustomRouter>
 			</AuthProvider>
 		</SessionProvider>
@@ -33,6 +36,8 @@ const CustomRouter: FC<PropsWithChildren> = ({ children }) => {
 			return <div id="admin-layout">{children}</div>;
 		case 'teacher':
 			return <TeacherLayout>{children}</TeacherLayout>;
+		case 'student':
+			return <div id="student-layout">{children}</div>;
 		default:
 			return <div>{children}</div>;
 	}
