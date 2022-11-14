@@ -1,5 +1,5 @@
 import React, { FC, PropsWithChildren } from 'react';
-import { Dropdown, Navbar, Sidebar } from 'flowbite-react';
+import { Card, Dropdown, Navbar, Sidebar } from 'flowbite-react';
 import GlobalLayout from './global.layout';
 import { ViewColumnsIcon, UserGroupIcon, PencilSquareIcon, AcademicCapIcon } from '@heroicons/react/24/solid';
 import useAuth from '../../lib/hooks/useAuth';
@@ -31,7 +31,7 @@ const TeacherLayout: FC<PropsWithChildren<Props>> = ({ children }) => {
 					</Dropdown>
 				</Navbar.Collapse>
 			</Navbar>
-			<div className="space-between mt-4 flex w-full">
+			<div className="mt-4 flex min-w-full gap-4">
 				<Sidebar className="min-w-sidebar rounded-md border">
 					<Sidebar.Items>
 						<Sidebar.ItemGroup>
@@ -50,7 +50,9 @@ const TeacherLayout: FC<PropsWithChildren<Props>> = ({ children }) => {
 						</Sidebar.ItemGroup>
 					</Sidebar.Items>
 				</Sidebar>
-				<main className="m-4 w-full">{children}</main>
+				<main className="w-full">
+					<Card className="shadow-sm">{children}</Card>
+				</main>
 			</div>
 		</GlobalLayout>
 	);
