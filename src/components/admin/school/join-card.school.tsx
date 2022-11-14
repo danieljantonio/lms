@@ -1,6 +1,6 @@
 import { Button, Card } from 'flowbite-react';
 import React, { FC, useState } from 'react';
-import { trpc } from '../../../../lib/trpc';
+import { trpc } from '../../../lib/trpc';
 
 const JoinSchoolCard: FC = () => {
 	const [invite, setInvite] = useState('');
