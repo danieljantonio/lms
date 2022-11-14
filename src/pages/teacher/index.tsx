@@ -1,6 +1,5 @@
 import { Card } from 'flowbite-react';
 import { type NextPage } from 'next';
-import TeacherLayout from '../../components/layouts/teacher.layout';
 import { trpc } from '../../lib/trpc';
 
 const TeacherPanel: NextPage = () => {

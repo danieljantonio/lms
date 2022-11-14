@@ -1,5 +1,5 @@
 import { type NextPage } from 'next';
-import TeacherLayout from '../../components/layouts/teacher.layout';
+import GlobalLayout from '../../components/layouts/global.layout';
 import { trpc } from '../../lib/trpc';
 
 const ClassesPanel: NextPage = () => {
