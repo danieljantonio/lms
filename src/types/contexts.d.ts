@@ -1,3 +1,4 @@
+import { Role } from '@prisma/client';
 import { User } from 'next-auth';
 
 export interface IAuthProviderContext {
@@ -5,6 +6,7 @@ export interface IAuthProviderContext {
 	isLoading: boolean;
 	isAuthenticated: boolean;
 	token?: string;
+	role?: Role;
 }
 
 export interface IProvider {
