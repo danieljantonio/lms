@@ -1,17 +1,20 @@
-import NextAuth, { type NextAuthOptions } from 'next-auth';
+import NextAuth, { Session, type NextAuthOptions } from 'next-auth';
 import GoogleProvider from 'next-auth/providers/google';
 // Prisma adapter for NextAuth, optional and can be removed
 import { PrismaAdapter } from '@next-auth/prisma-adapter';
 
 import { env } from '../../../lib/env/server.mjs';
 import { prisma } from '../../../server/db/client';
+import { User } from '@prisma/client';
 
 export const authOptions: NextAuthOptions = {
 	// Include user.id on session
 	callbacks: {
 		session({ session, user }) {
 			if (session.user) {
+				let _user = user as User;
 				session.user.id = user.id;
+				session.user.role = _user.role;
 			}
 			return session;
 		},

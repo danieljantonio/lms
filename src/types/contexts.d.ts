@@ -10,11 +10,3 @@ export interface IAuthProviderContext {
 export interface IProvider {
 	children: React.ReactNode;
 }
-
-enum Roles {
-	SUPERADMIN,
-	ADMIN,
-	PRINCIPAL,
-	TEACHER,
-	STUDENT,
-}
