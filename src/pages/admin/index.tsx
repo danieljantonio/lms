@@ -5,13 +5,6 @@ import TeacherLayout from '../../components/layouts/teacher.layout';
 import { trpc } from '../../lib/trpc';
 
 const TeacherPanel: NextPage = () => {
-	const [schoolInput, setSchoolInput] = useState({ name: '', invite: '' });
-	const createSchool = trpc.school.create.useMutation({
-		onSuccess(data) {
-			console.log('Created school', data.name);
-		},
-	});
-
 	return (
 		<TeacherLayout>
 			<div className="flex flex-col justify-center gap-2">
@@ -21,28 +14,7 @@ const TeacherPanel: NextPage = () => {
 					that would aid in the development of the whole app.
 				</p>
 				<div className="flex">
-					<Card>
-						School
-						<Card>
-							<input
-								type="text"
-								className="rounded-lg"
-								placeholder="School Name"
-								onChange={(e) => {
-									setSchoolInput({ ...schoolInput, name: e.target.value });
-								}}
-							/>
-							<input
-								type="text"
-								className="rounded-lg"
-								placeholder="School Code"
-								onChange={(e) => {
-									setSchoolInput({ ...schoolInput, invite: e.target.value });
-								}}
-							/>
-						</Card>
-						<Button onClick={() => createSchool.mutate(schoolInput)}>Create School</Button>
-					</Card>
+					<SchoolCard />
 				</div>
 			</div>
 		</TeacherLayout>
@@ -50,3 +22,38 @@ const TeacherPanel: NextPage = () => {
 };
 
 export default TeacherPanel;
+
+const SchoolCard = () => {
+	const [schoolInput, setSchoolInput] = useState({ name: '', invite: '' });
+	const createSchool = trpc.school.create.useMutation({
+		onSuccess(data) {
+			console.log('Created school', data.name);
+		},
+	});
+
+	return (
+		<Card>
+			School
+			<Card>
+				<p>Create School</p>
+				<input
+					type="text"
+					className="rounded-lg"
+					placeholder="School Name"
+					onChange={(e) => {
+						setSchoolInput({ ...schoolInput, name: e.target.value });
+					}}
+				/>
+				<input
+					type="text"
+					className="rounded-lg"
+					placeholder="School Code"
+					onChange={(e) => {
+						setSchoolInput({ ...schoolInput, invite: e.target.value });
+					}}
+				/>
+				<Button onClick={() => createSchool.mutate(schoolInput)}>Create School</Button>
+			</Card>
+		</Card>
+	);
+};
