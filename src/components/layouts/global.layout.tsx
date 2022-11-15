@@ -24,9 +24,9 @@ const GlobalLayout: FC<PropsWithChildren<Props>> = ({ children }) => {
 
 	if (isLoading) return <div>Loading...</div>;
 
-	if (!isAuthenticated) router.push('/');
-
 	if (basePath === '/') return <div>{children}</div>;
+
+	if (!isAuthenticated && (basePath === '/admin' || basePath === '/teacher')) router.push('/');
 
 	return (
 		<div className="mx-3 mt-4">
@@ -45,14 +45,14 @@ const GlobalLayout: FC<PropsWithChildren<Props>> = ({ children }) => {
 				</Navbar.Collapse>
 			</Navbar>
 			<div className="mt-4 flex min-w-full gap-4">
-				<Sidebar className="min-w-sidebar overflow-hidden rounded-lg border">
+				<Sidebar className="h-fit min-w-sidebar overflow-hidden rounded-lg border">
 					<Sidebar.Items>
 						<Sidebar.ItemGroup>
 							<Sidebar.Item href={basePath} icon={ViewColumnsIcon}>
 								Dashboard
 							</Sidebar.Item>
 							{role === 'ADMIN' || role === 'PRINCIPAL' ? (
-								<Sidebar.Item href={getNewRoute('schools')} icon={BuildingLibraryIcon}>
+								<Sidebar.Item href={getNewRoute('school')} icon={BuildingLibraryIcon}>
 									School
 								</Sidebar.Item>
 							) : null}
