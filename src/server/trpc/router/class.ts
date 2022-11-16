@@ -1,3 +1,4 @@
+import { TRPCError } from '@trpc/server';
 import { z } from 'zod';
 import { protectedProcedure, router } from '../trpc';
 
@@ -7,5 +8,14 @@ export const classRouter = router({
 		const classes = await ctx.prisma.usersOnClasses.findMany({ where: { userId: id, classRole: 'TEACHER' } });
 		return classes.length;
 	}),
-	// createClass: protectedProcedure.input(z.object({})).mutation(async ({ ctx }) => {}),
+	create: protectedProcedure
+		.input(
+			z.object({
+				name: z.string(),
+				schoolId: z.string().optional(),
+			}),
+		)
+		.mutation(async ({ input, ctx }) => {
+			const { id, schoolId } = ctx.session.user;
+		}),
 });
