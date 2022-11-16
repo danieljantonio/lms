@@ -3,11 +3,9 @@ import { type NextPage } from 'next';
 import { trpc } from '../../lib/trpc';
 
 const TeacherPanel: NextPage = () => {
-	const { data, isLoading } = trpc.school.get.useQuery();
+	const { data: school, isLoading: schoolLoading } = trpc.school.get.useQuery();
 
-	if (isLoading) return <div>Loading...</div>;
-
-	console.log(data);
+	if (schoolLoading) return <div>Loading...</div>;
 
 	return (
 		<div className="flex flex-col justify-center gap-4">
@@ -16,7 +14,7 @@ const TeacherPanel: NextPage = () => {
 				This will be a temporary place to run commands and test routes such as create school, create x, add x,
 				add y, as it should be all automated in the future.
 			</p>
-			<Card>School: {data?.name}</Card>
+			<p>School: {school?.name}</p>
 		</div>
 	);
 };
