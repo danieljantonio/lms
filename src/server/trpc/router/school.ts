@@ -12,6 +12,8 @@ export const schoolRouter = router({
 			}),
 		)
 		.mutation(async ({ input, ctx }) => {
+			input.invite = input.invite.toUpperCase();
+
 			const school = await ctx.prisma.school.create({
 				data: input,
 			});
