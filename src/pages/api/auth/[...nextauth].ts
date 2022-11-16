@@ -15,6 +15,7 @@ export const authOptions: NextAuthOptions = {
 				let _user = user as User;
 				session.user.id = user.id;
 				session.user.role = _user.role;
+				session.user.schoolId = _user.schoolId;
 			}
 			return session;
 		},
