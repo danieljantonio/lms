@@ -53,18 +53,18 @@ const GlobalLayout: FC<PropsWithChildren<Props>> = ({ children }) => {
 							</Sidebar.Item>
 							{role === 'ADMIN' || role === 'PRINCIPAL' ? (
 								<Sidebar.Item href={getNewRoute('school')} icon={BuildingLibraryIcon}>
-									School
+									Manage School
 								</Sidebar.Item>
 							) : null}
 							<Sidebar.Item href={getNewRoute('classes')} icon={UserGroupIcon} label="2">
-								Classes
+								{role === 'STUDENT' ? 'Your' : 'Manage'} Classes
 							</Sidebar.Item>
 							<Sidebar.Item href={getNewRoute('tests')} icon={PencilSquareIcon} label="3">
-								Tests
+								{role === 'STUDENT' ? 'Your' : 'Manage'} Tests
 							</Sidebar.Item>
 							{role !== 'STUDENT' ? (
 								<Sidebar.Item href={getNewRoute('students')} icon={UsersIcon} label="40">
-									Students
+									Manage Students
 								</Sidebar.Item>
 							) : null}
 						</Sidebar.ItemGroup>
