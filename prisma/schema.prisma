@@ -50,7 +50,7 @@ model User {
   accounts      Account[]
   sessions      Session[]
   schoolId      String?
-  school        School?           @relation(fields: [schoolId], references: [id], onDelete: Cascade)
+  school        School?           @relation(fields: [schoolId], references: [id])
   classrooms       UsersOnClassrooms[]
   role          Role             @default(STUDENT)
   tests         Test[]
@@ -58,23 +58,24 @@ model User {
 
 model VerificationToken {
   identifier String
-  token      String   @unique
+  token      String        @unique
   expires    DateTime
 
   @@unique([identifier, token])
 }
 
 model School {
-  id      String  @id @default(cuid())
+  id      String            @id @default(cuid())
   name    String
   classrooms Classroom[]
   users   User[]
-  invite  String  @unique
+  code  String              @unique
 }
 
 model Classroom {
   id       String           @id @default(cuid())
   name     String
+  code     String           @unique
   schoolId String
   school   School           @relation(fields: [schoolId], references: [id], onDelete: Cascade)
   users    UsersOnClassrooms[]
@@ -83,11 +84,12 @@ model Classroom {
 
 model Test {
   id          String        @id @default(cuid())
-  name String
+  name        String
+  code        String        @unique
   questions   MCQQuestion[]
   testAnswers TestAnswer[]
   teacher     User          @relation(fields: [userId], references: [id])
-  classroom       Classroom         @relation(fields: [classroomId], references: [id])
+  classroom   Classroom         @relation(fields: [classroomId], references: [id], onDelete: Cascade)
   userId      String
   classroomId     String
 }

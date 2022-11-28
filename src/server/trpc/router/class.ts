@@ -57,4 +57,38 @@ export const classRouter = router({
 
 			return classroom;
 		}),
+	join: protectedProcedure
+		.input(
+			z.object({
+				code: z.string(),
+			}),
+		)
+		.mutation(async ({ input, ctx }) => {
+			const { id, schoolId } = ctx.session.user;
+
+			// Ensure that all fields exists.
+			const user = (await ctx.prisma.user.findUnique({ where: { id } })) as User;
+
+			if (!user) throw new TRPCError({ code: 'NOT_FOUND', message: 'User not found' });
+
+			if (!schoolId) throw new TRPCError({ code: 'BAD_REQUEST', message: 'User has not joined a school' });
+
+			const school = await ctx.prisma.school.findUnique({ where: { id: schoolId } });
+
+			if (!school) throw new TRPCError({ code: 'NOT_FOUND', message: 'School not found' });
+
+			const classroom = await ctx.prisma.classroom.findUnique({ where: { code: input.code } });
+
+			if (!classroom) throw new TRPCError({ code: 'NOT_FOUND', message: 'Classroom not found' });
+
+			const joinClassroom = await ctx.prisma.usersOnClassrooms.create({
+				data: {
+					classroomId: classroom.id,
+					userId: user.id,
+					classroomRole: user.role,
+				},
+			});
+
+			return joinClassroom;
+		}),
 });
