@@ -6,7 +6,7 @@ import { schoolRouter } from './school';
 export const appRouter = router({
 	auth: authRouter,
 	school: schoolRouter,
-	class: classRouter,
+	classroom: classRouter,
 });
 
 // export type definition of API

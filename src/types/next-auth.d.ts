@@ -12,7 +12,7 @@ declare module 'next-auth' {
 			name: string;
 			email: string;
 			role: Role;
-			schoolId?: string | null;
+			schoolId?: string;
 		} & DefaultSession['user'];
 	}
 }

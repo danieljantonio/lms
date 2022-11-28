@@ -51,7 +51,7 @@ model User {
   sessions      Session[]
   schoolId      String?
   school        School?           @relation(fields: [schoolId], references: [id], onDelete: Cascade)
-  classes       UsersOnClasses[]
+  classrooms       UsersOnClassrooms[]
   role          Role             @default(STUDENT)
   tests         Test[]
 }
@@ -67,17 +67,17 @@ model VerificationToken {
 model School {
   id      String  @id @default(cuid())
   name    String
-  classes Class[]
+  classrooms Classroom[]
   users   User[]
   invite  String  @unique
 }
 
-model Class {
+model Classroom {
   id       String           @id @default(cuid())
   name     String
   schoolId String
   school   School           @relation(fields: [schoolId], references: [id], onDelete: Cascade)
-  users    UsersOnClasses[]
+  users    UsersOnClassrooms[]
   Test     Test[]
 }
 
@@ -87,9 +87,9 @@ model Test {
   questions   MCQQuestion[]
   testAnswers TestAnswer[]
   teacher     User          @relation(fields: [userId], references: [id])
-  class       Class         @relation(fields: [classId], references: [id])
+  classroom       Classroom         @relation(fields: [classroomId], references: [id])
   userId      String
-  classId     String
+  classroomId     String
 }
 
 model TestAnswer {
@@ -115,14 +115,14 @@ model EssayQuestion {
   question String
 }
 
-model UsersOnClasses {
-  class     Class  @relation(fields: [classId], references: [id], onDelete: Cascade)
-  classId   String
+model UsersOnClassrooms {
+  classroom     Classroom  @relation(fields: [classroomId], references: [id], onDelete: Cascade)
+  classroomId   String
   user      User   @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId    String
-  classRole Role   @default(STUDENT)
+  classroomRole Role   @default(STUDENT)
 
-  @@id([classId, userId])
+  @@id([classroomId, userId])
 }
 
 enum Role {
