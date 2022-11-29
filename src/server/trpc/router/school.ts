@@ -70,4 +70,8 @@ export const schoolRouter = router({
 		if (!school) throw new TRPCError({ code: 'INTERNAL_SERVER_ERROR', message: 'School not found' });
 		return school;
 	}),
+	getAll: protectedProcedure.query(async ({ ctx }) => {
+		const schools = await ctx.prisma.school.findMany();
+		return schools;
+	}),
 });
