@@ -1,5 +1,4 @@
 import { type NextPage } from 'next';
-import GlobalLayout from '../../components/layouts/global.layout';
 
 const TestsPanel: NextPage = () => {
 	return (

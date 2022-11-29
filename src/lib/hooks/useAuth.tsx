@@ -4,13 +4,12 @@ import { IAuthProviderContext } from '../../types/contexts';
 
 const useProvideAuth = () => {
 	const session = useSession();
-	const token = session?.data?.token;
 	const user = session?.data?.user;
 	const role = session?.data?.user?.role;
 	const isAuthenticated = session.status === 'authenticated';
 	const isLoading = session.status === 'loading';
 
-	return { token, user, isAuthenticated, isLoading, role };
+	return { user, isAuthenticated, isLoading, role };
 };
 
 const AuthContext = createContext<IAuthProviderContext>({} as IAuthProviderContext);

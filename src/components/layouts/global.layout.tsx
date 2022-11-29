@@ -26,7 +26,7 @@ const GlobalLayout: FC<PropsWithChildren<Props>> = ({ children }) => {
 
 	if (basePath === '/') return <div>{children}</div>;
 
-	if (!isAuthenticated && (basePath === '/admin' || basePath === '/teacher')) router.push('/');
+	if (!isAuthenticated && ['/admin', '/teacher', '/app'].includes(basePath)) router.push('/');
 
 	return (
 		<div className="mx-3 mt-4">
@@ -73,7 +73,7 @@ const GlobalLayout: FC<PropsWithChildren<Props>> = ({ children }) => {
 					</Sidebar.Items>
 				</Sidebar>
 				<main className="w-full">
-					<Card className="shadow-sm">{children}</Card>
+					<Card className="shadow-none">{children}</Card>
 				</main>
 			</div>
 		</div>

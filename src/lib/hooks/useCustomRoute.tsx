@@ -12,6 +12,9 @@ export const useCustomRoute = () => {
 		case 'teacher':
 			basePath = '/teacher';
 			break;
+		case 'app':
+			basePath = '/app';
+			break;
 		default:
 			break;
 	}

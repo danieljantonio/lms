@@ -20,6 +20,9 @@ const Home: NextPage = () => {
 
 				{isAuthenticated ? (
 					<>
+						<Link href="/app" className="mx-auto rounded-lg border p-4 hover:bg-cyan-50">
+							Go to Main App
+						</Link>
 						<Link href="/teacher" className="mx-auto rounded-lg border p-4 hover:bg-cyan-50">
 							Go to Teacher's Panel
 						</Link>
