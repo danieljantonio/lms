@@ -1,16 +1,11 @@
 import { Button, Card } from 'flowbite-react';
 import { type NextPage } from 'next';
 import { useState } from 'react';
+import CreateClassroom from '../../components/admin/classroom/create-card.classroom';
 import { trpc } from '../../lib/trpc';
 
 const ClassesPanel: NextPage = () => {
 	const { data, isLoading } = trpc.classroom.classrooms.useQuery();
-	const createClass = trpc.classroom.create.useMutation({
-		onSuccess(data) {
-			console.log('Created class', data.name);
-		},
-	});
-	const [schoolInput, setSchoolInput] = useState('');
 
 	if (isLoading) return <div>Loading...</div>;
 
@@ -27,24 +22,7 @@ const ClassesPanel: NextPage = () => {
 			</div>
 			<Card>
 				<p className="text-2xl">Actions</p>
-				<Card>
-					<p>Create Class</p>
-					<input
-						type="text"
-						className="rounded-lg"
-						placeholder="Class Name"
-						onChange={(e) => {
-							setSchoolInput(e.target.value);
-						}}
-					/>
-					<Button
-						onClick={() => {
-							console.log(schoolInput);
-							createClass.mutate({ name: schoolInput });
-						}}>
-						Create Class
-					</Button>
-				</Card>
+				<CreateClassroom />
 			</Card>
 		</div>
 	);

@@ -1,4 +1,4 @@
-import { User } from '@prisma/client';
+import { School, User } from '@prisma/client';
 import { TRPCError } from '@trpc/server';
 import { z } from 'zod';
 import { protectedProcedure, router } from '../trpc';
@@ -24,6 +24,8 @@ export const classRouter = router({
 		.input(
 			z.object({
 				name: z.string(),
+				code: z.string(),
+				schoolCode: z.string().optional(),
 			}),
 		)
 		.mutation(async ({ input, ctx }) => {
@@ -34,16 +36,24 @@ export const classRouter = router({
 
 			if (!user) throw new TRPCError({ code: 'NOT_FOUND', message: 'User not found' });
 
-			if (!schoolId) throw new TRPCError({ code: 'BAD_REQUEST', message: 'User has not joined a school' });
+			let school;
 
-			const school = await ctx.prisma.school.findUnique({ where: { id: schoolId } });
+			if (input.schoolCode) school = await ctx.prisma.school.findUnique({ where: { code: input.schoolCode } });
+
+			if (!school) throw new TRPCError({ code: 'NOT_FOUND', message: 'School entered was not found' });
+
+			if (!schoolId && !school)
+				throw new TRPCError({ code: 'BAD_REQUEST', message: 'User has not joined a school' });
+
+			if (!school) school = await ctx.prisma.school.findUnique({ where: { id: schoolId } });
 
 			if (!school) throw new TRPCError({ code: 'NOT_FOUND', message: 'School not found' });
 
 			const classroom = await ctx.prisma.classroom.create({
 				data: {
-					...input,
+					name: input.name,
 					schoolId: school.id,
+					code: `${school.code}-${input.code}`,
 					users: {
 						create: [
 							{
