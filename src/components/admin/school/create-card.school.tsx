@@ -29,7 +29,9 @@ const CreateSchoolCard: FC = () => {
 					setSchoolInput({ ...schoolInput, code: e.target.value });
 				}}
 			/>
-			<Button onClick={() => createSchool.mutate(schoolInput)}>Create School</Button>
+			<Button onClick={() => createSchool.mutate(schoolInput)} disabled={createSchool.isLoading}>
+				Create School
+			</Button>
 		</Card>
 	);
 };
