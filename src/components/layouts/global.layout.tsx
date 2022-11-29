@@ -40,7 +40,9 @@ const GlobalLayout: FC<PropsWithChildren<Props>> = ({ children }) => {
 					</Navbar.Link>
 					<Dropdown label={`Hi, ${user?.name}`} inline={true} placement="bottom">
 						<Dropdown.Item onClick={() => router.push('/settings')}>Settings</Dropdown.Item>
-						<Dropdown.Item onClick={() => signOut()}>Sign out</Dropdown.Item>
+						<Dropdown.Item onClick={() => signOut({ redirect: true, callbackUrl: '/' })}>
+							Sign out
+						</Dropdown.Item>
 					</Dropdown>
 				</Navbar.Collapse>
 			</Navbar>
