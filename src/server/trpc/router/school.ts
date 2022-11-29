@@ -8,11 +8,11 @@ export const schoolRouter = router({
 		.input(
 			z.object({
 				name: z.string(),
-				invite: z.string(),
+				code: z.string(),
 			}),
 		)
 		.mutation(async ({ input, ctx }) => {
-			input.invite = input.invite.toUpperCase();
+			input.code = input.code.toUpperCase();
 
 			const school = await ctx.prisma.school.create({
 				data: input,
@@ -24,7 +24,7 @@ export const schoolRouter = router({
 	join: protectedProcedure
 		.input(
 			z.object({
-				invite: z.string(),
+				code: z.string(),
 			}),
 		)
 		.mutation(async ({ input, ctx }) => {
@@ -38,12 +38,12 @@ export const schoolRouter = router({
 					message: 'The user is already in a school',
 				});
 
-			const school = await ctx.prisma.school.findUnique({ where: { invite: input.invite } });
+			const school = await ctx.prisma.school.findUnique({ where: { code: input.code } });
 
 			if (!school)
 				throw new TRPCError({
 					code: 'NOT_FOUND',
-					message: `School with invite code ${input.invite} not found.`,
+					message: `School with invite code ${input.code} not found.`,
 				});
 
 			const updateUser: User = await ctx.prisma.user.update({
@@ -63,7 +63,7 @@ export const schoolRouter = router({
 			return {
 				id: '',
 				name: 'No School',
-				invite: '',
+				code: '',
 			} as School;
 
 		const school = await ctx.prisma.school.findUnique({ where: { id: schoolId } });

@@ -3,7 +3,7 @@ import React, { FC, useState } from 'react';
 import { trpc } from '../../../lib/trpc';
 
 const JoinSchoolCard: FC = () => {
-	const [invite, setInvite] = useState('');
+	const [code, setCode] = useState('');
 	const createSchool = trpc.school.join.useMutation({
 		onSuccess(data) {
 			console.log('Joined school', data.name);
@@ -18,10 +18,10 @@ const JoinSchoolCard: FC = () => {
 				className="rounded-lg"
 				placeholder="Invite Code"
 				onChange={(e) => {
-					setInvite(e.target.value);
+					setCode(e.target.value);
 				}}
 			/>
-			<Button onClick={() => createSchool.mutate({ invite })}>Join School</Button>
+			<Button onClick={() => createSchool.mutate({ code: code })}>Join School</Button>
 		</Card>
 	);
 };

@@ -3,7 +3,7 @@ import React, { FC, useState } from 'react';
 import { trpc } from '../../../lib/trpc';
 
 const CreateSchoolCard: FC = () => {
-	const [schoolInput, setSchoolInput] = useState({ name: '', invite: '' });
+	const [schoolInput, setSchoolInput] = useState({ name: '', code: '' });
 	const createSchool = trpc.school.create.useMutation({
 		onSuccess(data) {
 			console.log('Created school', data.name);
@@ -26,7 +26,7 @@ const CreateSchoolCard: FC = () => {
 				className="rounded-lg"
 				placeholder="School Code"
 				onChange={(e) => {
-					setSchoolInput({ ...schoolInput, invite: e.target.value });
+					setSchoolInput({ ...schoolInput, code: e.target.value });
 				}}
 			/>
 			<Button onClick={() => createSchool.mutate(schoolInput)}>Create School</Button>
