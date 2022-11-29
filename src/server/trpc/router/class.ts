@@ -36,16 +36,23 @@ export const classRouter = router({
 
 			if (!user) throw new TRPCError({ code: 'NOT_FOUND', message: 'User not found' });
 
-			let school;
+			let school, users;
 
-			if (input.schoolCode) school = await ctx.prisma.school.findUnique({ where: { code: input.schoolCode } });
-
-			if (!school) throw new TRPCError({ code: 'NOT_FOUND', message: 'School entered was not found' });
-
-			if (!schoolId && !school)
-				throw new TRPCError({ code: 'BAD_REQUEST', message: 'User has not joined a school' });
-
-			if (!school) school = await ctx.prisma.school.findUnique({ where: { id: schoolId } });
+			if (user.role === 'ADMIN') {
+				if (!input.schoolCode) throw new TRPCError({ code: 'BAD_REQUEST', message: 'Missing school code' });
+				school = await ctx.prisma.school.findUnique({ where: { code: input.schoolCode } });
+			} else {
+				if (!schoolId) throw new TRPCError({ code: 'BAD_REQUEST', message: 'User has not joined a school' });
+				school = await ctx.prisma.school.findUnique({ where: { id: schoolId } });
+				users = {
+					create: [
+						{
+							userId: user.id,
+							classroomRole: user.role,
+						},
+					],
+				};
+			}
 
 			if (!school) throw new TRPCError({ code: 'NOT_FOUND', message: 'School not found' });
 
@@ -54,14 +61,7 @@ export const classRouter = router({
 					name: input.name,
 					schoolId: school.id,
 					code: `${school.code}-${input.code}`,
-					users: {
-						create: [
-							{
-								userId: user.id,
-								classroomRole: user.role,
-							},
-						],
-					},
+					users,
 				},
 			});
 

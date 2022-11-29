@@ -2,10 +2,17 @@ import { Button, Card } from 'flowbite-react';
 import { type NextPage } from 'next';
 import { useState } from 'react';
 import CreateClassroom from '../../components/admin/classroom/create-card.classroom';
+import JoinSchoolCard from '../../components/admin/school/join-card.school';
 import { trpc } from '../../lib/trpc';
 
 const ClassesPanel: NextPage = () => {
 	const { data, isLoading } = trpc.classroom.classrooms.useQuery();
+	const [classCode, setClassCode] = useState('');
+	const joinClass = trpc.classroom.join.useMutation({
+		onSuccess(data) {
+			console.log('Joined classroom');
+		},
+	});
 
 	if (isLoading) return <div>Loading...</div>;
 
@@ -22,7 +29,21 @@ const ClassesPanel: NextPage = () => {
 			</div>
 			<Card>
 				<p className="text-2xl">Actions</p>
-				<CreateClassroom />
+				<div className="flex gap-6">
+					<CreateClassroom />
+					<Card>
+						<p>Join Classroom</p>
+						<input
+							type="text"
+							className="rounded-lg"
+							placeholder="Class Code"
+							onChange={(e) => {
+								setClassCode(e.target.value);
+							}}
+						/>
+						<Button onClick={() => joinClass.mutate({ code: classCode })}>Join Class</Button>
+					</Card>
+				</div>
 			</Card>
 		</div>
 	);
