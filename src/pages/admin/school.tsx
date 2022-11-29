@@ -23,8 +23,8 @@ const AdminSchool = () => {
 					) : (
 						<div>
 							<p className="text-lg font-bold">List of Available Schools</p>
-							{schools?.map((school, i) => (
-								<p>
+							{schools?.map((school) => (
+								<p key={school.id}>
 									{school.name} - {school.code}
 								</p>
 							))}
