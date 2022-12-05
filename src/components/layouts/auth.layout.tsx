@@ -16,7 +16,7 @@ interface Props {
 	active?: string;
 }
 
-const GlobalLayout: FC<PropsWithChildren<Props>> = ({ children }) => {
+const AuthLayout: FC<PropsWithChildren<Props>> = ({ children }) => {
 	const { user, isLoading, isAuthenticated, role } = useAuth();
 
 	const { basePath, getNewRoute } = useCustomRoute();
@@ -80,4 +80,4 @@ const GlobalLayout: FC<PropsWithChildren<Props>> = ({ children }) => {
 	);
 };
 
-export default GlobalLayout;
+export default AuthLayout;

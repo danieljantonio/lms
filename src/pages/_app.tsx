@@ -6,15 +6,15 @@ import { trpc } from '../lib/trpc';
 
 import '../styles/globals.css';
 import { AuthProvider } from '../lib/hooks/useAuth';
-import GlobalLayout from '../components/layouts/global.layout';
+import AuthLayout from '../components/layouts/auth.layout';
 
 const MyApp: AppType<{ session: Session | null }> = ({ Component, pageProps: { session, ...pageProps } }) => {
 	return (
 		<SessionProvider session={session}>
 			<AuthProvider>
-				<GlobalLayout>
+				<AuthLayout>
 					<Component {...pageProps} />
-				</GlobalLayout>
+				</AuthLayout>
 			</AuthProvider>
 		</SessionProvider>
 	);
