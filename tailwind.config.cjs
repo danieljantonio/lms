@@ -6,6 +6,9 @@ module.exports = {
 			minWidth: {
 				sidebar: '16rem',
 			},
+			height: {
+				fullbar: '85vh',
+			},
 		},
 	},
 	plugins: [require('flowbite/plugin')],
