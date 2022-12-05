@@ -1,8 +1,18 @@
 import { Button } from 'flowbite-react';
 import { NextPage } from 'next';
+import { signIn } from 'next-auth/react';
+import { useRouter } from 'next/router';
 import CommonLayout from '../components/layouts/common.layout';
+import useAuth from '../lib/hooks/useAuth';
 
 const AuthPage: NextPage = () => {
+	const { isLoading, isAuthenticated } = useAuth();
+	const router = useRouter();
+
+	if (isLoading) return <div>Loading...</div>;
+
+	if (isAuthenticated) router.push('/app');
+
 	return (
 		<CommonLayout>
 			<div className="flex h-full items-center justify-center">
@@ -14,7 +24,9 @@ const AuthPage: NextPage = () => {
 				</div>
 				<div className="flex w-7/12 flex-col items-center justify-center gap-10">
 					<p className="text-4xl">Welcome to Ignosi!</p>
-					<Button className="px-10">Login with Google</Button>
+					<Button onClick={() => signIn('google')} className="px-10">
+						Login with Google
+					</Button>
 				</div>
 			</div>
 		</CommonLayout>
