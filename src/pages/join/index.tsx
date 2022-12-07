@@ -1,10 +1,14 @@
-import { Label, TextInput } from 'flowbite-react';
+import { Button, TextInput } from 'flowbite-react';
 import { NextPage } from 'next';
+import { signOut } from 'next-auth/react';
 import { useRouter } from 'next/router';
+import { useState } from 'react';
+import CommonLayout from '../../components/layouts/common.layout';
 import useAuth from '../../lib/hooks/useAuth';
 
 const JoinSchool: NextPage = () => {
-	const { user, isLoading, isAuthenticated, role } = useAuth();
+	const { user, isLoading, isAuthenticated } = useAuth();
+	const [schoolCode, setSchoolCode] = useState<string>('');
 	const router = useRouter();
 
 	if (isLoading) return <div>Loading...</div>;
@@ -14,14 +18,41 @@ const JoinSchool: NextPage = () => {
 	if (user?.schoolId) router.push('/app');
 
 	return (
-		<div className="flex flex-col">
-			<div className="mx-auto">
-				<div className="mb-2 block">
-					<Label htmlFor="small" value="Enter School Code" />
+		<CommonLayout>
+			<div className="flex h-screen items-center">
+				<div
+					onClick={() => signOut()}
+					className="absolute right-4 bottom-4 text-sm font-semibold text-blue-700 hover:cursor-pointer hover:text-blue-900">
+					Log Out
 				</div>
-				<TextInput id="small" type="text" sizing="sm" />
+				<div className="w-3/5 py-52 pl-36">
+					<div>
+						<p className="text-6xl">Start your education</p>
+						<p className="text-6xl">journey with us.</p>
+					</div>
+					<form className="mt-12 flex gap-4">
+						<TextInput
+							sizing="lg"
+							maxLength={6}
+							minLength={6}
+							type="text"
+							id="schoolCode"
+							required
+							placeholder="Enter School Code"
+							className="w-72"
+							value={schoolCode}
+							onChange={(e) => setSchoolCode(e.target.value.toUpperCase())}
+						/>
+						<Button size="lg" type="submit">
+							JOIN
+						</Button>
+					</form>
+				</div>
+				<div className="flex w-2/5 justify-end">
+					<div className="rotate-90 text-9xl">Ignosi</div>
+				</div>
 			</div>
-		</div>
+		</CommonLayout>
 	);
 };
 

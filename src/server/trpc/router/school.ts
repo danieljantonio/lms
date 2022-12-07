@@ -8,7 +8,7 @@ export const schoolRouter = router({
 		.input(
 			z.object({
 				name: z.string(),
-				code: z.string(),
+				code: z.string().length(6),
 			}),
 		)
 		.mutation(async ({ input, ctx }) => {
@@ -24,7 +24,7 @@ export const schoolRouter = router({
 	join: protectedProcedure
 		.input(
 			z.object({
-				code: z.string(),
+				code: z.string().length(6),
 			}),
 		)
 		.mutation(async ({ input, ctx }) => {
