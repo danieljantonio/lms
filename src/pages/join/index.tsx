@@ -20,11 +20,6 @@ const JoinSchool: NextPage = () => {
 	return (
 		<CommonLayout>
 			<div className="flex h-screen items-center">
-				<div
-					onClick={() => signOut()}
-					className="absolute right-4 bottom-4 text-sm font-semibold text-blue-700 hover:cursor-pointer hover:text-blue-900">
-					Log Out
-				</div>
 				<div className="w-3/5 py-52 pl-36">
 					<div>
 						<p className="text-6xl">Start your education</p>
