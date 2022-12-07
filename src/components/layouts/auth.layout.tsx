@@ -28,6 +28,8 @@ const AuthLayout: FC<PropsWithChildren<Props>> = ({ children }) => {
 
 	if (!isAuthenticated && ['/admin', '/teacher', '/app'].includes(basePath)) router.push('/');
 
+	if (!user?.schoolId) router.push('/join');
+
 	return (
 		<div className="mx-3 mt-4">
 			<Navbar fluid={true} className="rounded-lg border">

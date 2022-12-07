@@ -11,7 +11,7 @@ const JoinSchool: NextPage = () => {
 
 	if (!isAuthenticated) router.push('/');
 
-	if (user.schoolId) router.push('/app');
+	if (user?.schoolId) router.push('/app');
 
 	return (
 		<div className="flex flex-col">
