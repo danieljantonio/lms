@@ -21,10 +21,12 @@ const Home: NextPage = () => {
 			</Head>
 			<CommonLayout>
 				<div className="flex h-full flex-col items-start justify-center gap-6 px-14 py-52">
-					<p className="text-8xl">Ignosi</p>
-					<p className="w-2/5 font-serif text-lg">
-						Your online education solution. Creating a simple, efficient, and secure learning environment.
-					</p>
+					{/* <p className="text-8xl">Ignosi</p> */}
+					<div>
+						{/* <p className="text-5xl">Your online education solution. </p> */}
+						<p className="text-5xl">Creating a simple, efficient, and</p>
+						<p className="text-5xl">secure learning environment.</p>
+					</div>
 					<Link href="/auth" className="rounded-md bg-blue-700 py-2 px-6 text-white hover:bg-blue-800">
 						Join Ignosi
 					</Link>
