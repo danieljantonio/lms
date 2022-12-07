@@ -1,12 +1,10 @@
-import { Role } from '@prisma/client';
-import { Session } from 'next-auth';
+import { Role, User } from '@prisma/client';
 
 export interface IAuthProviderContext {
-	user?: Session.user;
+	user?: User;
 	isLoading: boolean;
 	isAuthenticated: boolean;
 	role?: Role;
-	schoolId?: string;
 }
 
 export interface IProvider {

@@ -6,12 +6,15 @@ import CommonLayout from '../components/layouts/common.layout';
 import useAuth from '../lib/hooks/useAuth';
 
 const AuthPage: NextPage = () => {
-	const { isLoading, isAuthenticated } = useAuth();
+	const { user, isLoading, isAuthenticated } = useAuth();
 	const router = useRouter();
 
 	if (isLoading) return <div>Loading...</div>;
 
-	if (isAuthenticated) router.push('/app');
+	if (isAuthenticated) {
+		if (!user?.schoolId) router.push('/join');
+		else router.push('/app');
+	}
 
 	return (
 		<CommonLayout>
