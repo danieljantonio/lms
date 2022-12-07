@@ -72,9 +72,7 @@ const AuthLayout: FC<PropsWithChildren<Props>> = ({ children }) => {
 						</Sidebar.ItemGroup>
 					</Sidebar.Items>
 				</Sidebar>
-				<main className="w-full">
-					<Card className="shadow-none">{children}</Card>
-				</main>
+				<main className="w-full px-3 py-4">{children}</main>
 			</div>
 		</div>
 	);
