@@ -22,7 +22,7 @@ const AuthPage: NextPage = () => {
 				<div className="w-5/12">
 					<div className="flex flex-col items-start justify-center gap-6 px-14">
 						<p className="text-8xl">Ignosi</p>
-						<p className="font-serif text-lg">Start your education journey with us.</p>
+						<p className="font-serif text-2xl">Start your education journey with us.</p>
 					</div>
 				</div>
 				<div className="flex w-7/12 flex-col items-center justify-center gap-10">
