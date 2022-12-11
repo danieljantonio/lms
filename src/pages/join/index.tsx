@@ -5,11 +5,19 @@ import { useRouter } from 'next/router';
 import { useState } from 'react';
 import CommonLayout from '../../components/layouts/common.layout';
 import useAuth from '../../lib/hooks/useAuth';
+import { trpc } from '../../lib/trpc';
 
 const JoinSchool: NextPage = () => {
 	const { user, isLoading, isAuthenticated } = useAuth();
 	const [schoolCode, setSchoolCode] = useState<string>('');
 	const router = useRouter();
+
+	const joinSchool = trpc.school.join.useMutation({
+		onSuccess(data) {
+			console.log('Joined school', data.name);
+			router.push('/app');
+		},
+	});
 
 	if (isLoading) return <div>Loading...</div>;
 
@@ -25,7 +33,7 @@ const JoinSchool: NextPage = () => {
 						<p className="text-6xl">Start your education</p>
 						<p className="text-6xl">journey with us.</p>
 					</div>
-					<form className="mt-12 flex gap-4">
+					<form className="mt-12 flex gap-4" onSubmit={() => joinSchool.mutate({ code: schoolCode })}>
 						<TextInput
 							sizing="lg"
 							maxLength={6}
