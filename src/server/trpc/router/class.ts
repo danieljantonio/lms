@@ -31,6 +31,9 @@ export const classRouter = router({
 		.mutation(async ({ input, ctx }) => {
 			const { id, schoolId } = ctx.session.user;
 
+			if (ctx.session.user.role === 'STUDENT')
+				throw new TRPCError({ code: 'FORBIDDEN', message: 'You are not allowed to perform the function.' });
+
 			// Ensure that all fields exists.
 			const user = (await ctx.prisma.user.findUnique({ where: { id } })) as User;
 
