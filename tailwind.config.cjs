@@ -7,7 +7,7 @@ module.exports = {
 				sidebar: '16rem',
 			},
 			height: {
-				fullbar: '85vh',
+				fullbar: 'calc(100vh - 50px)',
 			},
 		},
 	},
