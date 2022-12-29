@@ -60,7 +60,7 @@ const AuthLayout: FC<PropsWithChildren<Props>> = ({ children }) => {
 									Manage School
 								</Sidebar.Item>
 							) : null}
-							<Sidebar.Item href={getNewRoute('classes')} icon={UserGroupIcon} label="2">
+							<Sidebar.Item href={getNewRoute('classroom')} icon={UserGroupIcon} label="2">
 								{role === 'STUDENT' ? 'Your' : 'Manage'} Classes
 							</Sidebar.Item>
 							<Sidebar.Item href={getNewRoute('tests')} icon={PencilSquareIcon} label="3">
