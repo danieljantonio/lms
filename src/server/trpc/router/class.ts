@@ -63,7 +63,7 @@ export const classRouter = router({
 				data: {
 					name: input.name,
 					schoolId: school.id,
-					code: `${school.code}-${input.code}`,
+					code: `${input.code}`,
 					users,
 				},
 			});
