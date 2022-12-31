@@ -1,6 +1,6 @@
 import { router } from '../trpc';
 import { authRouter } from './auth';
-import { classRouter } from './class';
+import { classRouter } from './classroom';
 import { schoolRouter } from './school';
 
 export const appRouter = router({
