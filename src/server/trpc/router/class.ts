@@ -24,7 +24,7 @@ export const classRouter = router({
 		.input(
 			z.object({
 				name: z.string(),
-				code: z.string(),
+				code: z.string().max(6, 'Must be a 6 character code.').min(6, 'Must be a 6 character code.'),
 				schoolCode: z.string().optional(),
 			}),
 		)
@@ -73,7 +73,7 @@ export const classRouter = router({
 	join: protectedProcedure
 		.input(
 			z.object({
-				code: z.string(),
+				code: z.string().max(6, 'Must be a 6 character code.').min(6, 'Must be a 6 character code.'),
 			}),
 		)
 		.mutation(async ({ input, ctx }) => {
@@ -103,5 +103,19 @@ export const classRouter = router({
 			});
 
 			return joinClassroom;
+		}),
+	getByCode: protectedProcedure
+		.input(
+			z.object({
+				code: z.string().max(6, 'Must be a 6 character code.').min(6, 'Must be a 6 character code.'),
+			}),
+		)
+		.query(async ({ ctx, input }) => {
+			const classroom = await ctx.prisma.classroom.findUnique({
+				where: { code: input.code },
+				include: { school: true },
+			});
+
+			return classroom;
 		}),
 });
