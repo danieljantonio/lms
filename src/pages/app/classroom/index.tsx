@@ -1,5 +1,6 @@
 import { Button, Card } from 'flowbite-react';
 import { NextPage } from 'next';
+import { useRouter } from 'next/router';
 import { useState } from 'react';
 import CreateClassroom from '../../../components/admin/classroom/create-card.classroom';
 import useAuth from '../../../lib/hooks/useAuth';
@@ -7,6 +8,7 @@ import { trpc } from '../../../lib/trpc';
 
 const CLasses: NextPage = () => {
 	const { data, isLoading } = trpc.classroom.classrooms.useQuery();
+	const router = useRouter();
 	const { role } = useAuth();
 
 	const [showCreate, toggleCreate] = useState<boolean>(false);
@@ -15,7 +17,7 @@ const CLasses: NextPage = () => {
 
 	return (
 		<div className="flex flex-col justify-between">
-			<Card>{data?.length} Classrooms</Card>
+			{/* <Card>{data?.length} Classrooms</Card> */}
 			{/* Allows teachers, principals, and admins to create class */}
 			{role !== 'STUDENT' ? (
 				<div className="absolute right-5 bottom-5 flex flex-col">
@@ -24,12 +26,14 @@ const CLasses: NextPage = () => {
 				</div>
 			) : null}
 			{/* This renders the classes available */}
-			<div className="my-6 flex gap-6">
+			<div className="mb-6 text-2xl">Your Classes:</div>
+			<div className="flex gap-4">
+				{data?.length === 0 ? <Card className="h-24 w-40 ">0 Classes</Card> : null}
 				{data?.map((classroom) => (
 					<Card
-						className="hover:cursor-pointer"
+						className="h-24 w-40 hover:cursor-pointer hover:bg-slate-100"
 						key={classroom.id}
-						onClick={() => console.log(`/classroom/${classroom.code.toLowerCase()}`)}>
+						onClick={() => router.push(`/app/classroom/${classroom.code.toLowerCase()}`)}>
 						{classroom.name}
 					</Card>
 				))}
