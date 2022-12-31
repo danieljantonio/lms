@@ -118,4 +118,10 @@ export const classRouter = router({
 
 			return classroom;
 		}),
+	getUserClassrooms: protectedProcedure.query(async ({ ctx }) => {
+		const classrooms = await ctx.prisma.usersOnClassrooms.findMany({
+			where: { userId: ctx.session.user.id },
+			include: { classroom: true },
+		});
+	}),
 });
