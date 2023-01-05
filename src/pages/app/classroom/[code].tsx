@@ -13,15 +13,15 @@ const Classroom: NextPage = () => {
 	const { data, isLoading } = trpc.classroom.getClassroomData.useQuery({ code: code.toUpperCase() });
 
 	if (isLoading) return <div>Loading...</div>;
-	console.log(data);
 
 	return (
 		<div>
-			<div className="mb-6 text-2xl">
-				{`${data?.name}`.toUpperCase()} - {data?.teacher?.name}
-			</div>
+			<div className="mb-6 text-2xl">{`${data?.name}`.toUpperCase()}</div>
 			<div>
-				School: {data?.school.name} ({data?.school.code})
+				<p>Teacher: {data?.teacher?.name}</p>
+				{/* <p>
+					School: {data?.school.name} ({data?.school.code})
+				</p> */}
 			</div>
 		</div>
 	);
