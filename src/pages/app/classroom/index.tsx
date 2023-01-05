@@ -7,7 +7,7 @@ import useAuth from '../../../lib/hooks/useAuth';
 import { trpc } from '../../../lib/trpc';
 
 const CLasses: NextPage = () => {
-	const { data, isLoading } = trpc.classroom.classrooms.useQuery();
+	const { data, isLoading } = trpc.classroom.getUserClassrooms.useQuery();
 	const router = useRouter();
 	const { role } = useAuth();
 
@@ -17,7 +17,6 @@ const CLasses: NextPage = () => {
 
 	return (
 		<div className="flex flex-col justify-between">
-			{/* <Card>{data?.length} Classrooms</Card> */}
 			{/* Allows teachers, principals, and admins to create class */}
 			{role !== 'STUDENT' ? (
 				<div className="absolute right-5 bottom-5 flex flex-col">
@@ -25,11 +24,11 @@ const CLasses: NextPage = () => {
 					<Button onClick={() => toggleCreate(!showCreate)}>Create new class</Button>
 				</div>
 			) : null}
-			{/* This renders the classes available */}
+			{/* This renders the classes available/enrolled by the student */}
 			<div className="mb-6 text-2xl">Your Classes:</div>
 			<div className="flex gap-4">
 				{data?.length === 0 ? <Card className="h-24 w-40 ">0 Classes</Card> : null}
-				{data?.map((classroom) => (
+				{data?.map(({ classroom }) => (
 					<Card
 						className="h-24 w-40 hover:cursor-pointer hover:bg-slate-100"
 						key={classroom.id}

@@ -10,14 +10,16 @@ const Classroom: NextPage = () => {
 	const router = useRouter();
 	const { code } = router.query as ClassroomQueryProp;
 
-	const { data, isLoading } = trpc.classroom.getByCode.useQuery({ code: code.toUpperCase() });
+	const { data, isLoading } = trpc.classroom.getClassroomData.useQuery({ code: code.toUpperCase() });
 
 	if (isLoading) return <div>Loading...</div>;
 	console.log(data);
 
 	return (
 		<div>
-			<div className="mb-6 text-2xl">{`${code}`.toUpperCase()}</div>
+			<div className="mb-6 text-2xl">
+				{`${data?.name}`.toUpperCase()} - {data?.teacher?.name}
+			</div>
 			<div>
 				School: {data?.school.name} ({data?.school.code})
 			</div>

@@ -1,4 +1,4 @@
-import { School, User } from '@prisma/client';
+import { User, UsersOnClassrooms } from '@prisma/client';
 import { TRPCError } from '@trpc/server';
 import { z } from 'zod';
 import { protectedProcedure, router } from '../trpc';
@@ -94,13 +94,13 @@ export const classRouter = router({
 
 			if (!classroom) throw new TRPCError({ code: 'NOT_FOUND', message: 'Classroom not found' });
 
-			const joinClassroom = await ctx.prisma.usersOnClassrooms.create({
+			const joinClassroom = (await ctx.prisma.usersOnClassrooms.create({
 				data: {
 					classroomId: classroom.id,
 					userId: user.id,
 					classroomRole: user.role,
 				},
-			});
+			})) as UsersOnClassrooms;
 
 			return joinClassroom;
 		}),
@@ -118,10 +118,32 @@ export const classRouter = router({
 
 			return classroom;
 		}),
+	getClassroomData: protectedProcedure
+		.input(
+			z.object({
+				code: z.string().max(6, 'Must be a 6 character code.').min(6, 'Must be a 6 character code.'),
+			}),
+		)
+		.query(async ({ ctx, input }) => {
+			const classroom = await ctx.prisma.classroom.findUnique({
+				where: { code: input.code },
+				include: { school: true, users: true },
+			});
+
+			if (!classroom) throw new TRPCError({ code: 'NOT_FOUND', message: 'Classroom not found.' });
+
+			const teacher = await ctx.prisma.usersOnClassrooms.findFirst({
+				where: { classroomId: classroom.id, classroomRole: 'TEACHER' },
+				include: { user: true },
+			});
+
+			return { ...classroom, teacher: teacher?.user };
+		}),
 	getUserClassrooms: protectedProcedure.query(async ({ ctx }) => {
 		const classrooms = await ctx.prisma.usersOnClassrooms.findMany({
 			where: { userId: ctx.session.user.id },
 			include: { classroom: true },
 		});
+		return classrooms;
 	}),
 });
