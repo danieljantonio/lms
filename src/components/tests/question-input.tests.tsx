@@ -29,7 +29,15 @@ const QuestionInput: FC<QuestionInputProps> = ({ index, updateQuestion, data }) 
 	};
 
 	const setAnswer = async (newChoice: ChoiceData, index: number) => {
-		const _qc = choices;
+		let _qc = choices;
+		if (newChoice.isCorrectAnswer) {
+			setLoading(true);
+			_qc = await _qc.map((choice) => {
+				choice.isCorrectAnswer = false;
+				return choice;
+			});
+			setLoading(false);
+		}
 		_qc[index] = newChoice;
 		await setChoices(_qc);
 	};
