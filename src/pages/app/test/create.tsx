@@ -5,7 +5,29 @@ import QuestionInput from '../../../components/tests/question-input.tests';
 import { QuestionProps } from '../../../types/tests';
 
 const CreateTest: NextPage = () => {
-	const [questions, setQuestions] = useState<QuestionProps[]>([]);
+	const initQuestion: QuestionProps = {
+		question: 'What is the meaning of life?',
+		choices: [
+			{
+				answer: '42',
+				isCorrectAnswer: false,
+			},
+			{
+				answer: 'Jesus',
+				isCorrectAnswer: true,
+			},
+			{
+				answer: 'Satisfaction',
+				isCorrectAnswer: false,
+			},
+			{
+				answer: 'Fulfillment',
+				isCorrectAnswer: false,
+			},
+		],
+	};
+
+	const [questions, setQuestions] = useState<QuestionProps[]>([initQuestion]);
 	console.log(questions);
 
 	return (
@@ -29,12 +51,11 @@ const CreateTest: NextPage = () => {
 					</div>
 				</div>
 			</Card>
-			{/* 
-			{questions?.map((question) => {
-				// console.log(question);
-			})} */}
 
-			<QuestionInput updateQuestion={setQuestions} index={0} />
+			{questions.map((question, index) => (
+				<QuestionInput updateQuestion={() => {}} index={index} data={question} />
+			))}
+
 			<Button
 				fullSized
 				color="light"

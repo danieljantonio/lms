@@ -16,10 +16,11 @@ export type ChoiceProps = {
 
 export type QuestionProps = {
 	question: string;
-	choice: ChoiceProp[];
+	choices: ChoiceProp[];
 };
 
 export type QuestionInputProps = {
 	updateQuestion: any;
 	index: number;
+	data?: QuestionProps;
 };
