@@ -49,6 +49,10 @@ const CreateTest: NextPage = () => {
 		setLoading(false);
 	};
 
+	const log = () => {
+		console.log(questions);
+	};
+
 	return (
 		<div className="mx-auto max-w-screen-xl">
 			<Card>
@@ -70,6 +74,10 @@ const CreateTest: NextPage = () => {
 					</div>
 				</div>
 			</Card>
+
+			<Button onClick={log} fullSized className="mt-4">
+				Log
+			</Button>
 
 			{loading ? (
 				<div>Loading...</div>
