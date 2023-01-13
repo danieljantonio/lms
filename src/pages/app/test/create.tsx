@@ -94,14 +94,9 @@ const NewQuestion: FC<NewQuestionProp> = ({ index, updateQuestion }) => {
 	};
 
 	const setAnswer = async (newChoice: MCQInputInputProps, index: number) => {
-		// console.log('set answer');
-		console.log('setAnswer', newChoice);
-
-		// setLoading(true);
 		const _qc = choices;
 		_qc[index] = newChoice;
 		await setChoices(_qc);
-		// setLoading(false);
 	};
 
 	return (
@@ -123,7 +118,7 @@ const NewQuestion: FC<NewQuestionProp> = ({ index, updateQuestion }) => {
 					);
 				})
 			)}
-			<Button color="light" onClick={addNewChoice}>
+			<Button disabled={choices.length > 4} color="light" onClick={addNewChoice}>
 				Add Choice
 			</Button>
 			<Button onClick={() => console.log(choices)}>Log</Button>
