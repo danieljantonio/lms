@@ -1,6 +1,6 @@
 import { Button, Card, Label, TextInput } from 'flowbite-react';
 import { NextPage } from 'next';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import QuestionInput from '../../../components/tests/question-input.tests';
 import { QuestionProps } from '../../../types/tests';
 
@@ -28,7 +28,7 @@ const CreateTest: NextPage = () => {
 	};
 
 	const [loading, setLoading] = useState<boolean>(false);
-	const [questions, setQuestions] = useState<QuestionProps[]>([initQuestion]);
+	const [questions, setQuestions] = useState<QuestionProps[]>([]);
 
 	const addNewQuestion = async () => {
 		setLoading(true);

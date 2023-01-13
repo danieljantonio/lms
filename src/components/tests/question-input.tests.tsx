@@ -56,7 +56,7 @@ const QuestionInput: FC<QuestionInputProps> = ({ index, updateQuestion, data, re
 				onClick={removeQuestion}
 				className="absolute right-4 top-4 mx-auto w-5 text-gray-500 hover:cursor-pointer hover:text-gray-800"
 			/>
-			<TextInput defaultValue={question} addon={`Q${index + 1}`} onChange={(e) => setQuestion(e.target.value)} />
+			<TextInput defaultValue={question} addon={index + 1} onChange={(e) => setQuestion(e.target.value)} />
 			{loading ? (
 				<div>Loading...</div>
 			) : (
