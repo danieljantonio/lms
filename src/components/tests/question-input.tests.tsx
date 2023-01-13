@@ -28,7 +28,7 @@ const QuestionInput: FC<QuestionInputProps> = ({ index, updateQuestion, data, re
 		setLoading(false);
 	};
 
-	const setAnswer = async (newChoice: ChoiceData, index: number) => {
+	const updateAnswer = async (newChoice: ChoiceData, index: number) => {
 		let _qc = choices;
 		if (newChoice.isCorrectAnswer) {
 			setLoading(true);
@@ -62,7 +62,7 @@ const QuestionInput: FC<QuestionInputProps> = ({ index, updateQuestion, data, re
 							key={index}
 							data={questionChoice}
 							setAnswer={(newChoice) => {
-								setAnswer(newChoice, index);
+								updateAnswer(newChoice, index);
 							}}
 							removeChoice={() => removeChoice(index)}
 						/>
