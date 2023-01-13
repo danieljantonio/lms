@@ -27,8 +27,19 @@ const CreateTest: NextPage = () => {
 		],
 	};
 
+	const [loading, setLoading] = useState<boolean>(false);
 	const [questions, setQuestions] = useState<QuestionProps[]>([initQuestion]);
-	console.log(questions);
+
+	const addNewQuestion = async () => {
+		setLoading(true);
+		let _questions = questions;
+		_questions.push({
+			question: '',
+			choices: [],
+		});
+		await setQuestions(_questions);
+		setLoading(false);
+	};
 
 	return (
 		<div className="mx-auto max-w-screen-xl">
@@ -52,9 +63,20 @@ const CreateTest: NextPage = () => {
 				</div>
 			</Card>
 
-			{questions.map((question, index) => (
-				<QuestionInput updateQuestion={() => {}} index={index} data={question} />
-			))}
+			{loading ? (
+				<div>Loading...</div>
+			) : (
+				questions.map((question, index) => (
+					<QuestionInput
+						updateQuestion={() => {}}
+						index={index}
+						data={question}
+						removeQuestion={() => {
+							removeQuestion(index);
+						}}
+					/>
+				))
+			)}
 
 			<Button
 				fullSized
@@ -62,6 +84,7 @@ const CreateTest: NextPage = () => {
 				className="mt-4 shadow-md"
 				onClick={() => {
 					console.log(questions);
+					addNewQuestion();
 				}}>
 				Add Question
 			</Button>
