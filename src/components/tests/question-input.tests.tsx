@@ -4,7 +4,7 @@ import { FC, useState } from 'react';
 import { ChoiceData, ChoiceProps, QuestionInputProps } from '../../types/tests';
 import ChoiceInput from './choice-input.tests';
 
-const QuestionInput: FC<QuestionInputProps> = ({ index, updateQuestion, data }) => {
+const QuestionInput: FC<QuestionInputProps> = ({ index, updateQuestion, data, removeQuestion }) => {
 	const [question, setQuestion] = useState<string>(data?.question || '');
 	const [loading, setLoading] = useState(false);
 	const [choices, setChoices] = useState<ChoiceProps[]>(data?.choices || []);
@@ -48,7 +48,10 @@ const QuestionInput: FC<QuestionInputProps> = ({ index, updateQuestion, data }) 
 
 	return (
 		<Card className="relative mt-4 p-4">
-			<XMarkIcon className="absolute right-4 top-4 mx-auto w-5 text-gray-500 hover:cursor-pointer hover:text-gray-800" />
+			<XMarkIcon
+				onClick={removeQuestion}
+				className="absolute right-4 top-4 mx-auto w-5 text-gray-500 hover:cursor-pointer hover:text-gray-800"
+			/>
 			<TextInput defaultValue={question} addon={`Q${index + 1}`} onChange={(e) => setQuestion(e.target.value)} />
 			{loading ? (
 				<div>Loading...</div>

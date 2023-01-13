@@ -21,6 +21,7 @@ export type QuestionProps = {
 
 export type QuestionInputProps = {
 	updateQuestion: any;
+	removeQuestion: () => void;
 	index: number;
 	data?: QuestionProps;
 };

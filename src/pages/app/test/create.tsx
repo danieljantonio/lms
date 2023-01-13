@@ -41,6 +41,14 @@ const CreateTest: NextPage = () => {
 		setLoading(false);
 	};
 
+	const removeQuestion = async (index: number) => {
+		setLoading(true);
+		let _questions = questions;
+		_questions.splice(index, 1);
+		await setQuestions(_questions);
+		setLoading(false);
+	};
+
 	return (
 		<div className="mx-auto max-w-screen-xl">
 			<Card>
