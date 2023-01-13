@@ -49,6 +49,12 @@ const CreateTest: NextPage = () => {
 		setLoading(false);
 	};
 
+	const updateQuestion = async (newQuestion: QuestionProps, index: number) => {
+		let _questions = questions;
+		_questions[index] = newQuestion;
+		await setQuestions(_questions);
+	};
+
 	const log = () => {
 		console.log(questions);
 	};
@@ -84,7 +90,9 @@ const CreateTest: NextPage = () => {
 			) : (
 				questions.map((question, index) => (
 					<QuestionInput
-						updateQuestion={() => {}}
+						updateQuestion={(question: QuestionProps) => {
+							updateQuestion(question, index);
+						}}
 						index={index}
 						data={question}
 						removeQuestion={() => {

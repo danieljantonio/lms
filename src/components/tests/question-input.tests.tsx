@@ -1,6 +1,6 @@
 import { XMarkIcon } from '@heroicons/react/24/solid';
 import { Button, Card, TextInput } from 'flowbite-react';
-import { FC, useState } from 'react';
+import { FC, useEffect, useState } from 'react';
 import { ChoiceData, ChoiceProps, QuestionInputProps } from '../../types/tests';
 import ChoiceInput from './choice-input.tests';
 
@@ -27,6 +27,10 @@ const QuestionInput: FC<QuestionInputProps> = ({ index, updateQuestion, data, re
 		await setChoices(qc);
 		setLoading(false);
 	};
+
+	useEffect(() => {
+		updateQuestion({ question, choices });
+	}, [choices, question]);
 
 	const updateAnswer = async (newChoice: ChoiceData, index: number) => {
 		let _qc = choices;
