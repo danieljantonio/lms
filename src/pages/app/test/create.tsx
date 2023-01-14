@@ -5,30 +5,11 @@ import QuestionInput from '../../../components/tests/question-input.tests';
 import { QuestionProps } from '../../../types/tests';
 
 const CreateTest: NextPage = () => {
-	const initQuestion: QuestionProps = {
-		question: 'What is the meaning of life?',
-		choices: [
-			{
-				answer: '42',
-				isCorrectAnswer: false,
-			},
-			{
-				answer: 'Jesus',
-				isCorrectAnswer: true,
-			},
-			{
-				answer: 'Satisfaction',
-				isCorrectAnswer: false,
-			},
-			{
-				answer: 'Fulfillment',
-				isCorrectAnswer: false,
-			},
-		],
-	};
-
 	const [loading, setLoading] = useState<boolean>(false);
 	const [questions, setQuestions] = useState<QuestionProps[]>([]);
+	const [testName, setTestName] = useState<string>('');
+	const [startDate, setStartDate] = useState<string>('');
+	const [endDate, setEndDate] = useState<string>('');
 
 	const addNewQuestion = async () => {
 		setLoading(true);
@@ -56,7 +37,8 @@ const CreateTest: NextPage = () => {
 	};
 
 	const log = () => {
-		console.log(questions);
+		if (startDate === '' || endDate === '') return;
+		console.log({ testName, startDate, endDate, questions });
 	};
 
 	return (
@@ -66,16 +48,24 @@ const CreateTest: NextPage = () => {
 				<div className="flex w-full flex-col justify-between gap-6 lg:flex-row">
 					<div className="lg:w-2/3">
 						<Label>Test Name</Label>
-						<TextInput placeholder="Test Name" />
+						<TextInput onChange={(e) => setTestName(e.target.value)} placeholder="Test Name" />
 					</div>
 					<div className="gap-6 lg:w-1/3">
 						<div>
 							<Label>Start Date</Label>
-							<TextInput placeholder="Test Name" type="datetime-local" />
+							<TextInput
+								onChange={(e) => setStartDate(e.target.value)}
+								placeholder="Test Name"
+								type="datetime-local"
+							/>
 						</div>
 						<div className="mt-4">
 							<Label>End Date</Label>
-							<TextInput placeholder="Test Name" type="datetime-local" />
+							<TextInput
+								onChange={(e) => setEndDate(e.target.value)}
+								placeholder="Test Name"
+								type="datetime-local"
+							/>
 						</div>
 					</div>
 				</div>
