@@ -14,6 +14,12 @@ const CreateTest: NextPage = () => {
 	const [classroomId, setClassroomId] = useState<string>('');
 	const { data: classrooms, isLoading: loadingClassroom } = trpc.classroom.getUserClassrooms.useQuery();
 
+	const createTest = trpc.test.create.useMutation({
+		onSuccess(data) {
+			console.log(data);
+		},
+	});
+
 	const addNewQuestion = async () => {
 		setLoading(true);
 		let _questions = questions;
@@ -42,6 +48,13 @@ const CreateTest: NextPage = () => {
 	const log = () => {
 		if (startDate === '' || endDate === '' || classroomId === '') return;
 		console.log({ testName, startDate, endDate, questions, classroom: classroomId });
+		createTest.mutate({
+			testName,
+			startDate: new Date(startDate),
+			endDate: new Date(endDate),
+			questions,
+			classroomId,
+		});
 	};
 
 	// useEffect(() => {
