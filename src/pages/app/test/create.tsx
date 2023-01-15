@@ -1,7 +1,8 @@
-import { Button, Card, Label, TextInput } from 'flowbite-react';
+import { Button, Card, Label, Select, TextInput } from 'flowbite-react';
 import { NextPage } from 'next';
 import { useEffect, useState } from 'react';
 import QuestionInput from '../../../components/tests/question-input.tests';
+import { trpc } from '../../../lib/trpc';
 import { QuestionProps } from '../../../types/tests';
 
 const CreateTest: NextPage = () => {
@@ -10,6 +11,8 @@ const CreateTest: NextPage = () => {
 	const [testName, setTestName] = useState<string>('');
 	const [startDate, setStartDate] = useState<string>('');
 	const [endDate, setEndDate] = useState<string>('');
+	const [classroomId, setClassroomId] = useState<string>('');
+	const { data: classrooms, isLoading: loadingClassroom } = trpc.classroom.getUserClassrooms.useQuery();
 
 	const addNewQuestion = async () => {
 		setLoading(true);
@@ -37,9 +40,13 @@ const CreateTest: NextPage = () => {
 	};
 
 	const log = () => {
-		if (startDate === '' || endDate === '') return;
-		console.log({ testName, startDate, endDate, questions });
+		if (startDate === '' || endDate === '' || classroomId === '') return;
+		console.log({ testName, startDate, endDate, questions, classroom: classroomId });
 	};
+
+	// useEffect(() => {
+	// 	if (!loadingClassroom && classrooms && classrooms[0]) setClassroomId(classrooms[0].classroomId);
+	// }, [loadingClassroom]);
 
 	return (
 		<div className="mx-auto max-w-screen-xl">
@@ -47,10 +54,22 @@ const CreateTest: NextPage = () => {
 				<p className="text-xl">Create New Test</p>
 				<div className="flex w-full flex-col justify-between gap-6 lg:flex-row">
 					<div className="lg:w-2/3">
-						<Label>Test Name</Label>
-						<TextInput onChange={(e) => setTestName(e.target.value)} placeholder="Test Name" />
+						<div>
+							<Label>Test Name</Label>
+							<TextInput onChange={(e) => setTestName(e.target.value)} placeholder="Test Name" />
+						</div>
+						<div className="mt-4">
+							<Label>Classroom</Label>
+							<Select id="classrooms" onChange={(e) => setClassroomId(e.target.value)}>
+								<option value="">Select a classroom</option>
+								{!loadingClassroom &&
+									classrooms?.map((classroom) => (
+										<option value={classroom.classroom.id}>{classroom.classroom.name}</option>
+									))}
+							</Select>
+						</div>
 					</div>
-					<div className="gap-6 lg:w-1/3">
+					<div className="lg:w-1/3">
 						<div>
 							<Label>Start Date</Label>
 							<TextInput
