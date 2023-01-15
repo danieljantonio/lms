@@ -103,7 +103,7 @@ model MCQQuestion {
 model MCQChoice {
   id              String       @id @default(cuid())
   answer          String
-  isCorrectAnswer Boolean
+  isCorrect Boolean
   MCQQuestion     MCQQuestion? @relation(fields: [mCQQuestionId], references: [id])
   mCQQuestionId   String?
 }

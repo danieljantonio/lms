@@ -14,7 +14,7 @@ const QuestionInput: FC<QuestionInputProps> = ({ index, updateQuestion, data, re
 		let qc = choices;
 		qc.push({
 			answer: '',
-			isCorrectAnswer: false,
+			isCorrect: false,
 		});
 		await setChoices(qc);
 		setLoading(false);
@@ -34,10 +34,10 @@ const QuestionInput: FC<QuestionInputProps> = ({ index, updateQuestion, data, re
 
 	const updateAnswer = async (newChoice: ChoiceData, index: number) => {
 		let _qc = choices;
-		if (newChoice.isCorrectAnswer) {
+		if (newChoice.isCorrect) {
 			setLoading(true);
 			_qc = await _qc.map((choice) => {
-				choice.isCorrectAnswer = false;
+				choice.isCorrect = false;
 				return choice;
 			});
 			setLoading(false);
@@ -76,7 +76,6 @@ const QuestionInput: FC<QuestionInputProps> = ({ index, updateQuestion, data, re
 			<Button disabled={choices.length > 4} color="light" onClick={addNewChoice}>
 				Add Choice
 			</Button>
-			<Button onClick={log}>Log</Button>
 		</Card>
 	);
 };

@@ -1,6 +1,6 @@
 export type ChoiceData = {
 	answer: string;
-	isCorrectAnswer: boolean;
+	isCorrect: boolean;
 };
 
 export type ChoiceInputProps = {
@@ -11,7 +11,7 @@ export type ChoiceInputProps = {
 
 export type ChoiceProps = {
 	answer: string;
-	isCorrectAnswer: boolean;
+	isCorrect: boolean;
 };
 
 export type QuestionProps = {

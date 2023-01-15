@@ -4,12 +4,13 @@ import { ChoiceInputProps } from '../../types/tests';
 
 const ChoiceInput: FC<ChoiceInputProps> = ({ data, setAnswer, removeChoice }) => {
 	const [answer, _setAnswer] = useState<string>(data.answer);
-	const [isCorrect, _setIsCorrect] = useState<boolean>(data.isCorrectAnswer);
+	const [isCorrect, _setIsCorrect] = useState<boolean>(data.isCorrect);
 
 	const toggleCorrect = async () => {
+		if (isCorrect) return;
 		setAnswer({
 			answer,
-			isCorrectAnswer: !isCorrect,
+			isCorrect: !isCorrect,
 		});
 		_setIsCorrect(!isCorrect);
 	};
@@ -17,7 +18,7 @@ const ChoiceInput: FC<ChoiceInputProps> = ({ data, setAnswer, removeChoice }) =>
 	const onChangeChoice = async (e: any) => {
 		setAnswer({
 			answer: e.target.value,
-			isCorrectAnswer: isCorrect,
+			isCorrect: isCorrect,
 		});
 		_setAnswer(e.target.value);
 	};
@@ -32,12 +33,14 @@ const ChoiceInput: FC<ChoiceInputProps> = ({ data, setAnswer, removeChoice }) =>
 				onBlur={onChangeChoice}></input>
 			<div
 				onClick={toggleCorrect}
-				className="absolute inset-y-0 left-0 m-0.5 flex w-10 items-center rounded-l-md p-1 hover:cursor-pointer hover:bg-green-200">
+				className={`absolute inset-y-0 left-0 m-0.5 flex w-10 items-center rounded-md ${
+					isCorrect ? '' : ' hover:cursor-pointer hover:bg-green-300'
+				}`}>
 				<CheckIcon className="mx-auto w-5" />
 			</div>
 			<div
 				onClick={() => removeChoice()}
-				className="absolute inset-y-0 right-0 m-0.5 flex w-10 items-center rounded-r-md border-gray-300 p-1 hover:cursor-pointer hover:bg-red-400">
+				className="absolute inset-y-0 right-0 m-0.5 flex w-10 items-center rounded-md border-gray-300 hover:cursor-pointer hover:bg-red-300">
 				<XMarkIcon className="mx-auto w-5" />
 			</div>
 		</div>
