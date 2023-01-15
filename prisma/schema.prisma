@@ -87,13 +87,12 @@ model Test {
   questions   MCQQuestion[]
   classroom   Classroom     @relation(fields: [classroomId], references: [id], onDelete: Cascade)
   classroomId String
+  startDate DateTime
+  endDate   DateTime
 }
 
 model MCQQuestion {
   id        String      @id @default(cuid())
-  name      String
-  startDate DateTime
-  endDate   DateTime
   question  String
   choices   MCQChoice[]
   Test      Test?       @relation(fields: [testId], references: [id])
@@ -104,8 +103,8 @@ model MCQChoice {
   id              String       @id @default(cuid())
   answer          String
   isCorrect Boolean
-  MCQQuestion     MCQQuestion? @relation(fields: [mCQQuestionId], references: [id])
-  mCQQuestionId   String?
+  Question     MCQQuestion? @relation(fields: [questionId], references: [id], onDelete: Cascade)
+  questionId   String?
 }
 
 model UsersOnClassrooms {
