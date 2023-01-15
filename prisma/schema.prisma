@@ -42,42 +42,41 @@ model Session {
 }
 
 model User {
-  id            String           @id @default(cuid())
+  id            String              @id @default(cuid())
   name          String?
-  email         String?          @unique
+  email         String?             @unique
   emailVerified DateTime?
   image         String?
   accounts      Account[]
   sessions      Session[]
   schoolId      String?
-  school        School?           @relation(fields: [schoolId], references: [id])
-  classrooms       UsersOnClassrooms[]
-  role          Role             @default(STUDENT)
-  tests         Test[]
+  school        School?             @relation(fields: [schoolId], references: [id])
+  classrooms    UsersOnClassrooms[]
+  role          Role                @default(STUDENT)
 }
 
 model VerificationToken {
   identifier String
-  token      String        @unique
+  token      String   @unique
   expires    DateTime
 
   @@unique([identifier, token])
 }
 
 model School {
-  id      String            @id @default(cuid())
-  name    String
+  id         String      @id @default(cuid())
+  name       String
   classrooms Classroom[]
-  users   User[]
-  code  String              @unique
+  users      User[]
+  code       String      @unique
 }
 
 model Classroom {
-  id       String           @id @default(cuid())
+  id       String              @id @default(cuid())
   name     String
-  code     String           @unique
+  code     String              @unique
   schoolId String
-  school   School           @relation(fields: [schoolId], references: [id], onDelete: Cascade)
+  school   School              @relation(fields: [schoolId], references: [id], onDelete: Cascade)
   users    UsersOnClassrooms[]
   Test     Test[]
 }
@@ -85,44 +84,36 @@ model Classroom {
 model Test {
   id          String        @id @default(cuid())
   name        String
-  code        String        @unique
   questions   MCQQuestion[]
-  testAnswers TestAnswer[]
-  teacher     User          @relation(fields: [userId], references: [id])
-  classroom   Classroom         @relation(fields: [classroomId], references: [id], onDelete: Cascade)
-  userId      String
-  classroomId     String
+  classroom   Classroom     @relation(fields: [classroomId], references: [id], onDelete: Cascade)
+  classroomId String
 }
-
-model TestAnswer {
-  id     String @id @default(cuid())
-  testId String
-  test   Test   @relation(fields: [testId], references: [id], onDelete: Cascade)
-  mark   Int?
-}
-
-// model MCQAnswer {}
 
 model MCQQuestion {
-  id            String  @id @default(cuid())
-  question      String
-  correctAnswer String
-  wrongAnswers  String[]
-  test          Test?   @relation(fields: [testId], references: [id])
-  testId        String?
+  id        String      @id @default(cuid())
+  name      String
+  startDate DateTime
+  endDate   DateTime
+  question  String
+  choices   MCQChoice[]
+  Test      Test?       @relation(fields: [testId], references: [id])
+  testId    String?
 }
 
-model EssayQuestion {
-  id       String @id @default(cuid())
-  question String
+model MCQChoice {
+  id              String       @id @default(cuid())
+  answer          String
+  isCorrectAnswer Boolean
+  MCQQuestion     MCQQuestion? @relation(fields: [mCQQuestionId], references: [id])
+  mCQQuestionId   String?
 }
 
 model UsersOnClassrooms {
-  classroom     Classroom  @relation(fields: [classroomId], references: [id], onDelete: Cascade)
+  classroom     Classroom @relation(fields: [classroomId], references: [id], onDelete: Cascade)
   classroomId   String
-  user      User   @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId    String
-  classroomRole Role   @default(STUDENT)
+  user          User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId        String
+  classroomRole Role      @default(STUDENT)
 
   @@id([classroomId, userId])
 }
