@@ -61,4 +61,36 @@ export const testRouter = router({
 
 			return newTest;
 		}),
+	getTestDetails: protectedProcedure.query(async ({ ctx }) => {
+		const classrooms = await ctx.prisma.usersOnClassrooms.findMany({
+			where: {
+				userId: ctx.session.user.id,
+			},
+		});
+
+		const classroomIds: string[] = [];
+
+		classrooms.forEach((classroom) => {
+			classroomIds.push(classroom.classroomId);
+		});
+
+		const totalTests = await ctx.prisma.test.findMany({
+			where: {
+				classroomId: { in: classroomIds },
+			},
+			include: { classroom: true },
+			orderBy: { endDate: 'asc' },
+		});
+
+		const activeTests = await ctx.prisma.test.findMany({
+			where: {
+				classroomId: { in: classroomIds },
+				endDate: {
+					gte: new Date(),
+				},
+			},
+		});
+
+		return { activeTests: activeTests.length, totalTest: totalTests.length, tests: totalTests };
+	}),
 });
