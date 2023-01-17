@@ -2,11 +2,13 @@ import { Card } from 'flowbite-react';
 import { NextPage } from 'next';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
+import useAuth from '../../../lib/hooks/useAuth';
 import { trpc } from '../../../lib/trpc';
 
 const Tests: NextPage = () => {
 	const router = useRouter();
 	const { data, isLoading } = trpc.test.getTestDetails.useQuery();
+	const { role } = useAuth();
 
 	if (isLoading) return <div>Loading...</div>;
 
@@ -14,12 +16,14 @@ const Tests: NextPage = () => {
 
 	return (
 		<div className="flex flex-col">
-			<div className="flex justify-between gap-8">
-				<Card
-					className="w-44 items-center hover:cursor-pointer hover:bg-gray-100"
-					onClick={() => router.push('/app/test/create')}>
-					Create New Test
-				</Card>
+			<div className="flex gap-8">
+				{role !== 'STUDENT' ? (
+					<Card
+						className="w-44 items-center hover:cursor-pointer hover:bg-gray-100"
+						onClick={() => router.push('/app/test/create')}>
+						Create New Test
+					</Card>
+				) : null}
 				<Card className="w-44 items-center">{isLoading ? 'Loading' : `${data?.activeTests} Active Tests`}</Card>
 				<Card className="w-44 items-center">{isLoading ? 'Loading' : `${data?.totalTest} Total Tests`}</Card>
 			</div>
