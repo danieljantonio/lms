@@ -1,8 +1,9 @@
-import { Button, Card } from 'flowbite-react';
+import { PlusCircleIcon, PlusSmallIcon } from '@heroicons/react/24/solid';
+import { Button, Card, Modal } from 'flowbite-react';
 import { NextPage } from 'next';
 import { useRouter } from 'next/router';
 import { useState } from 'react';
-import CreateClassroom from '../../../components/admin/classroom/create-card.classroom';
+import JoinClass from '../../../components/common/modals/join-class.modal';
 import useAuth from '../../../lib/hooks/useAuth';
 import { trpc } from '../../../lib/trpc';
 
@@ -12,6 +13,7 @@ const CLasses: NextPage = () => {
 	const { role } = useAuth();
 
 	const [showCreate, toggleCreate] = useState<boolean>(false);
+	const [modalIsOpen, toggleModalOpen] = useState<boolean>(false);
 
 	if (isLoading) return <div>Loading...</div>;
 
@@ -20,7 +22,7 @@ const CLasses: NextPage = () => {
 			{/* Allows teachers, principals, and admins to create class */}
 			{role !== 'STUDENT' ? (
 				<div className="absolute right-5 bottom-5 flex flex-col">
-					{showCreate ? <CreateClassroom /> : null}
+					{/* {showCreate ? <CreateClassroom /> : null} */}
 					<Button onClick={() => toggleCreate(!showCreate)}>Create new class</Button>
 				</div>
 			) : null}
@@ -37,6 +39,18 @@ const CLasses: NextPage = () => {
 					</Card>
 				))}
 			</div>
+			<Button
+				color="light"
+				onClick={() => toggleModalOpen(true)}
+				className="absolute bottom-5 right-5 h-12 w-12 rounded-full">
+				<PlusSmallIcon height={30} width={30} className="mx-auto" />
+			</Button>
+			<JoinClass
+				isOpen={modalIsOpen}
+				toggle={(isOpen) => {
+					toggleModalOpen(isOpen);
+				}}
+			/>
 		</div>
 	);
 };
