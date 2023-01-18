@@ -6,12 +6,13 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
+  provider     = "mysql"
   // NOTE: When using postgresql, mysql or sqlserver, uncomment the @db.Text annotations in model Account below
   // Further reading:
   // https://next-auth.js.org/adapters/prisma#create-the-prisma-schema
   // https://www.prisma.io/docs/reference/api-reference/prisma-schema-reference#string
-  url      = env("DATABASE_URL")
+  url          = env("DATABASE_URL")
+  relationMode = "prisma"
 }
 
 // Necessary for Next auth
@@ -87,24 +88,24 @@ model Test {
   questions   MCQQuestion[]
   classroom   Classroom     @relation(fields: [classroomId], references: [id], onDelete: Cascade)
   classroomId String
-  startDate DateTime
-  endDate   DateTime
+  startDate   DateTime
+  endDate     DateTime
 }
 
 model MCQQuestion {
-  id        String      @id @default(cuid())
-  question  String
-  choices   MCQChoice[]
-  Test      Test?       @relation(fields: [testId], references: [id])
-  testId    String?
+  id       String      @id @default(cuid())
+  question String
+  choices  MCQChoice[]
+  Test     Test?       @relation(fields: [testId], references: [id])
+  testId   String?
 }
 
 model MCQChoice {
-  id              String       @id @default(cuid())
-  answer          String
-  isCorrect Boolean
-  Question     MCQQuestion? @relation(fields: [questionId], references: [id], onDelete: Cascade)
-  questionId   String?
+  id         String       @id @default(cuid())
+  answer     String
+  isCorrect  Boolean
+  Question   MCQQuestion? @relation(fields: [questionId], references: [id], onDelete: Cascade)
+  questionId String?
 }
 
 model UsersOnClassrooms {
