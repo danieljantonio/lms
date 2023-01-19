@@ -8,7 +8,7 @@ type Props = {
 	isOpen: boolean;
 };
 
-const JoinClass: FC<PropsWithChildren<Props>> = ({ toggle, isOpen }) => {
+const CreateClassModal: FC<PropsWithChildren<Props>> = ({ toggle, isOpen }) => {
 	const closeModal = () => toggle(false);
 	const [classCode, setClassCode] = useState<string>('');
 	const [className, setClassName] = useState<string>('');
@@ -29,12 +29,10 @@ const JoinClass: FC<PropsWithChildren<Props>> = ({ toggle, isOpen }) => {
 						<Label value="Enter class name:" />
 					</div>
 					<TextInput
-						placeholder="ABC123"
+						placeholder="ABC Basics"
 						value={className}
-						onChange={(e) => setClassName(e.target.value.toUpperCase())}
+						onChange={(e) => setClassName(e.target.value)}
 						required
-						maxLength={6}
-						minLength={6}
 					/>
 					<div className="mb-2">
 						<Label value="Enter class code:" />
@@ -54,7 +52,7 @@ const JoinClass: FC<PropsWithChildren<Props>> = ({ toggle, isOpen }) => {
 				<Button
 					disabled={createClass.isLoading}
 					onClick={() => createClass.mutate({ code: classCode, name: className })}>
-					Join
+					Create
 				</Button>
 				<Button disabled={createClass.isLoading} color="gray" onClick={closeModal}>
 					Cancel
@@ -64,4 +62,4 @@ const JoinClass: FC<PropsWithChildren<Props>> = ({ toggle, isOpen }) => {
 	);
 };
 
-export default JoinClass;
+export default CreateClassModal;

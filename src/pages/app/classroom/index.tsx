@@ -3,6 +3,7 @@ import { Button, Card, Modal } from 'flowbite-react';
 import { NextPage } from 'next';
 import { useRouter } from 'next/router';
 import { useState } from 'react';
+import CreateClassModal from '../../../components/common/modals/create-class.modal';
 import JoinClassModal from '../../../components/common/modals/join-class.modal';
 import useAuth from '../../../lib/hooks/useAuth';
 import { trpc } from '../../../lib/trpc';
@@ -20,12 +21,6 @@ const CLasses: NextPage = () => {
 	return (
 		<div className="flex flex-col justify-between">
 			{/* Allows teachers, principals, and admins to create class */}
-			{role !== 'STUDENT' && (
-				<div className="absolute right-5 bottom-5 flex flex-col">
-					{/* {showCreate ? <CreateClassroom /> : null} */}
-					<Button onClick={() => toggleCreate(!showCreate)}>Create new class</Button>
-				</div>
-			)}
 			{/* This renders the classes available/enrolled by the student */}
 			<div className="mb-6 text-2xl">Your Classes:</div>
 			<div className="flex gap-4">
@@ -45,12 +40,22 @@ const CLasses: NextPage = () => {
 				className="absolute bottom-5 right-5 h-12 w-12 rounded-full">
 				<PlusSmallIcon height={30} width={30} className="mx-auto" />
 			</Button>
-			<JoinClassModal
-				isOpen={modalIsOpen}
-				toggle={(isOpen) => {
-					toggleModalOpen(isOpen);
-				}}
-			/>
+			{role === 'STUDENT' && (
+				<JoinClassModal
+					isOpen={modalIsOpen}
+					toggle={(isOpen) => {
+						toggleModalOpen(isOpen);
+					}}
+				/>
+			)}
+			{role === 'TEACHER' && (
+				<CreateClassModal
+					isOpen={modalIsOpen}
+					toggle={(isOpen) => {
+						toggleModalOpen(isOpen);
+					}}
+				/>
+			)}
 		</div>
 	);
 };
