@@ -8,7 +8,7 @@ type Props = {
 	isOpen: boolean;
 };
 
-const JoinClass: FC<PropsWithChildren<Props>> = ({ toggle, isOpen }) => {
+const JoinClassModal: FC<PropsWithChildren<Props>> = ({ toggle, isOpen }) => {
 	const closeModal = () => toggle(false);
 	const [classCode, setClassCode] = useState<string>('');
 	const router = useRouter();
@@ -50,4 +50,4 @@ const JoinClass: FC<PropsWithChildren<Props>> = ({ toggle, isOpen }) => {
 	);
 };
 
-export default JoinClass;
+export default JoinClassModal;

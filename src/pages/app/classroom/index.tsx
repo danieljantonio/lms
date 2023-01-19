@@ -3,7 +3,7 @@ import { Button, Card, Modal } from 'flowbite-react';
 import { NextPage } from 'next';
 import { useRouter } from 'next/router';
 import { useState } from 'react';
-import JoinClass from '../../../components/common/modals/join-class.modal';
+import JoinClassModal from '../../../components/common/modals/join-class.modal';
 import useAuth from '../../../lib/hooks/useAuth';
 import { trpc } from '../../../lib/trpc';
 
@@ -45,7 +45,7 @@ const CLasses: NextPage = () => {
 				className="absolute bottom-5 right-5 h-12 w-12 rounded-full">
 				<PlusSmallIcon height={30} width={30} className="mx-auto" />
 			</Button>
-			<JoinClass
+			<JoinClassModal
 				isOpen={modalIsOpen}
 				toggle={(isOpen) => {
 					toggleModalOpen(isOpen);
