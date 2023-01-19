@@ -17,13 +17,13 @@ const Tests: NextPage = () => {
 	return (
 		<div className="flex flex-col">
 			<div className="flex gap-8">
-				{role !== 'STUDENT' ? (
+				{role !== 'STUDENT' && (
 					<Card
 						className="w-44 items-center hover:cursor-pointer hover:bg-gray-100"
 						onClick={() => router.push('/app/test/create')}>
 						Create New Test
 					</Card>
-				) : null}
+				)}
 				<Card className="w-44 items-center">{isLoading ? 'Loading' : `${data?.activeTests} Active Tests`}</Card>
 				<Card className="w-44 items-center">{isLoading ? 'Loading' : `${data?.totalTest} Total Tests`}</Card>
 			</div>

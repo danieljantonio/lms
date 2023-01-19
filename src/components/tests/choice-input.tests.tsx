@@ -34,7 +34,7 @@ const ChoiceInput: FC<ChoiceInputProps> = ({ data, setAnswer, removeChoice }) =>
 			<div
 				onClick={toggleCorrect}
 				className={`absolute inset-y-0 left-0 m-0.5 flex w-10 items-center rounded-md ${
-					isCorrect ? '' : ' hover:cursor-pointer hover:bg-green-300'
+					!isCorrect && ' hover:cursor-pointer hover:bg-green-300'
 				}`}>
 				<CheckIcon className="mx-auto w-5" />
 			</div>
