@@ -95,4 +95,20 @@ export const testRouter = router({
 
 		return { activeTests: activeTests.length, totalTest: totalTests.length, tests: totalTests };
 	}),
+	getTestById: protectedProcedure
+		.input(
+			z.object({
+				testId: z.string(),
+			}),
+		)
+		.query(async ({ ctx, input }) => {
+			const test = await ctx.prisma.test.findUnique({
+				where: { id: input.testId },
+				include: {
+					questions: true,
+				},
+			});
+			if (!test) throw new TRPCError({ code: 'NOT_FOUND', message: 'Test not found' });
+			return test;
+		}),
 });
