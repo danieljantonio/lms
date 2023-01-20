@@ -21,6 +21,7 @@ export const testRouter = router({
 				startDate: z.date(),
 				endDate: z.date(),
 				classroomId: z.string(),
+				duration: z.number(),
 				questions: z.array(MCQQuestions),
 			}),
 		)
@@ -42,6 +43,7 @@ export const testRouter = router({
 					endDate: new Date(input.endDate),
 					startDate: new Date(input.startDate),
 					classroomId: classroom.id,
+					duration: input.duration,
 				},
 			});
 
@@ -61,7 +63,7 @@ export const testRouter = router({
 
 			return newTest;
 		}),
-	getTestDetails: protectedProcedure.query(async ({ ctx }) => {
+	getTests: protectedProcedure.query(async ({ ctx }) => {
 		const classrooms = await ctx.prisma.usersOnClassrooms.findMany({
 			where: {
 				userId: ctx.session.user.id,

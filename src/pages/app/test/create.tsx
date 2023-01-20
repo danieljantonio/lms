@@ -12,6 +12,8 @@ const CreateTest: NextPage = () => {
 	const [startDate, setStartDate] = useState<string>('');
 	const [endDate, setEndDate] = useState<string>('');
 	const [classroomId, setClassroomId] = useState<string>('');
+	const [testDuration, setTestDuration] = useState<number>(0);
+
 	const { data: classrooms, isLoading: loadingClassroom } = trpc.classroom.getUserClassrooms.useQuery();
 
 	const createTest = trpc.test.create.useMutation({
@@ -46,7 +48,7 @@ const CreateTest: NextPage = () => {
 	};
 
 	const log = () => {
-		if (startDate === '' || endDate === '' || classroomId === '') return;
+		if (testName === '' || startDate === '' || endDate === '' || classroomId === '' || testDuration === 0) return;
 		console.log({ testName, startDate, endDate, questions, classroom: classroomId });
 		createTest.mutate({
 			testName,
@@ -54,12 +56,9 @@ const CreateTest: NextPage = () => {
 			endDate: new Date(endDate),
 			questions,
 			classroomId,
+			duration: testDuration,
 		});
 	};
-
-	// useEffect(() => {
-	// 	if (!loadingClassroom && classrooms && classrooms[0]) setClassroomId(classrooms[0].classroomId);
-	// }, [loadingClassroom]);
 
 	return (
 		<div className="mx-auto max-w-screen-xl">
@@ -99,12 +98,32 @@ const CreateTest: NextPage = () => {
 								type="datetime-local"
 							/>
 						</div>
+						<div className="mt-4">
+							<Label>Duration (Minutes):</Label>
+							<TextInput
+								min={30}
+								onChange={(e) => setTestDuration(parseInt(e.target.value))}
+								placeholder="Test Duration (in minutes)"
+								type="number"
+							/>
+						</div>
 					</div>
 				</div>
 			</Card>
 
-			<Button onClick={log} fullSized className="mt-4">
-				Log
+			<Button
+				onClick={log}
+				disabled={
+					questions.length === 0 ||
+					startDate === '' ||
+					endDate === '' ||
+					classroomId === '' ||
+					testDuration === 0
+				}
+				type="submit"
+				fullSized
+				className="mt-4">
+				Create Test
 			</Button>
 
 			{loading ? (

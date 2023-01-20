@@ -7,12 +7,10 @@ import { trpc } from '../../../lib/trpc';
 
 const Tests: NextPage = () => {
 	const router = useRouter();
-	const { data, isLoading } = trpc.test.getTestDetails.useQuery();
+	const { data, isLoading } = trpc.test.getTests.useQuery();
 	const { role } = useAuth();
 
 	if (isLoading) return <div>Loading...</div>;
-
-	console.log(data);
 
 	return (
 		<div className="flex flex-col">
@@ -30,7 +28,9 @@ const Tests: NextPage = () => {
 			<div className="mt-6">
 				{data?.tests?.map((test) => {
 					return (
-						<Card className="mt-4">
+						<Card
+							className="mt-4 hover:cursor-pointer hover:bg-gray-100"
+							onClick={() => router.push(`/app/test/${test.id}`)}>
 							<div className="flex justify-between">
 								<p className="my-auto">
 									{test.name} - {test.classroom?.name}

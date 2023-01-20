@@ -90,6 +90,7 @@ model Test {
   classroomId String
   startDate   DateTime
   endDate     DateTime
+  duration    Int
 }
 
 model MCQQuestion {
