@@ -76,24 +76,45 @@ export const testRouter = router({
 			classroomIds.push(classroom.classroomId);
 		});
 
-		const totalTests = await ctx.prisma.test.findMany({
+		const today = new Date();
+
+		const ongoingTests = await ctx.prisma.test.findMany({
 			where: {
 				classroomId: { in: classroomIds },
+				startDate: {
+					lte: today,
+				},
+				endDate: {
+					gte: today,
+				},
 			},
 			include: { classroom: true },
 			orderBy: { endDate: 'asc' },
 		});
 
-		const activeTests = await ctx.prisma.test.findMany({
+		const upcomingTests = await ctx.prisma.test.findMany({
+			where: {
+				classroomId: { in: classroomIds },
+				startDate: {
+					gte: today,
+				},
+			},
+			include: { classroom: true },
+			orderBy: { endDate: 'asc' },
+		});
+
+		const overdueTests = await ctx.prisma.test.findMany({
 			where: {
 				classroomId: { in: classroomIds },
 				endDate: {
-					gte: new Date(),
+					lte: today,
 				},
 			},
+			include: { classroom: true },
+			orderBy: { endDate: 'asc' },
 		});
 
-		return { activeTests: activeTests.length, totalTest: totalTests.length, tests: totalTests };
+		return { ongoingTests, upcomingTests, overdueTests };
 	}),
 	getTestById: protectedProcedure
 		.input(
