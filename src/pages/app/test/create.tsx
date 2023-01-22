@@ -1,5 +1,6 @@
 import { Button, Card, Label, Select, TextInput } from 'flowbite-react';
 import { NextPage } from 'next';
+import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import QuestionInput from '../../../components/tests/question-input.tests';
 import { trpc } from '../../../lib/trpc';
@@ -14,11 +15,13 @@ const CreateTest: NextPage = () => {
 	const [classroomId, setClassroomId] = useState<string>('');
 	const [testDuration, setTestDuration] = useState<number>(0);
 
+	const router = useRouter();
+
 	const { data: classrooms, isLoading: loadingClassroom } = trpc.classroom.getUserClassrooms.useQuery();
 
 	const createTest = trpc.test.create.useMutation({
 		onSuccess(data) {
-			console.log(data);
+			router.push(`/app/test/${data.id}`);
 		},
 	});
 
@@ -114,6 +117,7 @@ const CreateTest: NextPage = () => {
 			<Button
 				onClick={create}
 				disabled={
+					createTest.isLoading ||
 					questions.length === 0 ||
 					startDate === '' ||
 					endDate === '' ||
@@ -144,6 +148,7 @@ const CreateTest: NextPage = () => {
 			)}
 
 			<Button
+				disabled={createTest.isLoading}
 				fullSized
 				color="light"
 				className="mt-4 shadow-md"
