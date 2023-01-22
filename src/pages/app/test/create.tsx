@@ -47,7 +47,7 @@ const CreateTest: NextPage = () => {
 		await setQuestions(_questions);
 	};
 
-	const log = () => {
+	const create = () => {
 		if (testName === '' || startDate === '' || endDate === '' || classroomId === '' || testDuration === 0) return;
 		console.log({ testName, startDate, endDate, questions, classroom: classroomId });
 		createTest.mutate({
@@ -112,7 +112,7 @@ const CreateTest: NextPage = () => {
 			</Card>
 
 			<Button
-				onClick={log}
+				onClick={create}
 				disabled={
 					questions.length === 0 ||
 					startDate === '' ||
