@@ -1,7 +1,7 @@
 import { Button, Label, Modal, TextInput } from 'flowbite-react';
 import { useRouter } from 'next/router';
 import { FC, PropsWithChildren, useState } from 'react';
-import { trpc } from '../../../lib/trpc';
+import { trpc } from '../../lib/trpc';
 
 type Props = {
 	toggle: (open: boolean) => void;
