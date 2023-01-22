@@ -13,16 +13,17 @@ type Props = {
 	test: Test & {
 		classroom: Classroom;
 	};
+	overdue?: Boolean;
 };
 
-const CardIcon: FC<Props> = ({ test }) => {
+const TestCard: FC<Props> = ({ test, overdue = false }) => {
 	const router = useRouter();
 	return (
 		<Card
-			className="mt-4 hover:cursor-pointer
-	hover:bg-gray-200"
+			className={`${overdue && '!bg-gray-100 !shadow-none'} mt-4 hover:cursor-pointer
+			hover:bg-gray-200`}
 			onClick={() => {
-				router.push(`/app/test/${test.id}`);
+				if (!overdue) router.push(`/app/test/${test.id}`);
 			}}>
 			<div className="flex justify-between">
 				<p className="my-auto">
@@ -50,4 +51,4 @@ const CardIcon: FC<Props> = ({ test }) => {
 	);
 };
 
-export default CardIcon;
+export default TestCard;
