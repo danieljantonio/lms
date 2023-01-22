@@ -94,19 +94,46 @@ model Test {
 }
 
 model MCQQuestion {
-  id       String      @id @default(cuid())
-  question String
-  choices  MCQChoice[]
-  Test     Test?       @relation(fields: [testId], references: [id])
-  testId   String?
+  id                     String                   @id @default(cuid())
+  questionNo             Int
+  question               String
+  choices                MCQChoice[]
+  Test                   Test?                    @relation(fields: [testId], references: [id])
+  testId                 String?
+  QuestionsOnStudentTest QuestionsOnStudentTest[]
 }
 
 model MCQChoice {
-  id         String       @id @default(cuid())
-  answer     String
-  isCorrect  Boolean
-  Question   MCQQuestion? @relation(fields: [questionId], references: [id], onDelete: Cascade)
-  questionId String?
+  id                     String                   @id @default(cuid())
+  answer                 String
+  isCorrect              Boolean
+  Question               MCQQuestion?             @relation(fields: [questionId], references: [id], onDelete: Cascade)
+  questionId             String?
+  QuestionsOnStudentTest QuestionsOnStudentTest[]
+}
+
+model StudentTest {
+  id        String                   @id @default(cuid())
+  startDate DateTime?
+  questions QuestionsOnStudentTest[]
+}
+
+model QuestionsOnStudentTest {
+  studentTest   StudentTest @relation(fields: [studentTestId], references: [id])
+  studentTestId String
+
+  question   MCQQuestion @relation(fields: [mCQQuestionId], references: [id])
+  questionId String
+
+  // This indicates the answer chosen by the student.
+  chosenAnswer   MCQChoice? @relation(fields: [mCQChoiceId], references: [id])
+  chosenAnswerId String?
+
+  questionNo    Int // This tracks the order which the test is done in.
+  mCQQuestionId String
+  mCQChoiceId   String?
+
+  @@id([questionId, studentTestId])
 }
 
 model UsersOnClassrooms {
