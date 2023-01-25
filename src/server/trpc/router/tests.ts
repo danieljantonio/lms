@@ -47,10 +47,11 @@ export const testRouter = router({
 				},
 			});
 
-			input.questions.forEach(async (question) => {
+			input.questions.forEach(async (question, index) => {
 				await ctx.prisma.mCQQuestion.create({
 					data: {
 						question: question.question,
+						questionNo: index + 1,
 						choices: {
 							createMany: {
 								data: question.choices,
@@ -127,6 +128,7 @@ export const testRouter = router({
 				where: { id: input.testId },
 				include: {
 					questions: true,
+					classroom: true,
 				},
 			});
 			if (!test) throw new TRPCError({ code: 'NOT_FOUND', message: 'Test not found' });
