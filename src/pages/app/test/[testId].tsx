@@ -1,7 +1,7 @@
 import { Button } from 'flowbite-react';
 import { NextPage } from 'next';
 import { useRouter } from 'next/router';
-import { validateTestIsOngoing } from '../../../lib/helpers/date.helpers';
+import { formatDate, validateTestIsOngoing } from '../../../lib/helpers/date.helpers';
 import { trpc } from '../../../lib/trpc';
 
 type ClassroomQueryProp = {
@@ -24,8 +24,8 @@ const TestDetails: NextPage = () => {
 			<div className="mb-6 text-2xl">{data?.name}</div>
 			<div>
 				<p>Duration: {data.duration}</p>
-				<p>Start Date: {data.startDate.toLocaleDateString('en-GB')}</p>
-				<p>End Date: {data.endDate.toLocaleDateString('en-GB')}</p>
+				<p>Start Date: {formatDate(data.startDate)}</p>
+				<p>End Date: {formatDate(data.endDate)}</p>
 				<p>Questions: {data.questions.length}</p>
 				<Button disabled={!testIsValid} onClick={() => router.push(`/app/test/take/${testId}`)}>
 					Take Test
