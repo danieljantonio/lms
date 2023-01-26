@@ -26,7 +26,8 @@ export const testRouter = router({
 			}),
 		)
 		.mutation(async ({ input, ctx }) => {
-			console.log(input);
+			if (ctx.session.user.role !== 'TEACHER')
+				throw new TRPCError({ code: 'FORBIDDEN', message: 'You do not have the permissions to create a test' });
 
 			const classroom = (await ctx.prisma.classroom.findUnique({
 				where: { id: input.classroomId },
