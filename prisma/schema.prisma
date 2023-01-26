@@ -54,6 +54,7 @@ model User {
   school        School?             @relation(fields: [schoolId], references: [id])
   classrooms    UsersOnClassrooms[]
   role          Role                @default(STUDENT)
+  StudentTest   StudentTest[]
 }
 
 model VerificationToken {
@@ -91,6 +92,7 @@ model Test {
   startDate   DateTime
   endDate     DateTime
   duration    Int
+  StudentTest StudentTest[]
 }
 
 model MCQQuestion {
@@ -113,8 +115,15 @@ model MCQChoice {
 }
 
 model StudentTest {
-  id        String                   @id @default(cuid())
+  id        String    @id @default(cuid())
+  Test      Test?     @relation(fields: [testId], references: [id])
+  testId    String?
+  score     Float?
   startDate DateTime?
+  endDate   DateTime?
+  userId    String
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
   questions QuestionsOnStudentTest[]
 }
 
