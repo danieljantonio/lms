@@ -128,19 +128,17 @@ model StudentTest {
 }
 
 model QuestionsOnStudentTest {
+  questionNo    Int // This tracks the order which the test is done in.
+
   studentTest   StudentTest @relation(fields: [studentTestId], references: [id])
   studentTestId String
 
-  question   MCQQuestion @relation(fields: [mCQQuestionId], references: [id])
+  question   MCQQuestion @relation(fields: [questionId], references: [id])
   questionId String
 
   // This indicates the answer chosen by the student.
-  chosenAnswer   MCQChoice? @relation(fields: [mCQChoiceId], references: [id])
+  chosenAnswer   MCQChoice? @relation(fields: [chosenAnswerId], references: [id])
   chosenAnswerId String?
-
-  questionNo    Int // This tracks the order which the test is done in.
-  mCQQuestionId String
-  mCQChoiceId   String?
 
   @@id([questionId, studentTestId])
 }
