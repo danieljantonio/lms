@@ -20,7 +20,9 @@ const ChoiceCard: FC<PropsWithChildren<Props>> = ({ children, selected = false, 
 	return (
 		<Card
 			onClick={() => onClick(value)}
-			className={`${selected && '!bg-green-200'} mt-4 hover:cursor-pointer hover:bg-gray-100`}>
+			className={`${
+				selected && '!bg-green-200'
+			} mx-auto mt-4 max-w-screen-md hover:cursor-pointer hover:bg-gray-100`}>
 			<p>{children}</p>
 		</Card>
 	);
@@ -41,15 +43,18 @@ const TakeTest: NextPage = () => {
 
 	if (!testIsValid) router.push('/app/test');
 
-	const onPageChange = (e: number) => {
-		// mutate to save students choice if selected is not undefined
+	const mutateChange = (e) => {
 		console.log(selectedId);
 		setSelected(undefined); // set the selected to
+	};
+
+	const onPageChange = (e: number) => {
+		// mutate to save students choice if selected is not undefined
+		if (selectedId) mutateChange(e);
 		setQuestionNo(e); // set the question number to the new page
 	};
 
 	const onSelectChoice = (e: string) => {
-		console.log(e);
 		setSelected(e);
 	};
 
@@ -60,21 +65,14 @@ const TakeTest: NextPage = () => {
 			</div>
 
 			<div className="my-6 flex items-center justify-center text-center">
-				<CustomPagination
-					currentPage={questionNo}
-					onPageChange={onPageChange}
-					totalPages={data.questions.length}
-				/>
-			</div>
-			<div className="my-6 flex items-center justify-center text-center">
 				<Pagination
 					currentPage={questionNo}
 					layout="pagination"
 					onPageChange={onPageChange}
 					showIcons={true}
 					totalPages={data.questions.length}
-					previousLabel="Go back"
-					nextLabel="Go forward"
+					previousLabel="Previous"
+					nextLabel="Next"
 				/>
 			</div>
 
@@ -88,7 +86,7 @@ const TakeTest: NextPage = () => {
 					{ id: '2asv2', answer: 'Second' },
 					{ id: '3asv2', answer: 'Third' },
 				].map((choice, index) => (
-					<ChoiceCard value={choice.id} onClick={onSelectChoice}>
+					<ChoiceCard value={choice.id} selected={choice.id === selectedId} onClick={onSelectChoice}>
 						{choice.answer}
 					</ChoiceCard>
 				))}
