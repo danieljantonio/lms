@@ -1,4 +1,5 @@
-import { Pagination } from 'flowbite-react';
+import date from 'date-and-time';
+import { Card, Pagination } from 'flowbite-react';
 import { NextPage } from 'next';
 import { useRouter } from 'next/router';
 import { useState } from 'react';
@@ -19,7 +20,12 @@ const TakeTest: NextPage = () => {
 	const { data, isLoading } = trpc.studentTest.get.useQuery({ testId });
 
 	if (isLoading || testIsLoading) return <div>Loading...</div>;
-	if (!testData || !data) return <div>Test not found</div>;
+	if (!testData || !data) {
+		router.push(`/app/test/${testId}`);
+		return null;
+	}
+
+	if (date.subtract(data.endDate, new Date()).toMilliseconds() <= 0) return <Card>Test has ended</Card>;
 
 	const mutateChange = () => {
 		console.log(selectedId);
@@ -37,6 +43,8 @@ const TakeTest: NextPage = () => {
 			<p className="mx-auto mb-10 text-3xl font-semibold">
 				{testData.classroom.name} - {testData.name}
 			</p>
+
+			<Card>Time Left: {date.subtract(data.endDate, new Date()).toMinutes().toFixed()} minutes</Card>
 
 			<Pagination
 				className="mb-10 flex items-center justify-center text-center"
