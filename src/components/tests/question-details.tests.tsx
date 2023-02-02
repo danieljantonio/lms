@@ -19,7 +19,7 @@ const QuestionDetails: FC<QuestionDetailsProps> = ({ id }) => {
 		<div>Loading...</div>
 	) : (
 		<div>
-			<p className="text-2xl">Question: {question?.question}</p>
+			<p className="pb-2 text-2xl">Question: {question?.question}</p>
 			{question?.choices.map((choice, index) => (
 				<ChoiceCard key={index} value={choice.id} selected={choice.id === selectedId} onClick={onSelectChoice}>
 					{choice.answer}
