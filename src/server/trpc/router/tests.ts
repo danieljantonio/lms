@@ -1,7 +1,5 @@
-import { Test, MCQQuestion, Classroom } from '@prisma/client';
 import { TRPCError } from '@trpc/server';
 import { z } from 'zod';
-import { shuffleArray } from '../../../lib/helpers/common.helpers';
 import { protectedProcedure, router } from '../trpc';
 
 const MCQChoices = z.object({

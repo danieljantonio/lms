@@ -1,8 +1,6 @@
 import { Test } from '@prisma/client';
-import { Button, Label, Modal, TextInput } from 'flowbite-react';
-import { useRouter } from 'next/router';
-import { FC, PropsWithChildren, useState } from 'react';
-import { trpc } from '../../lib/trpc';
+import { Button, Modal } from 'flowbite-react';
+import { FC, PropsWithChildren } from 'react';
 
 type Props = {
 	toggle: (open: boolean) => void;

@@ -3,7 +3,6 @@ import { NextPage } from 'next';
 import { useRouter } from 'next/router';
 import { useState } from 'react';
 import QuestionDetails from '../../../../components/tests/question-details.tests';
-import { validateTestIsOngoing } from '../../../../lib/helpers/date.helpers';
 import { trpc } from '../../../../lib/trpc';
 
 type ClassroomQueryProp = {

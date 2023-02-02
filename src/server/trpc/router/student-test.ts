@@ -1,19 +1,9 @@
-import { Test, MCQQuestion, Classroom } from '@prisma/client';
+import { MCQQuestion } from '@prisma/client';
 import { TRPCError } from '@trpc/server';
 import { z } from 'zod';
 import { shuffleArray } from '../../../lib/helpers/common.helpers';
 import { protectedProcedure, router } from '../trpc';
 import date from 'date-and-time';
-
-const MCQChoices = z.object({
-	answer: z.string(),
-	isCorrect: z.boolean(),
-});
-
-const MCQQuestions = z.object({
-	question: z.string(),
-	choices: z.array(MCQChoices),
-});
 
 export const studentTestRouter = router({
 	create: protectedProcedure

@@ -1,6 +1,5 @@
 import { Button, TextInput } from 'flowbite-react';
 import { NextPage } from 'next';
-import { signOut } from 'next-auth/react';
 import { useRouter } from 'next/router';
 import { useState } from 'react';
 import CommonLayout from '../../components/layouts/common.layout';

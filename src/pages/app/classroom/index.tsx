@@ -1,5 +1,5 @@
-import { PlusCircleIcon, PlusSmallIcon } from '@heroicons/react/24/solid';
-import { Button, Card, Modal } from 'flowbite-react';
+import { PlusSmallIcon } from '@heroicons/react/24/solid';
+import { Button, Card } from 'flowbite-react';
 import { NextPage } from 'next';
 import { useRouter } from 'next/router';
 import { useState } from 'react';

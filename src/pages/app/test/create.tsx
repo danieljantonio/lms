@@ -1,7 +1,7 @@
 import { Button, Card, Label, Select, TextInput } from 'flowbite-react';
 import { NextPage } from 'next';
 import { useRouter } from 'next/router';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import QuestionInput from '../../../components/tests/question-input.tests';
 import { trpc } from '../../../lib/trpc';
 import { QuestionProps } from '../../../types/tests';
