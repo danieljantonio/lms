@@ -20,12 +20,16 @@ const TakeTest: NextPage = () => {
 	const { data, isLoading } = trpc.studentTest.get.useQuery({ testId });
 
 	if (isLoading || testIsLoading) return <div>Loading...</div>;
+
 	if (!testData || !data) {
 		router.push(`/app/test/${testId}`);
 		return null;
 	}
 
-	if (date.subtract(data.endDate, new Date()).toMilliseconds() <= 0) return <Card>Test has ended</Card>;
+	if (date.subtract(data.endDate, new Date()).toMilliseconds() < 1) {
+		// mutate changes - then end test
+		return <Card>Test has ended</Card>;
+	}
 
 	const mutateChange = () => {
 		console.log(selectedId);
