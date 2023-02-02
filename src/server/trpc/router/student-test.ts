@@ -3,6 +3,7 @@ import { TRPCError } from '@trpc/server';
 import { z } from 'zod';
 import { shuffleArray } from '../../../lib/helpers/common.helpers';
 import { protectedProcedure, router } from '../trpc';
+import date from 'date-and-time';
 
 const MCQChoices = z.object({
 	answer: z.string(),
@@ -38,6 +39,7 @@ export const studentTestRouter = router({
 					userId: ctx.session.user.id,
 					testId: test.id,
 					startDate: new Date(),
+					endDate: date.addMinutes(new Date(), test.duration),
 				},
 			});
 
@@ -69,6 +71,7 @@ export const studentTestRouter = router({
 				},
 				include: {
 					test: true,
+					questions: true,
 				},
 			});
 
