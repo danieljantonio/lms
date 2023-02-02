@@ -19,7 +19,7 @@ const TestDetails: NextPage = () => {
 	const { data, isLoading } = trpc.test.getTestById.useQuery({ testId });
 	const takeTest = trpc.studentTest.create.useMutation({
 		onSuccess: () => {
-			router.push(`/app/test/take/${testId}`);
+			router.push(`/app/test/${testId}/take`);
 		},
 	});
 

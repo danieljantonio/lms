@@ -54,7 +54,7 @@ model User {
   school        School?             @relation(fields: [schoolId], references: [id])
   classrooms    UsersOnClassrooms[]
   role          Role                @default(STUDENT)
-  StudentTest   StudentTest[]
+  studentTest   StudentTest[]
 }
 
 model VerificationToken {
@@ -80,7 +80,7 @@ model Classroom {
   schoolId String
   school   School              @relation(fields: [schoolId], references: [id], onDelete: Cascade)
   users    UsersOnClassrooms[]
-  Test     Test[]
+  test     Test[]
 }
 
 model Test {
@@ -92,7 +92,7 @@ model Test {
   startDate   DateTime
   endDate     DateTime
   duration    Int
-  StudentTest StudentTest[]
+  studentTest StudentTest[]
 }
 
 model MCQQuestion {
@@ -100,40 +100,41 @@ model MCQQuestion {
   questionNo             Int
   question               String
   choices                MCQChoice[]
-  Test                   Test?                    @relation(fields: [testId], references: [id])
+  test                   Test?                    @relation(fields: [testId], references: [id])
   testId                 String?
-  QuestionsOnStudentTest QuestionsOnStudentTest[]
+  questionsOnStudentTest QuestionsOnStudentTest[]
 }
 
 model MCQChoice {
   id                     String                   @id @default(cuid())
   answer                 String
   isCorrect              Boolean
-  Question               MCQQuestion?             @relation(fields: [questionId], references: [id], onDelete: Cascade)
+  question               MCQQuestion?             @relation(fields: [questionId], references: [id], onDelete: Cascade)
   questionId             String?
-  QuestionsOnStudentTest QuestionsOnStudentTest[]
+  questionsOnStudentTest QuestionsOnStudentTest[]
 }
 
 model StudentTest {
-  id        String    @id @default(cuid())
-  Test      Test?     @relation(fields: [testId], references: [id])
-  testId    String?
-  score     Float?
-  startDate DateTime?
-  endDate   DateTime?
-  userId    String
-  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  id            String    @id @default(cuid())
+  test          Test?     @relation(fields: [testId], references: [id])
+  testId        String?
+  score         Float?
+  startDate     DateTime  @default(now())
+  endDate       DateTime
+  submittedDate DateTime?
+  userId        String
+  user          User      @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   questions QuestionsOnStudentTest[]
 }
 
 model QuestionsOnStudentTest {
-  questionNo    Int // This tracks the order which the test is done in.
+  questionNo Int // This tracks the order which the test is done in.
 
-  studentTest   StudentTest @relation(fields: [studentTestId], references: [id])
+  studentTest   StudentTest @relation(fields: [studentTestId], references: [id], onDelete: Cascade)
   studentTestId String
 
-  question   MCQQuestion @relation(fields: [questionId], references: [id])
+  question   MCQQuestion @relation(fields: [questionId], references: [id], onDelete: Cascade)
   questionId String
 
   // This indicates the answer chosen by the student.
