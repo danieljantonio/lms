@@ -30,21 +30,12 @@ export const testRouter = router({
 			if (ctx.session.user.role !== 'TEACHER')
 				throw new TRPCError({ code: 'FORBIDDEN', message: 'You do not have the permissions to create a test' });
 
-			const classroom = (await ctx.prisma.classroom.findUnique({
-				where: { id: input.classroomId },
-			})) as Classroom;
-
-			if (!classroom)
-				throw new TRPCError({ code: 'NOT_FOUND', message: 'You are not allowed to perform the function.' });
-
-			console.log(`${classroom ? 'Classroom exists' : 'Classroom not found'}`);
-
 			const newTest = await ctx.prisma.test.create({
 				data: {
 					name: input.testName,
 					endDate: new Date(input.endDate),
 					startDate: new Date(input.startDate),
-					classroomId: classroom.id,
+					classroomId: input.classroomId,
 					duration: input.duration,
 				},
 			});
@@ -134,59 +125,7 @@ export const testRouter = router({
 				},
 			});
 			if (!test) throw new TRPCError({ code: 'NOT_FOUND', message: 'Test not found' });
-			const questionList = shuffleArray(test.questions);
-			console.log(questionList);
 
 			return test;
-		}),
-	take: protectedProcedure
-		.input(
-			z.object({
-				testId: z.string(),
-				classroomId: z.string(),
-			}),
-		)
-		.mutation(async ({ input, ctx }) => {
-			if (ctx.session.user.role !== 'STUDENT')
-				throw new TRPCError({ code: 'FORBIDDEN', message: 'Only students are allowed to take the test' });
-
-			const classroom = (await ctx.prisma.classroom.findUnique({
-				where: { id: input.classroomId },
-			})) as Classroom;
-
-			if (!classroom)
-				throw new TRPCError({ code: 'NOT_FOUND', message: 'You are not allowed to perform the function.' });
-
-			console.log(`${classroom ? 'Classroom exists' : 'Classroom not found'}`);
-
-			const test = await ctx.prisma.test.findUnique({
-				where: { id: input.testId },
-				include: {
-					questions: true,
-				},
-			});
-			if (!test) throw new TRPCError({ code: 'NOT_FOUND', message: 'Test not found' });
-
-			const newStudentTest = await ctx.prisma.studentTest.create({
-				data: {
-					userId: ctx.session.user.id,
-					testId: test.id,
-					startDate: new Date(),
-				},
-			});
-
-			const questionList = shuffleArray(test.questions) as MCQQuestion[];
-
-			questionList.forEach(async (question, index) => {
-				await ctx.prisma.questionsOnStudentTest.create({
-					data: {
-						questionNo: index + 1,
-						questionId: question.id,
-						studentTestId: newStudentTest.id,
-					},
-				});
-			});
-
-			return newStudentTest;
 		}),
 });
