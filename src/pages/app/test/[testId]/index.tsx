@@ -1,4 +1,4 @@
-import { Button } from 'flowbite-react';
+import { Button, Card } from 'flowbite-react';
 import { NextPage } from 'next';
 import { useRouter } from 'next/router';
 import { useState } from 'react';
@@ -33,18 +33,25 @@ const TestDetails: NextPage = () => {
 	};
 
 	return (
-		<div>
-			<div className="mb-6 text-2xl">{data?.name}</div>
-			<div>
-				<p>Duration: {data.duration}</p>
-				<p>Start Date: {formatDate(data.startDate)}</p>
-				<p>End Date: {formatDate(data.endDate)}</p>
-				<p>Questions: {data.questions.length}</p>
-				<StartPrompt isOpen={modalState} toggle={toggleModal} onStartTest={onStartTest} testDetails={data} />
-				<Button disabled={!testIsValid} onClick={() => toggleModal(true)}>
-					Take Test
-				</Button>
-			</div>
+		<div className="mt-6">
+			<Card>
+				<div className="mb-6 text-2xl">{data?.name}</div>
+				<div>
+					<p>Duration: {data.duration} minutes</p>
+					<p>Start Date: {formatDate(data.startDate)}</p>
+					<p>End Date: {formatDate(data.endDate)}</p>
+					<p>Questions: {data.questions.length}</p>
+					<StartPrompt
+						isOpen={modalState}
+						toggle={toggleModal}
+						onStartTest={onStartTest}
+						testDetails={data}
+					/>
+					<Button className="mt-8" disabled={!testIsValid} onClick={() => toggleModal(true)}>
+						Take Test
+					</Button>
+				</div>
+			</Card>
 		</div>
 	);
 };
