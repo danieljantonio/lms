@@ -117,14 +117,13 @@ export const testRouter = router({
 			}),
 		)
 		.query(async ({ ctx, input }) => {
-			const test = await ctx.prisma.test.findUnique({
+			const test = await ctx.prisma.test.findUniqueOrThrow({
 				where: { id: input.testId },
 				include: {
 					questions: true,
 					classroom: true,
 				},
 			});
-			if (!test) throw new TRPCError({ code: 'NOT_FOUND', message: 'Test not found' });
 
 			return test;
 		}),

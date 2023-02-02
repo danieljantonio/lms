@@ -30,7 +30,7 @@ export const schoolRouter = router({
 		.mutation(async ({ input, ctx }) => {
 			const { id } = ctx.session.user;
 
-			const { schoolId } = (await ctx.prisma.user.findUnique({ where: { id } })) as User;
+			const { schoolId } = (await ctx.prisma.user.findUniqueOrThrow({ where: { id } })) as User;
 
 			if (schoolId)
 				throw new TRPCError({
@@ -38,13 +38,7 @@ export const schoolRouter = router({
 					message: 'The user is already in a school',
 				});
 
-			const school = await ctx.prisma.school.findUnique({ where: { code: input.code } });
-
-			if (!school)
-				throw new TRPCError({
-					code: 'NOT_FOUND',
-					message: `School with invite code ${input.code} not found.`,
-				});
+			const school = await ctx.prisma.school.findUniqueOrThrow({ where: { code: input.code } });
 
 			const updateUser: User = await ctx.prisma.user.update({
 				where: { id },
@@ -57,7 +51,7 @@ export const schoolRouter = router({
 	get: protectedProcedure.query(async ({ ctx }) => {
 		const { id } = ctx.session.user;
 
-		const { schoolId } = (await ctx.prisma.user.findUnique({ where: { id } })) as User;
+		const { schoolId } = (await ctx.prisma.user.findUniqueOrThrow({ where: { id } })) as User;
 
 		if (!schoolId)
 			return {
@@ -66,8 +60,7 @@ export const schoolRouter = router({
 				code: '',
 			} as School;
 
-		const school = await ctx.prisma.school.findUnique({ where: { id: schoolId } });
-		if (!school) throw new TRPCError({ code: 'INTERNAL_SERVER_ERROR', message: 'School not found' });
+		const school = await ctx.prisma.school.findUniqueOrThrow({ where: { id: schoolId } });
 		return school;
 	}),
 	getAll: protectedProcedure.query(async ({ ctx }) => {
