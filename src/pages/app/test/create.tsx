@@ -7,6 +7,7 @@ import { trpc } from '../../../lib/trpc';
 import { QuestionProps } from '../../../types/tests';
 
 const CreateTest: NextPage = () => {
+	// Hooks
 	const [loading, setLoading] = useState<boolean>(false);
 	const [questions, setQuestions] = useState<QuestionProps[]>([]);
 	const [testName, setTestName] = useState<string>('');
@@ -14,9 +15,9 @@ const CreateTest: NextPage = () => {
 	const [endDate, setEndDate] = useState<string>('');
 	const [classroomId, setClassroomId] = useState<string>('');
 	const [testDuration, setTestDuration] = useState<number>(0);
-
 	const router = useRouter();
 
+	// tRPC
 	const { data: classrooms, isLoading: loadingClassroom } = trpc.classroom.getUserClassrooms.useQuery();
 
 	const createTest = trpc.test.create.useMutation({
@@ -25,6 +26,7 @@ const CreateTest: NextPage = () => {
 		},
 	});
 
+	// Methods
 	const addNewQuestion = async () => {
 		setLoading(true);
 		let _questions = questions;
@@ -50,9 +52,19 @@ const CreateTest: NextPage = () => {
 		await setQuestions(_questions);
 	};
 
+	const isDisabled = () => {
+		return (
+			createTest.isLoading ||
+			questions.length === 0 ||
+			startDate === '' ||
+			endDate === '' ||
+			classroomId === '' ||
+			testDuration === 0
+		);
+	};
+
 	const create = () => {
-		if (testName === '' || startDate === '' || endDate === '' || classroomId === '' || testDuration === 0) return;
-		console.log({ testName, startDate, endDate, questions, classroom: classroomId });
+		if (isDisabled()) return;
 		createTest.mutate({
 			testName,
 			startDate: new Date(startDate),
@@ -114,22 +126,6 @@ const CreateTest: NextPage = () => {
 				</div>
 			</Card>
 
-			<Button
-				onClick={create}
-				disabled={
-					createTest.isLoading ||
-					questions.length === 0 ||
-					startDate === '' ||
-					endDate === '' ||
-					classroomId === '' ||
-					testDuration === 0
-				}
-				type="submit"
-				fullSized
-				className="mt-4">
-				Create Test
-			</Button>
-
 			{loading ? (
 				<div>Loading...</div>
 			) : (
@@ -157,6 +153,9 @@ const CreateTest: NextPage = () => {
 					addNewQuestion();
 				}}>
 				Add Question
+			</Button>
+			<Button onClick={create} disabled={isDisabled()} type="submit" fullSized className="mt-4">
+				Create Test
 			</Button>
 		</div>
 	);
