@@ -23,7 +23,15 @@ const QuestionDetails: FC<QuestionDetailsProps> = ({ questionId, selectedAnswer,
 
 	if (!data) return <div>No questions</div>;
 
-	const { question } = data;
+	const { question, chosenAnswerId } = data;
+
+	const isSelected = (id: string) => {
+		if (chosenAnswerId && !selectedId) {
+			return id === chosenAnswerId;
+		} else {
+			return id === selectedId;
+		}
+	};
 
 	return loadingQuestion ? (
 		<div>Loading...</div>
@@ -33,7 +41,7 @@ const QuestionDetails: FC<QuestionDetailsProps> = ({ questionId, selectedAnswer,
 				Question {data.questionNo}: {question.question}
 			</p>
 			{question.choices.map((choice, index) => (
-				<ChoiceCard key={index} value={choice.id} selected={choice.id === selectedId} onClick={onSelectChoice}>
+				<ChoiceCard key={index} value={choice.id} selected={isSelected(choice.id)} onClick={onSelectChoice}>
 					{choice.answer}
 				</ChoiceCard>
 			))}
