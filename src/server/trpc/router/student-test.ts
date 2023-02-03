@@ -71,4 +71,28 @@ export const studentTestRouter = router({
 
 			return test;
 		}),
+	answer: protectedProcedure
+		.input(
+			z.object({
+				questionId: z.string(),
+				chosenAnswerId: z.string(),
+				studentTestId: z.string(),
+				newPage: z.number(),
+			}),
+		)
+		.mutation(async ({ ctx, input }) => {
+			await ctx.prisma.questionsOnStudentTest.update({
+				where: {
+					questionId_studentTestId: {
+						questionId: input.questionId,
+						studentTestId: input.studentTestId,
+					},
+				},
+				data: {
+					chosenAnswerId: input.chosenAnswerId,
+				},
+			});
+
+			return { updated: true, newPage: input.newPage };
+		}),
 });
