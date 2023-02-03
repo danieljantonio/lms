@@ -18,6 +18,12 @@ const TakeTest: NextPage = () => {
 
 	const { data: testData, isLoading: testIsLoading } = trpc.test.getTestById.useQuery({ testId });
 	const { data, isLoading } = trpc.studentTest.get.useQuery({ testId });
+	const answerQuestion = trpc.studentTest.answer.useMutation({
+		onSuccess: (data) => {
+			setSelected(undefined); // set the selected to
+			setQuestionNo(data.newPage);
+		},
+	});
 
 	if (isLoading || testIsLoading) return <div>Loading...</div>;
 
@@ -31,15 +37,18 @@ const TakeTest: NextPage = () => {
 		return <Card>Test has ended</Card>;
 	}
 
-	const mutateChange = () => {
-		console.log(selectedId);
-		setSelected(undefined); // set the selected to
-	};
-
 	const onPageChange = (e: number) => {
 		// mutate to save students choice if selected is not undefined
-		if (selectedId) mutateChange();
-		setQuestionNo(e); // set the question number to the new page
+		if (selectedId) {
+			answerQuestion.mutate({
+				studentTestId: data.id,
+				questionId: data.questions[questionNo - 1]?.questionId || '',
+				chosenAnswerId: selectedId,
+				newPage: e,
+			});
+		} else {
+			setQuestionNo(e); // set the question number to the new page
+		}
 	};
 
 	return (
@@ -59,8 +68,16 @@ const TakeTest: NextPage = () => {
 				totalPages={testData.questions.length}
 			/>
 
-			{data.questions.length >= questionNo && (
-				<QuestionDetails selectedAnswer={setSelected} id={data.questions[questionNo - 1]?.questionId || ''} />
+			{answerQuestion.isLoading ? (
+				<div>Loading...</div>
+			) : (
+				data.questions.length >= questionNo && (
+					<QuestionDetails
+						studentTestId={data.id}
+						selectedAnswer={setSelected}
+						questionId={data.questions[questionNo - 1]?.questionId || ''}
+					/>
+				)
 			)}
 		</div>
 	);
