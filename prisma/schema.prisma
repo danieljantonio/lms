@@ -115,15 +115,16 @@ model MCQChoice {
 }
 
 model StudentTest {
-  id            String    @id @default(cuid())
-  test          Test?     @relation(fields: [testId], references: [id])
+  id            String     @id @default(cuid())
+  test          Test?      @relation(fields: [testId], references: [id])
   testId        String?
   score         Float?
-  startDate     DateTime  @default(now())
+  startDate     DateTime   @default(now())
   endDate       DateTime
   submittedDate DateTime?
   userId        String
-  user          User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user          User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  status        TestStatus @default(InProgress)
 
   questions QuestionsOnStudentTest[]
 }
@@ -152,6 +153,13 @@ model UsersOnClassrooms {
   classroomRole Role      @default(STUDENT)
 
   @@id([classroomId, userId])
+}
+
+enum TestStatus {
+  NotStarted
+  InProgress
+  Completed
+  Graded
 }
 
 enum Role {
