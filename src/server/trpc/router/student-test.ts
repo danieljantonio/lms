@@ -61,7 +61,11 @@ export const studentTestRouter = router({
 				},
 				include: {
 					test: true,
-					questions: true,
+					questions: {
+						orderBy: {
+							questionNo: 'asc',
+						},
+					},
 				},
 			});
 
