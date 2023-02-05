@@ -33,7 +33,7 @@ const TakeTest: NextPage = () => {
 	}
 
 	if (date.subtract(data.endDate, new Date()).toMilliseconds() < 1) {
-		// mutate changes - then end test
+		// TODO: mutate changes - then end test
 		return <Card>Test has ended</Card>;
 	}
 
@@ -54,7 +54,7 @@ const TakeTest: NextPage = () => {
 	return (
 		<div className="flex w-full flex-col text-center">
 			<p className="mx-auto mb-10 text-3xl font-semibold">
-				{testData.classroom.name} - {testData.name}
+				{testData.test.classroom.name} - {testData.test.name}
 			</p>
 
 			<Card>Time Left: {date.subtract(data.endDate, new Date()).toMinutes().toFixed()} minutes</Card>
@@ -65,7 +65,7 @@ const TakeTest: NextPage = () => {
 				layout="pagination"
 				onPageChange={onPageChange}
 				showIcons={true}
-				totalPages={testData.questions.length}
+				totalPages={testData.test.questions.length}
 			/>
 
 			{answerQuestion.isLoading ? (

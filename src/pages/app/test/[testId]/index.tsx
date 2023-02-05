@@ -17,38 +17,46 @@ const TestDetails: NextPage = () => {
 	const { testId } = router.query as ClassroomQueryProp;
 
 	const { data, isLoading } = trpc.test.getTestById.useQuery({ testId });
+
 	const takeTest = trpc.studentTest.create.useMutation({
 		onSuccess: () => {
-			router.push(`/app/test/${testId}/take`);
+			redirectPage();
 		},
 	});
+
+	const redirectPage = () => {
+		router.push(`/app/test/${testId}/take`);
+	};
 
 	if (isLoading) return <div>Loading...</div>;
 	if (!data) return <div>Test not found</div>;
 
-	const testIsValid = validateTestIsOngoing(data.startDate, data.endDate);
+	const { test, existingTest } = data;
+	console.log(existingTest);
+
+	const testIsValid = validateTestIsOngoing(test.startDate, test.endDate);
 
 	const onStartTest = () => {
-		takeTest.mutate({ testId, classroomId: data.classroomId });
+		takeTest.mutate({ testId, classroomId: test.classroomId });
 	};
 
 	return (
 		<div className="mt-6">
 			<Card>
-				<div className="mb-6 text-2xl">{data?.name}</div>
+				<div className="mb-6 text-2xl">{test?.name}</div>
 				<div>
-					<p>Duration: {data.duration} minutes</p>
-					<p>Start Date: {formatDate(data.startDate)}</p>
-					<p>End Date: {formatDate(data.endDate)}</p>
-					<p>Questions: {data.questions.length}</p>
+					<p>Duration: {test.duration} minutes</p>
+					<p>Start Date: {formatDate(test.startDate)}</p>
+					<p>End Date: {formatDate(test.endDate)}</p>
+					<p>Questions: {test.questions.length}</p>
 					<StartPrompt
 						isOpen={modalState}
 						toggle={toggleModal}
 						onStartTest={onStartTest}
-						testDetails={data}
+						testDetails={test}
 					/>
 					<Button className="mt-8" disabled={!testIsValid} onClick={() => toggleModal(true)}>
-						Take Test
+						{existingTest ? 'Continue Test' : 'Take Test'}
 					</Button>
 				</div>
 			</Card>

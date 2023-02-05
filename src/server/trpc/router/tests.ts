@@ -123,6 +123,13 @@ export const testRouter = router({
 				},
 			});
 
-			return test;
+			const existingTest = await ctx.prisma.studentTest.findFirst({
+				where: {
+					...input,
+					userId: ctx.session.user.id,
+				},
+			});
+
+			return { test, existingTest };
 		}),
 });
