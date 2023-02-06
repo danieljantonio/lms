@@ -6,3 +6,7 @@ export const shuffleArray = (unshuffled: any[]) => {
 
 	return shuffled;
 };
+
+export const getScorePct = (score: number) => {
+	return (score * 100).toFixed(2);
+};

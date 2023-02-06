@@ -1,7 +1,7 @@
 import { MCQQuestion } from '@prisma/client';
 import { TRPCError } from '@trpc/server';
 import { z } from 'zod';
-import { shuffleArray } from '../../../lib/helpers/common.helpers';
+import { getScorePct, shuffleArray } from '../../../lib/helpers/common.helpers';
 import { protectedProcedure, router } from '../trpc';
 import date from 'date-and-time';
 
@@ -90,6 +90,24 @@ export const studentTestRouter = router({
 				},
 				data: {
 					chosenAnswerId: input.chosenAnswerId,
+				},
+			});
+
+			const answers = await ctx.prisma.questionsOnStudentTest.findMany({
+				where: {
+					studentTestId: input.studentTestId,
+				},
+				include: {
+					chosenAnswer: true,
+				},
+			});
+
+			await ctx.prisma.studentTest.update({
+				where: {
+					id: input.studentTestId,
+				},
+				data: {
+					score: getScorePct(answers.filter((ans) => ans.chosenAnswer?.isCorrect).length / answers.length),
 				},
 			});
 

@@ -118,7 +118,7 @@ model StudentTest {
   id            String     @id @default(cuid())
   test          Test?      @relation(fields: [testId], references: [id])
   testId        String?
-  score         Float?
+  score         String?
   startDate     DateTime   @default(now())
   endDate       DateTime
   submittedDate DateTime?
