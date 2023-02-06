@@ -3,7 +3,7 @@ import { NextPage } from 'next';
 import { useRouter } from 'next/router';
 import { useState } from 'react';
 import StartPrompt from '../../../../components/tests/start-prompt.tests';
-import { formatDate, validateTestIsOngoing } from '../../../../lib/helpers/date.helpers';
+import { formatDate, validateTestIsOngoing, validateTestIsOver } from '../../../../lib/helpers/date.helpers';
 import { trpc } from '../../../../lib/trpc';
 
 type ClassroomQueryProp = {
@@ -20,24 +20,32 @@ const TestDetails: NextPage = () => {
 
 	const takeTest = trpc.studentTest.create.useMutation({
 		onSuccess: () => {
-			redirectPage();
+			router.push(`/app/test/${testId}/take`);
 		},
 	});
-
-	const redirectPage = () => {
-		router.push(`/app/test/${testId}/take`);
-	};
 
 	if (isLoading) return <div>Loading...</div>;
 	if (!data) return <div>Test not found</div>;
 
 	const { test, existingTest } = data;
-	console.log(existingTest);
 
-	const testIsValid = validateTestIsOngoing(test.startDate, test.endDate);
+	const getButtonMessage = () => {
+		if (existingTest) {
+			if (validateTestIsOver(existingTest.endDate)) return { disabled: true, text: 'Test Over' };
+			if (existingTest.submittedDate) return { disabled: true, text: 'Test Submitted' };
+			return { disabled: false, text: 'Continue Test' };
+		}
+		if (validateTestIsOver(test.endDate)) return { disabled: true, text: 'Test overdue' };
+		return { disabled: false, text: 'Take test' };
+	};
 
 	const onStartTest = () => {
 		takeTest.mutate({ testId, classroomId: test.classroomId });
+	};
+
+	const onButtonClick = () => {
+		if (existingTest) router.push(`/app/test/${existingTest.testId}/take`);
+		else toggleModal(true);
 	};
 
 	return (
@@ -55,8 +63,8 @@ const TestDetails: NextPage = () => {
 						onStartTest={onStartTest}
 						testDetails={test}
 					/>
-					<Button className="mt-8" disabled={!testIsValid} onClick={() => toggleModal(true)}>
-						{existingTest ? 'Continue Test' : 'Take Test'}
+					<Button className="mt-8" disabled={getButtonMessage().disabled} onClick={onButtonClick}>
+						{getButtonMessage().text}
 					</Button>
 				</div>
 			</Card>
