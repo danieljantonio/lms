@@ -113,4 +113,19 @@ export const studentTestRouter = router({
 
 			return { updated: true, newPage: input.newPage };
 		}),
+	submit: protectedProcedure
+		.input(
+			z.object({
+				id: z.string(),
+			}),
+		)
+		.mutation(async ({ ctx, input }) => {
+			await ctx.prisma.studentTest.update({
+				where: { ...input },
+				data: {
+					submittedDate: new Date(),
+				},
+			});
+			return true;
+		}),
 });
