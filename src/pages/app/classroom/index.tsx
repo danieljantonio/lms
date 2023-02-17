@@ -8,7 +8,7 @@ import JoinClassModal from '../../../components/classroom/join-modal.classroom';
 import useAuth from '../../../lib/hooks/useAuth';
 import { trpc } from '../../../lib/trpc';
 
-const CLasses: NextPage = () => {
+const Classes: NextPage = () => {
 	const { data, isLoading } = trpc.classroom.getUserClassrooms.useQuery();
 	const router = useRouter();
 	const { role } = useAuth();
@@ -60,4 +60,4 @@ const CLasses: NextPage = () => {
 	);
 };
 
-export default CLasses;
+export default Classes;
