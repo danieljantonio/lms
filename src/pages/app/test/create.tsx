@@ -2,6 +2,7 @@ import { Button, Card, Label, Select, TextInput } from 'flowbite-react';
 import { NextPage } from 'next';
 import { useRouter } from 'next/router';
 import { useState } from 'react';
+import QCInputRequiredModal from '../../../components/modal/qc-input-required.modal';
 import QuestionInput from '../../../components/tests/question-input.tests';
 import { trpc } from '../../../lib/trpc';
 import { QuestionProps } from '../../../types/tests';
@@ -15,6 +16,7 @@ const CreateTest: NextPage = () => {
 	const [endDate, setEndDate] = useState<string>('');
 	const [classroomId, setClassroomId] = useState<string>('');
 	const [testDuration, setTestDuration] = useState<number>(0);
+	const [modalShow, setModalShow] = useState<boolean>(false);
 	const router = useRouter();
 
 	// tRPC
@@ -65,6 +67,16 @@ const CreateTest: NextPage = () => {
 
 	const create = () => {
 		if (isDisabled()) return;
+
+		const allowCreate = questions.every(
+			(q) => q.question !== '' && q.choices.some((c) => c.isCorrect) && q.choices.every((c) => c.answer !== ''),
+		);
+
+		if (!allowCreate) {
+			setModalShow(true);
+			return;
+		}
+
 		createTest.mutate({
 			testName,
 			startDate: new Date(startDate),
@@ -131,6 +143,7 @@ const CreateTest: NextPage = () => {
 			) : (
 				questions.map((question, index) => (
 					<QuestionInput
+						key={index}
 						updateQuestion={(question: QuestionProps) => {
 							updateQuestion(question, index);
 						}}
@@ -142,6 +155,8 @@ const CreateTest: NextPage = () => {
 					/>
 				))
 			)}
+
+			<QCInputRequiredModal show={modalShow} setClose={() => setModalShow(false)} />
 
 			<Button
 				disabled={createTest.isLoading}
