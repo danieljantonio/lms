@@ -16,20 +16,19 @@ const Classes: NextPage = () => {
 	const [modalIsOpen, toggleModalOpen] = useState<boolean>(false);
 
 	if (isLoading) return <div>Loading...</div>;
+	if (!data) return <div>No classroom data found</div>;
 
 	return (
-		<div className="flex flex-col justify-between">
-			{/* Allows teachers, principals, and admins to create class */}
-			{/* This renders the classes available/enrolled by the student */}
-			<div className="mb-6 text-2xl">Your Classes:</div>
-			<div className="flex gap-4">
-				{data?.length === 0 && <Card className="h-24 w-40 ">0 Classes</Card>}
-				{data?.map(({ classroom }) => (
+		<div className="flex w-full flex-col justify-between">
+			<p className="mb-6 text-2xl">My Classes:</p>
+			<div className="flex flex-col gap-4">
+				{data.length === 0 && <Card className="h-24 w-40">0 Classes</Card>}
+				{data.map(({ classroom }) => (
 					<Card
-						className="h-24 w-40 hover:cursor-pointer hover:bg-slate-100"
+						className="h-24 w-full hover:cursor-pointer hover:bg-slate-100"
 						key={classroom.id}
 						onClick={() => router.push(`/app/classroom/${classroom.code.toLowerCase()}`)}>
-						{classroom.name}
+						<p className="text-lg">{classroom.name}</p>
 					</Card>
 				))}
 			</div>
