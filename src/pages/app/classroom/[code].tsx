@@ -1,5 +1,7 @@
+import { Tabs } from 'flowbite-react';
 import { NextPage } from 'next';
 import { useRouter } from 'next/router';
+import StudentTable from '../../../components/classroom/student-table.classroom';
 import { trpc } from '../../../lib/trpc';
 
 type ClassroomQueryProp = {
@@ -10,18 +12,35 @@ const Classroom: NextPage = () => {
 	const router = useRouter();
 	const { code } = router.query as ClassroomQueryProp;
 
-	const { data, isLoading } = trpc.classroom.getClassroomData.useQuery({ code: code.toUpperCase() });
+	const { data: classroom, isLoading } = trpc.classroom.getClassroomData.useQuery({ code: code.toUpperCase() });
 
 	if (isLoading) return <div>Loading...</div>;
+	if (!classroom) return <div>No classroom data</div>;
 
 	return (
 		<div>
-			<div className="mb-6 text-2xl">{`${data?.name}`.toUpperCase()}</div>
+			<div className="mb-2 text-2xl">{`${classroom?.name}`.toUpperCase()}</div>
 			<div>
-				<p>Teacher: {data?.teacher?.name}</p>
-				{/* <p>
-					School: {data?.school.name} ({data?.school.code})
-				</p> */}
+				<Tabs.Group aria-label="Full width tabs" style="underline">
+					<Tabs.Item title="Home">
+						<p>Home</p>
+						<p>This will contain announcements</p>
+					</Tabs.Item>
+					<Tabs.Item title="Modules">
+						<p>Modules</p>
+						<p>This will contain the class modules / lessons</p>
+					</Tabs.Item>
+					<Tabs.Item title="Tests">
+						<p>Tests</p>
+						<p>This will show the tests</p>
+					</Tabs.Item>
+					<Tabs.Item title="Participants">
+						<StudentTable students={classroom.students} />
+					</Tabs.Item>
+					<Tabs.Item title="Settings" disabled>
+						<p className="text-xl mb-2">Teacher: {classroom.teacher.name}</p>
+					</Tabs.Item>
+				</Tabs.Group>
 			</div>
 		</div>
 	);

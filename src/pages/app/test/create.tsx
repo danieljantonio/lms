@@ -20,7 +20,7 @@ const CreateTest: NextPage = () => {
 	const router = useRouter();
 
 	// tRPC
-	const { data: classrooms, isLoading: loadingClassroom } = trpc.classroom.getUserClassrooms.useQuery();
+	const { data: classrooms, isLoading: loadingClassroom } = trpc.classroom.getClassrooms.useQuery();
 
 	const createTest = trpc.test.create.useMutation({
 		onSuccess(data) {

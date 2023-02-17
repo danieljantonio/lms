@@ -117,30 +117,19 @@ export const classRouter = router({
 				include: { user: true },
 			});
 
-			return { ...classroom, teacher: teacher?.user };
+			const students = await ctx.prisma.usersOnClassrooms.findMany({
+				where: { classroomId: classroom.id, classroomRole: 'STUDENT' },
+				include: { user: true },
+				orderBy: { classroomRole: 'asc' },
+			});
+
+			return { ...classroom, teacher: teacher.user, students: students.map((student) => student.user as User) };
 		}),
-	getUserClassrooms: protectedProcedure.query(async ({ ctx }) => {
+	getClassrooms: protectedProcedure.query(async ({ ctx }) => {
 		const classrooms = await ctx.prisma.usersOnClassrooms.findMany({
 			where: { userId: ctx.session.user.id },
 			include: { classroom: true },
 		});
 		return classrooms;
-	}),
-	getStudents: protectedProcedure.input(z.object({ classroomId: z.string() })).query(async ({ ctx, input }) => {
-		const students = await ctx.prisma.usersOnClassrooms.findMany({
-			where: {
-				...input,
-			},
-			include: {
-				user: true,
-			},
-			orderBy: {
-				classroomRole: 'desc',
-			},
-		});
-
-		console.log(students);
-
-		return students;
 	}),
 });

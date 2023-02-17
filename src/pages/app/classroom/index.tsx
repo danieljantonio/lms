@@ -9,11 +9,10 @@ import useAuth from '../../../lib/hooks/useAuth';
 import { trpc } from '../../../lib/trpc';
 
 const Classes: NextPage = () => {
-	const { data, isLoading } = trpc.classroom.getUserClassrooms.useQuery();
+	const { data, isLoading } = trpc.classroom.getClassrooms.useQuery();
 	const router = useRouter();
 	const { role } = useAuth();
 
-	const [showCreate, toggleCreate] = useState<boolean>(false);
 	const [modalIsOpen, toggleModalOpen] = useState<boolean>(false);
 
 	if (isLoading) return <div>Loading...</div>;
