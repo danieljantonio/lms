@@ -14,9 +14,10 @@ type Props = {
 		classroom: Classroom;
 	};
 	overdue?: Boolean;
+	grade?: string;
 };
 
-const TestCard: FC<Props> = ({ test, overdue = false }) => {
+const TestCard: FC<Props> = ({ test, overdue = false, grade }) => {
 	const router = useRouter();
 	return (
 		<Card
@@ -29,23 +30,31 @@ const TestCard: FC<Props> = ({ test, overdue = false }) => {
 				<p className="my-auto">
 					{test.name} - {test.classroom.name}
 				</p>
-				<div className="text-right">
-					{validateTestIsOver(test.endDate) && <div>Test overdue</div>}
-					{validateTestIsOngoing(test.startDate, test.endDate) && (
-						<div>
-							<p>
-								Due: {formatDate(test.endDate)} ({test.duration} minutes)
-							</p>
-						</div>
-					)}
-					{validateTestNotStarted(test.startDate) && (
-						<div>
-							<p>
-								Starts: {formatDate(test.startDate)} ({test.duration} minutes)
-							</p>
-						</div>
-					)}
-				</div>
+				{overdue ? (
+					grade ? (
+						<div className="text-right">Grade: {parseFloat(grade).toFixed(0)}/100</div>
+					) : (
+						<div className="text-right">Not Graded</div>
+					)
+				) : (
+					<div className="text-right">
+						{validateTestIsOver(test.endDate) && <div>Test overdue</div>}
+						{validateTestIsOngoing(test.startDate, test.endDate) && (
+							<div>
+								<p>
+									Due: {formatDate(test.endDate)} ({test.duration} minutes)
+								</p>
+							</div>
+						)}
+						{validateTestNotStarted(test.startDate) && (
+							<div>
+								<p>
+									Starts: {formatDate(test.startDate)} ({test.duration} minutes)
+								</p>
+							</div>
+						)}
+					</div>
+				)}
 			</div>
 		</Card>
 	);

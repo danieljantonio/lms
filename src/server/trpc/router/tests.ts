@@ -132,4 +132,49 @@ export const testRouter = router({
 
 			return { test, existingTest };
 		}),
+	getDashboardData: protectedProcedure.query(async ({ ctx }) => {
+		const studentClassrooms = await ctx.prisma.usersOnClassrooms.findMany({
+			where: {
+				userId: ctx.session.user.id,
+			},
+		});
+
+		const doneTests = await ctx.prisma.studentTest.findMany({
+			where: {
+				submittedDate: {
+					lt: new Date(),
+				},
+				test: {
+					classroomId: {
+						in: studentClassrooms.map((classroom) => classroom.classroomId),
+					},
+				},
+			},
+			include: {
+				test: {
+					include: {
+						classroom: true,
+					},
+				},
+			},
+		});
+
+		const tests = await ctx.prisma.test.findMany({
+			where: {
+				endDate: {
+					gt: new Date(),
+				},
+				classroomId: {
+					in: studentClassrooms.map((classroom) => classroom.classroomId),
+				},
+				id: {
+					notIn: doneTests.map((dTest) => dTest.testId as string),
+				},
+			},
+			include: {
+				classroom: true,
+			},
+		});
+		return { tests, doneTests };
+	}),
 });
