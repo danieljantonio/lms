@@ -126,4 +126,21 @@ export const classRouter = router({
 		});
 		return classrooms;
 	}),
+	getStudents: protectedProcedure.input(z.object({ classroomId: z.string() })).query(async ({ ctx, input }) => {
+		const students = await ctx.prisma.usersOnClassrooms.findMany({
+			where: {
+				...input,
+			},
+			include: {
+				user: true,
+			},
+			orderBy: {
+				classroomRole: 'desc',
+			},
+		});
+
+		console.log(students);
+
+		return students;
+	}),
 });
