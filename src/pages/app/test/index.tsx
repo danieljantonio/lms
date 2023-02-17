@@ -27,7 +27,7 @@ const Tests: NextPage = () => {
 			<div className="mt-6">
 				<div className="mt-4 text-xl">Ongoing Tests {data.ongoingTests && `(${data.ongoingTests.length})`}</div>
 				{data.ongoingTests.length > 0 ? (
-					data.ongoingTests.map((test) => <TestCard test={test} />)
+					data.ongoingTests.map((test) => <TestCard key={test.id} test={test} />)
 				) : (
 					<div className="mt-4 w-full rounded-md border p-10 text-center">No Ongoing Tests</div>
 				)}
@@ -36,14 +36,14 @@ const Tests: NextPage = () => {
 					Upcoming Tests {data.upcomingTests && `(${data.upcomingTests.length})`}
 				</div>
 				{data.upcomingTests.length > 0 ? (
-					data.upcomingTests.map((test) => <TestCard test={test} />)
+					data.upcomingTests.map((test) => <TestCard key={test.id} test={test} />)
 				) : (
 					<div className="mt-4 w-full rounded-md border p-10 text-center">No Upcoming Tests</div>
 				)}
 
 				<div className="mt-8 text-xl">Overdue Tests</div>
 				{data.overdueTests.length > 0 ? (
-					data.overdueTests.map((test) => <TestCard overdue test={test} />)
+					data.overdueTests.map((test) => <TestCard overdue key={test.id} test={test} />)
 				) : (
 					<div className="mt-4 w-full rounded-md border p-10 text-center">No Overdue Tests</div>
 				)}
