@@ -25,14 +25,14 @@ const Tests: NextPage = () => {
 				)}
 			</div>
 			<div className="mt-6">
-				<div className="mt-8 text-xl">Upcoming Tests {data.tests && `(${data.tests.length})`}</div>
+				<div className="mt-8 text-xl">Tests {data.tests && `(${data.tests.length})`}</div>
 				{data.tests.length > 0 ? (
 					data.tests.map((test) => <TestCard key={test.id} test={test} />)
 				) : (
 					<div className="mt-4 w-full rounded-md border p-10 text-center">No Upcoming Tests</div>
 				)}
 
-				<div className="mt-4 text-xl">Completed Tests {data.doneTests && `(${data.doneTests.length})`}</div>
+				<div className="mt-4 text-xl">Completed {data.doneTests && `(${data.doneTests.length})`}</div>
 				{data.doneTests.length > 0 ? (
 					data.doneTests.map(
 						(test) =>

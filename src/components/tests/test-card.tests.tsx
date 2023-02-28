@@ -16,7 +16,7 @@ const TestCard: FC<Props> = ({ test, overdue = false, grade }) => {
 	return (
 		<div
 			className={`mt-4 flex h-20 rounded-md border 
-			hover:cursor-pointer hover:bg-gray-100`}
+			hover:cursor-pointer hover:bg-gray-100 ${overdue && '!bg-gray-200 hover:cursor-not-allowed'}`}
 			onClick={() => {
 				if (!overdue) router.push(`/app/test/${test.id}`);
 			}}>
@@ -32,7 +32,7 @@ const TestCard: FC<Props> = ({ test, overdue = false, grade }) => {
 				<div className="m-auto flex w-full flex-col">
 					<p className="text-md font-semibold">{test.name}</p>
 					<p className="text-sm text-gray-400">
-						Due: <i>{date.format(test.endDate, 'D MMM')}</i>
+						Due: <i>{date.format(test.endDate, 'D MMM (hh:mmA)')}</i>
 					</p>
 				</div>
 				{grade && (
