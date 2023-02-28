@@ -1,13 +1,7 @@
 import { Classroom, Test } from '@prisma/client';
-import { Card } from 'flowbite-react';
 import { useRouter } from 'next/router';
 import { FC } from 'react';
-import {
-	formatDate,
-	validateTestIsOngoing,
-	validateTestIsOver,
-	validateTestNotStarted,
-} from '../../lib/helpers/date.helpers';
+import date from 'date-and-time';
 
 type Props = {
 	test: Test & {
@@ -20,43 +14,34 @@ type Props = {
 const TestCard: FC<Props> = ({ test, overdue = false, grade }) => {
 	const router = useRouter();
 	return (
-		<Card
-			className={`${overdue && '!bg-gray-100 !shadow-none'} mt-4 hover:cursor-pointer
-			hover:bg-gray-200`}
+		<div
+			className={`mt-4 flex h-20 rounded-md border 
+			hover:cursor-pointer hover:bg-gray-100`}
 			onClick={() => {
 				if (!overdue) router.push(`/app/test/${test.id}`);
 			}}>
-			<div className="flex justify-between">
-				<p className="my-auto">
-					{test.name} - {test.classroom.name}
-				</p>
-				{overdue ? (
-					grade ? (
-						<div className="text-right">Grade: {parseFloat(grade).toFixed(0)}/100</div>
-					) : (
-						<div className="text-right">Not Graded</div>
-					)
-				) : (
-					<div className="text-right">
-						{validateTestIsOver(test.endDate) && <div>Test overdue</div>}
-						{validateTestIsOngoing(test.startDate, test.endDate) && (
-							<div>
-								<p>
-									Due: {formatDate(test.endDate)} ({test.duration} minutes)
-								</p>
-							</div>
-						)}
-						{validateTestNotStarted(test.startDate) && (
-							<div>
-								<p>
-									Starts: {formatDate(test.startDate)} ({test.duration} minutes)
-								</p>
-							</div>
-						)}
-					</div>
+			<div className="mx-auto flex min-w-20 border-r-2 bg-gray-50 py-2">
+				<div className="m-auto flex w-full flex-col items-center">
+					<p className=" -mb-1 px-6 text-3xl font-semibold">{date.format(test.startDate, 'D')}</p>
+					<p className="px-6 text-sm font-semibold uppercase text-gray-500">
+						{date.format(test.startDate, 'MMM')}
+					</p>
+				</div>
+			</div>
+			<div className="my-auto flex w-full px-6">
+				<div className="m-auto flex w-full flex-col">
+					<p className="text-md font-semibold">{test.name}</p>
+					<p className="text-sm text-gray-400">
+						Due: <i>{date.format(test.endDate, 'D MMM')}</i>
+					</p>
+				</div>
+				{grade && (
+					<p className="float-right my-auto h-fit min-w-fit">
+						Grade: <i className="font-semibold text-gray-700">{parseFloat(grade).toFixed(0)}</i>
+					</p>
 				)}
 			</div>
-		</Card>
+		</div>
 	);
 };
 

@@ -5,6 +5,7 @@ module.exports = {
 		extend: {
 			minWidth: {
 				sidebar: '16rem',
+				20: '5rem',
 			},
 			height: {
 				fullbar: 'calc(100vh - 50px)',
