@@ -2,6 +2,7 @@ import { Tabs } from 'flowbite-react';
 import { NextPage } from 'next';
 import { useRouter } from 'next/router';
 import StudentTable from '../../../components/classroom/student-table.classroom';
+import ClassTests from '../../../components/classroom/test.classroom';
 import { trpc } from '../../../lib/trpc';
 
 type ClassroomQueryProp = {
@@ -31,8 +32,7 @@ const Classroom: NextPage = () => {
 						<p>This will contain the class modules / lessons</p>
 					</Tabs.Item>
 					<Tabs.Item title="Tests">
-						<p>Tests</p>
-						<p>This will show the tests</p>
+						<ClassTests />
 					</Tabs.Item>
 					<Tabs.Item title="Participants">
 						<StudentTable students={classroom.students} />
