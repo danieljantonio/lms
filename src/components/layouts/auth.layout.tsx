@@ -87,13 +87,15 @@ const AuthLayout: FC<PropsWithChildren<Props>> = ({ children }) => {
 									)}
 								</Sidebar.Collapse>
 							)}
-							<Sidebar.Item href={getNewRoute('test')} icon={PencilSquareIcon} label="3">
-								{role === 'STUDENT' ? 'Your' : 'Manage'} Tests
-							</Sidebar.Item>
 							{role !== 'STUDENT' && (
-								<Sidebar.Item href={getNewRoute('students')} icon={UsersIcon} label="40">
-									Manage Students
-								</Sidebar.Item>
+								<>
+									<Sidebar.Item href={getNewRoute('test')} icon={PencilSquareIcon} label="3">
+										Manage Tests
+									</Sidebar.Item>
+									{/* <Sidebar.Item href={getNewRoute('students')} icon={UsersIcon} label="40">
+										Manage Students
+									</Sidebar.Item> */}
+								</>
 							)}
 						</Sidebar.ItemGroup>
 					</Sidebar.Items>
