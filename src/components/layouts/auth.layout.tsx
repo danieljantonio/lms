@@ -1,5 +1,5 @@
 import React, { FC, PropsWithChildren } from 'react';
-import { Card, Dropdown, Navbar, Sidebar } from 'flowbite-react';
+import { Card, Dropdown, Navbar, Sidebar, Spinner } from 'flowbite-react';
 import {
 	ViewColumnsIcon,
 	UserGroupIcon,
@@ -11,6 +11,7 @@ import useAuth from '../../lib/hooks/useAuth';
 import { signOut } from 'next-auth/react';
 import { useCustomRoute } from '../../lib/hooks/useCustomRoute';
 import { useRouter } from 'next/router';
+import { trpc } from '../../lib/trpc';
 
 interface Props {
 	active?: string;
@@ -21,6 +22,7 @@ const AuthLayout: FC<PropsWithChildren<Props>> = ({ children }) => {
 
 	const { basePath, getNewRoute } = useCustomRoute();
 	const router = useRouter();
+	const { data, isLoading: classroomIsLoading } = trpc.classroom.getClassrooms.useQuery();
 
 	if (isLoading) return <div>Loading...</div>;
 
@@ -60,9 +62,31 @@ const AuthLayout: FC<PropsWithChildren<Props>> = ({ children }) => {
 									Manage School
 								</Sidebar.Item>
 							) : null}
-							<Sidebar.Item href={getNewRoute('classroom')} icon={UserGroupIcon} label="2">
-								{role === 'STUDENT' ? 'Your' : 'Manage'} Classes
-							</Sidebar.Item>
+							{role === 'TEACHER' && (
+								<Sidebar.Item href={getNewRoute('classroom')} icon={UserGroupIcon} label="2">
+									Your Classes
+								</Sidebar.Item>
+							)}
+							{role === 'STUDENT' && (
+								<Sidebar.Collapse icon={UserGroupIcon} label="Your Classes">
+									{classroomIsLoading ? (
+										<Spinner />
+									) : (
+										<>
+											{!data ||
+												(data.length === 0 && <Sidebar.Item>No Class Joined</Sidebar.Item>)}
+											{data &&
+												data.map(({ classroom }) => (
+													<Sidebar.Item
+														key={classroom.code}
+														href={getNewRoute(`classroom/${classroom.code}`)}>
+														{classroom.name}
+													</Sidebar.Item>
+												))}
+										</>
+									)}
+								</Sidebar.Collapse>
+							)}
 							<Sidebar.Item href={getNewRoute('test')} icon={PencilSquareIcon} label="3">
 								{role === 'STUDENT' ? 'Your' : 'Manage'} Tests
 							</Sidebar.Item>
