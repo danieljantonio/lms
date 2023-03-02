@@ -35,7 +35,7 @@ const Classroom: NextPage = () => {
 						<ClassTests />
 					</Tabs.Item>
 					<Tabs.Item title="Participants">
-						<StudentTable students={classroom.students} />
+						<StudentTable users={classroom.users} />
 					</Tabs.Item>
 					<Tabs.Item title="Settings" disabled>
 						<p className="text-xl mb-2">Teacher: {classroom.teacher.name}</p>
