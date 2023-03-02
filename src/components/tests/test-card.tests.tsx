@@ -16,7 +16,7 @@ const TestCard: FC<Props> = ({ test, overdue = false, grade }) => {
 	return (
 		<div
 			className={`mt-4 flex h-20 rounded-md border 
-			hover:cursor-pointer hover:bg-gray-100 ${overdue && '!bg-gray-200 hover:cursor-not-allowed'}`}
+			hover:cursor-pointer hover:shadow-lg ${overdue && '!bg-gray-100 hover:cursor-not-allowed'}`}
 			onClick={() => {
 				if (!overdue) router.push(`/app/test/${test.id}`);
 			}}>
