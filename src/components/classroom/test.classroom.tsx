@@ -1,4 +1,5 @@
-import { Card } from 'flowbite-react';
+import { PlusSmallIcon } from '@heroicons/react/24/solid';
+import { Button, Card } from 'flowbite-react';
 import { useRouter } from 'next/router';
 import { FC } from 'react';
 import useAuth from '../../lib/hooks/useAuth';
@@ -7,6 +8,7 @@ import TestCard from '../tests/test-card.tests';
 
 const ClassTests: FC = () => {
 	const router = useRouter();
+	const { code } = router.query;
 	const { data, isLoading } = trpc.test.getDashboardData.useQuery();
 	const { role } = useAuth();
 
@@ -16,12 +18,12 @@ const ClassTests: FC = () => {
 	return (
 		<div className="flex flex-col">
 			{role !== 'STUDENT' && (
-				<div className="flex gap-8">
-					<Card
-						className="w-44 items-center hover:cursor-pointer hover:bg-gray-200"
-						onClick={() => router.push('/app/test/create')}>
+				<div className="flex gap-8 mb-4">
+					<Button
+						onClick={() => router.push(`/app/test/create?classroom=${code}`)}
+						className="absolute bottom-5 right-5">
 						Create New Test
-					</Card>
+					</Button>
 				</div>
 			)}
 			<div className="text-xl">Tests {data.tests && `(${data.tests.length})`}</div>
