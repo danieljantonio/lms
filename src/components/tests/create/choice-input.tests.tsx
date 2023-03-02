@@ -1,6 +1,6 @@
 import { CheckIcon, XMarkIcon } from '@heroicons/react/24/solid';
 import { FC, useState } from 'react';
-import { ChoiceInputProps } from '../../types/tests';
+import { ChoiceInputProps } from '../../../types/tests';
 
 const ChoiceInput: FC<ChoiceInputProps> = ({ data, setAnswer, removeChoice }) => {
 	const [answer, _setAnswer] = useState<string>(data.answer);

@@ -1,7 +1,7 @@
 import { User } from '@prisma/client';
 import { Table } from 'flowbite-react';
 import { FC } from 'react';
-import useAuth from '../../lib/hooks/useAuth';
+import useAuth from '../../../lib/hooks/useAuth';
 
 type Props = {
 	users: User[];

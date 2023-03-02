@@ -1,8 +1,8 @@
 import { XMarkIcon } from '@heroicons/react/24/solid';
 import { Button, Card, TextInput } from 'flowbite-react';
 import { FC, useEffect, useState } from 'react';
-import { ChoiceData, ChoiceProps, QuestionInputProps } from '../../types/tests';
-import ChoiceInput from './choice-input.tests';
+import { ChoiceData, ChoiceProps, QuestionInputProps } from '../../../types/tests';
+import ChoiceInput from '../create/choice-input.tests';
 
 const QuestionInput: FC<QuestionInputProps> = ({ index, updateQuestion, data, removeQuestion }) => {
 	const [question, setQuestion] = useState<string>(data?.question || '');

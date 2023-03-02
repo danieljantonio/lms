@@ -4,7 +4,7 @@ import { useRouter } from 'next/router';
 import { FC } from 'react';
 import useAuth from '../../lib/hooks/useAuth';
 import { trpc } from '../../lib/trpc';
-import TestCard from '../tests/test-card.tests';
+import TestCard from '../tests/common/test-card.tests';
 
 const ClassTests: FC = () => {
 	const router = useRouter();

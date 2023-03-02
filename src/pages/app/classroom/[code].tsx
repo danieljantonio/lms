@@ -1,7 +1,7 @@
 import { Tabs } from 'flowbite-react';
 import { NextPage } from 'next';
 import { useRouter } from 'next/router';
-import StudentTable from '../../../components/classroom/student-table.classroom';
+import StudentTable from '../../../components/classroom/common/student-table.classroom';
 import ClassTests from '../../../components/classroom/test.classroom';
 import { trpc } from '../../../lib/trpc';
 

@@ -3,8 +3,8 @@ import { Button, Card } from 'flowbite-react';
 import { NextPage } from 'next';
 import { useRouter } from 'next/router';
 import { useState } from 'react';
-import CreateClassModal from '../../../components/classroom/create-modal.classroom';
-import JoinClassModal from '../../../components/classroom/join-modal.classroom';
+import CreateClassModal from '../../../components/classroom/common/create-modal.classroom';
+import JoinClassModal from '../../../components/classroom/common/join-modal.classroom';
 import useAuth from '../../../lib/hooks/useAuth';
 import { trpc } from '../../../lib/trpc';
 

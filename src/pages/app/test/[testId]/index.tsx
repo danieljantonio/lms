@@ -2,8 +2,8 @@ import { Button, Card } from 'flowbite-react';
 import { NextPage } from 'next';
 import { useRouter } from 'next/router';
 import { useState } from 'react';
-import StartPrompt from '../../../../components/tests/start-prompt.tests';
-import { formatDate, validateTestIsOngoing, validateTestIsOver } from '../../../../lib/helpers/date.helpers';
+import StartPrompt from '../../../../components/tests/common/start-prompt.tests';
+import { formatDate, validateTestIsOver } from '../../../../lib/helpers/date.helpers';
 import { trpc } from '../../../../lib/trpc';
 
 type ClassroomQueryProp = {

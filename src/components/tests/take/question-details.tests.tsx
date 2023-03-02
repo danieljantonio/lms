@@ -1,6 +1,6 @@
 import { FC, useState } from 'react';
-import { trpc } from '../../lib/trpc';
-import ChoiceCard from './choice-card.tests';
+import { trpc } from '../../../lib/trpc';
+import ChoiceCard from '../create/choice-card.tests';
 
 type QuestionDetailsProps = {
 	questionId: string;

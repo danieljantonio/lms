@@ -2,8 +2,8 @@ import { Button, Card, Label, Select, TextInput } from 'flowbite-react';
 import { NextPage } from 'next';
 import { useRouter } from 'next/router';
 import { useState } from 'react';
-import QCInputRequiredModal from '../../../components/modal/qc-input-required.modal';
-import QuestionInput from '../../../components/tests/question-input.tests';
+import QCInputRequiredModal from '../../../components/tests/common/qc-input-required.modal';
+import QuestionInput from '../../../components/tests/take/question-input.tests';
 import { trpc } from '../../../lib/trpc';
 import { QuestionProps } from '../../../types/tests';
 

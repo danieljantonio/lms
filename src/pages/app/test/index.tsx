@@ -1,6 +1,6 @@
 import { NextPage } from 'next';
 import { useRouter } from 'next/router';
-import TestCard from '../../../components/tests/test-card.tests';
+import TestCard from '../../../components/tests/common/test-card.tests';
 import useAuth from '../../../lib/hooks/useAuth';
 import { trpc } from '../../../lib/trpc';
 

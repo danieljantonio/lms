@@ -2,8 +2,8 @@ import { PlusSmallIcon } from '@heroicons/react/24/solid';
 import { Button } from 'flowbite-react';
 import { type NextPage } from 'next';
 import { useState } from 'react';
-import CreateClassModal from '../../components/classroom/create-modal.classroom';
-import JoinClassModal from '../../components/classroom/join-modal.classroom';
+import CreateClassModal from '../../components/classroom/common/create-modal.classroom';
+import JoinClassModal from '../../components/classroom/common/join-modal.classroom';
 import useAuth from '../../lib/hooks/useAuth';
 
 const App: NextPage = () => {
