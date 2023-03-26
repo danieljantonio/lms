@@ -22,7 +22,9 @@ const AuthLayout: FC<PropsWithChildren<Props>> = ({ children }) => {
 
 	const { basePath, getNewRoute } = useCustomRoute();
 	const router = useRouter();
-	const { data, isLoading: classroomIsLoading } = trpc.classroom.getClassrooms.useQuery();
+	const { data, isLoading: classroomIsLoading } = trpc.classroom.getClassrooms.useQuery(undefined, {
+		refetchOnWindowFocus: false,
+	});
 
 	if (isLoading) return <div>Loading...</div>;
 

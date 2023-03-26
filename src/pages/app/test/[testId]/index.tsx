@@ -16,7 +16,7 @@ const TestDetails: NextPage = () => {
 	const router = useRouter();
 	const { testId } = router.query as ClassroomQueryProp;
 
-	const { data, isLoading } = trpc.test.getTestById.useQuery({ testId });
+	const { data, isLoading } = trpc.test.getTestById.useQuery({ testId }, { refetchOnWindowFocus: false });
 
 	const takeTest = trpc.studentTest.create.useMutation({
 		onSuccess: () => {

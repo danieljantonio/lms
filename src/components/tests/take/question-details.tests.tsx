@@ -9,10 +9,13 @@ type QuestionDetailsProps = {
 };
 
 const QuestionDetails: FC<QuestionDetailsProps> = ({ questionId, selectedAnswer, studentTestId }) => {
-	const { data, isLoading: loadingQuestion } = trpc.question.getById.useQuery({
-		questionId,
-		studentTestId,
-	});
+	const { data, isLoading: loadingQuestion } = trpc.question.getById.useQuery(
+		{
+			questionId,
+			studentTestId,
+		},
+		{ refetchOnWindowFocus: false },
+	);
 
 	const [selectedId, setSelected] = useState<string>();
 

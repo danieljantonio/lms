@@ -9,7 +9,7 @@ import useAuth from '../../../lib/hooks/useAuth';
 import { trpc } from '../../../lib/trpc';
 
 const Classes: NextPage = () => {
-	const { data, isLoading } = trpc.classroom.getClassrooms.useQuery();
+	const { data, isLoading } = trpc.classroom.getClassrooms.useQuery(undefined, { refetchOnWindowFocus: false });
 	const router = useRouter();
 	const { role } = useAuth();
 

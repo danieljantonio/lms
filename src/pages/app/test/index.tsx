@@ -6,7 +6,7 @@ import { trpc } from '../../../lib/trpc';
 
 const Tests: NextPage = () => {
 	const router = useRouter();
-	const { data, isLoading } = trpc.test.getDashboardData.useQuery();
+	const { data, isLoading } = trpc.test.getDashboardData.useQuery(undefined, { refetchOnWindowFocus: false });
 	const { role } = useAuth();
 
 	if (isLoading) return <div>Loading...</div>;

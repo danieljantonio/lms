@@ -9,7 +9,7 @@ import TestCard from '../tests/common/test-card.tests';
 const ClassTests: FC = () => {
 	const router = useRouter();
 	const { code } = router.query;
-	const { data, isLoading } = trpc.test.getDashboardData.useQuery();
+	const { data, isLoading } = trpc.test.getDashboardData.useQuery(undefined, { refetchOnWindowFocus: false });
 	const { role } = useAuth();
 
 	if (isLoading) return <div>Loading...</div>;

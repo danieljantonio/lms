@@ -17,8 +17,11 @@ const TakeTest: NextPage = () => {
 	const { testId } = router.query as ClassroomQueryProp;
 
 	const trpcUtil = trpc.useContext();
-	const { data: testData, isLoading: testIsLoading } = trpc.test.getTestById.useQuery({ testId });
-	const { data, isLoading } = trpc.studentTest.get.useQuery({ testId });
+	const { data: testData, isLoading: testIsLoading } = trpc.test.getTestById.useQuery(
+		{ testId },
+		{ refetchOnWindowFocus: false },
+	);
+	const { data, isLoading } = trpc.studentTest.get.useQuery({ testId }, { refetchOnWindowFocus: false });
 	const answerQuestion = trpc.studentTest.answer.useMutation({
 		onSuccess: (data) => {
 			setSelected(undefined); // set the selected to

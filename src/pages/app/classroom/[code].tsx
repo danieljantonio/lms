@@ -13,7 +13,10 @@ const Classroom: NextPage = () => {
 	const router = useRouter();
 	const { code } = router.query as ClassroomQueryProp;
 
-	const { data: classroom, isLoading } = trpc.classroom.getClassroomData.useQuery({ code: code.toUpperCase() });
+	const { data: classroom, isLoading } = trpc.classroom.getClassroomData.useQuery(
+		{ code: code.toUpperCase() },
+		{ refetchOnWindowFocus: false },
+	);
 
 	if (isLoading) return <div>Loading...</div>;
 	if (!classroom) return <div>No classroom data</div>;
