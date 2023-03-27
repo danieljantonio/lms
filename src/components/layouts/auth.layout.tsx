@@ -22,9 +22,9 @@ const AuthLayout: FC<PropsWithChildren<Props>> = ({ children }) => {
 
 	const { basePath, getNewRoute } = useCustomRoute();
 	const router = useRouter();
-	const { data, isLoading: classroomIsLoading } = trpc.classroom.getClassrooms.useQuery(undefined, {
-		refetchOnWindowFocus: false,
-	});
+	// const { data, isLoading: classroomIsLoading } = trpc.classroom.getClassrooms.useQuery(undefined, {
+	// 	refetchOnWindowFocus: false,
+	// });
 
 	if (isLoading) return <div>Loading...</div>;
 
@@ -71,7 +71,7 @@ const AuthLayout: FC<PropsWithChildren<Props>> = ({ children }) => {
 							)}
 							{role === 'STUDENT' && (
 								<Sidebar.Collapse icon={UserGroupIcon} label="Your Classes">
-									{classroomIsLoading ? (
+									{/* {classroomIsLoading ? (
 										<Spinner />
 									) : (
 										<>
@@ -86,7 +86,7 @@ const AuthLayout: FC<PropsWithChildren<Props>> = ({ children }) => {
 													</Sidebar.Item>
 												))}
 										</>
-									)}
+									)} */}
 								</Sidebar.Collapse>
 							)}
 							{role !== 'STUDENT' && (
