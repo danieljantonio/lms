@@ -7,12 +7,17 @@ import { prisma } from '../../../server/db/client';
 
 export const authOptions: NextAuthOptions = {
 	session: { strategy: 'jwt' },
+	secret: process.env.NEXTAUTH_SECRET,
 	adapter: PrismaAdapter(prisma),
 	providers: [
 		CredentialsProvider({
 			name: 'Credentials',
 			credentials: {
-				username: { label: 'Username', type: 'text', placeholder: 'Andy Smith' },
+				username: {
+					label: 'Username',
+					type: 'text',
+					placeholder: 'Andy Smith',
+				},
 				password: { label: 'Password', type: 'password' },
 			},
 			authorize: async (credentials, req) => {
@@ -20,7 +25,9 @@ export const authOptions: NextAuthOptions = {
 					username: string;
 					password: string;
 				};
-				const user = await prisma.user.findFirstOrThrow({ where: { username, password } });
+				const user = await prisma.user.findFirstOrThrow({
+					where: { username, password },
+				});
 				if (!user) {
 					return null;
 				}
@@ -36,7 +43,9 @@ export const authOptions: NextAuthOptions = {
 	callbacks: {
 		async session({ session, token }) {
 			if (session.user) {
-				const user = await prisma.user.findUniqueOrThrow({ where: { id: token.sub } });
+				const user = await prisma.user.findUniqueOrThrow({
+					where: { id: token.sub },
+				});
 
 				session.user.id = user.id;
 				session.user.role = user.role;
