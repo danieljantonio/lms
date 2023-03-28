@@ -22,11 +22,9 @@ export const authOptions: NextAuthOptions = {
 				};
 				const user = await prisma.user.findFirstOrThrow({ where: { username, password } });
 				if (!user) {
-					console.log('\nauthorize: no-user');
 					return null;
 				}
 
-				console.log('\nauthorize', user);
 				return user;
 			},
 		}),
@@ -46,8 +44,6 @@ export const authOptions: NextAuthOptions = {
 				if (user.schoolId) session.user.schoolId = user.schoolId;
 			}
 
-			console.log(`\nsession:session`, session);
-			console.log('\nsession:token', token);
 			return session;
 		},
 	},
