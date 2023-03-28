@@ -1,17 +1,11 @@
 import { z } from 'zod';
-import { router, publicProcedure, protectedProcedure } from '../trpc';
+import { router, publicProcedure } from '../trpc';
 
 export const authRouter = router({
-	getSession: publicProcedure.query(({ ctx }) => {
-		return ctx.session;
-	}),
-	getSecretMessage: protectedProcedure.query(() => {
-		return 'You are logged in and can see this secret message!';
-	}),
 	createUser: publicProcedure
 		.input(
 			z.object({
-				name: z.string(),
+				name: z.string().optional(),
 				username: z.string(),
 				password: z.string(),
 			}),
