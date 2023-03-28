@@ -1,36 +1,52 @@
-import NextAuth, { Session, type NextAuthOptions } from 'next-auth';
-import GoogleProvider from 'next-auth/providers/google';
+import NextAuth, { type NextAuthOptions } from 'next-auth';
+import CredentialsProvider from 'next-auth/providers/credentials';
 // Prisma adapter for NextAuth, optional and can be removed
 import { PrismaAdapter } from '@next-auth/prisma-adapter';
 
-import { env } from '../../../lib/env/server.mjs';
 import { prisma } from '../../../server/db/client';
-import { User } from '@prisma/client';
 
 export const authOptions: NextAuthOptions = {
-	// Include user.id on session
-	callbacks: {
-		session({ session, user }) {
-			if (session.user) {
-				let _user = user as User;
-				session.user.id = user.id;
-				session.user.role = _user.role;
-				if (_user.schoolId) {
-					session.user.schoolId = _user.schoolId;
+	session: { strategy: 'jwt' },
+	adapter: PrismaAdapter(prisma),
+	providers: [
+		CredentialsProvider({
+			name: 'Credentials',
+			credentials: {
+				username: { label: 'Username', type: 'text', placeholder: 'Andy Smith' },
+				password: { label: 'Password', type: 'password' },
+			},
+			authorize: async (credentials, req) => {
+				const { username, password } = credentials as {
+					username: string;
+					password: string;
+				};
+				const user = await prisma.user.findFirstOrThrow({ where: { username, password } });
+				if (!user) {
+					return null;
 				}
+
+				return user;
+			},
+		}),
+	],
+	pages: {
+		signIn: '/auth/signin',
+		newUser: '/auth/signiup',
+	},
+	callbacks: {
+		async session({ session, token }) {
+			if (session.user) {
+				const user = await prisma.user.findUniqueOrThrow({ where: { id: token.sub } });
+
+				session.user.id = user.id;
+				session.user.role = user.role;
+				session.user.username = user.username;
+				if (user.schoolId) session.user.schoolId = user.schoolId;
 			}
+
 			return session;
 		},
 	},
-	// Configure one or more authentication providers
-	adapter: PrismaAdapter(prisma),
-	providers: [
-		GoogleProvider({
-			clientId: env.GOOGLE_CLIENT_ID,
-			clientSecret: env.GOOGLE_CLIENT_SECRET,
-		}),
-		// ...add more providers here
-	],
 };
 
 export default NextAuth(authOptions);
