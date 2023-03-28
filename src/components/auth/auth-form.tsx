@@ -122,7 +122,7 @@ const FormItem: FC<FormItemProps> = ({
 			<input
 				type={type}
 				placeholder={placeholder}
-				className="input input-bordered w-full w-full"
+				className="input input-bordered w-full"
 				{...register(field)}
 			/>
 		</div>
