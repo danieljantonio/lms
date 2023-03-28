@@ -5,6 +5,7 @@ import { Button } from 'flowbite-react';
 import { useRouter } from 'next/router';
 import Link from 'next/link';
 import CommonLayout from '../components/layouts/common.layout';
+import { signIn } from 'next-auth/react';
 
 const Home: NextPage = () => {
 	const { isAuthenticated, user } = useAuth();
@@ -27,9 +28,10 @@ const Home: NextPage = () => {
 						<p className="text-5xl">Creating a simple, efficient, and</p>
 						<p className="text-5xl">secure learning environment.</p>
 					</div>
-					<Link href="/auth" className="rounded-md bg-blue-700 py-2 px-6 text-white hover:bg-blue-800">
+					<Button onClick={() => signIn()}>Sign In</Button>
+					{/* <Link href="/auth" className="rounded-md bg-blue-700 py-2 px-6 text-white hover:bg-blue-800">
 						Join Ignosi
-					</Link>
+					</Link> */}
 				</div>
 			</CommonLayout>
 		</>

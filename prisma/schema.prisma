@@ -30,6 +30,7 @@ model Account {
   user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([provider, providerAccountId])
+  @@index([userId, providerAccountId])
 }
 
 model Session {
@@ -38,21 +39,24 @@ model Session {
   userId       String
   expires      DateTime
   user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
 }
 
 model User {
-  id            String              @id @default(cuid())
-  name          String?
-  email         String?             @unique
-  emailVerified DateTime?
-  image         String?
-  accounts      Account[]
-  sessions      Session[]
-  schoolId      String?
-  school        School?             @relation(fields: [schoolId], references: [id])
-  classrooms    UsersOnClassrooms[]
-  role          Role                @default(STUDENT)
-  studentTest   StudentTest[]
+  id          String              @id @default(cuid())
+  name        String?
+  username    String
+  password    String
+  accounts    Account[]
+  sessions    Session[]
+  schoolId    String?
+  school      School?             @relation(fields: [schoolId], references: [id])
+  classrooms  UsersOnClassrooms[]
+  role        Role                @default(STUDENT)
+  studentTest StudentTest[]
+
+  @@index([schoolId])
 }
 
 model VerificationToken {
@@ -79,7 +83,9 @@ model Classroom {
   schoolId String
   school   School              @relation(fields: [schoolId], references: [id], onDelete: Cascade)
   users    UsersOnClassrooms[]
-  test     Test[]
+  test     TestTemplate[]
+
+  @@index([schoolId])
 }
 
 model UsersOnClassrooms {
@@ -89,54 +95,67 @@ model UsersOnClassrooms {
   userId        String
   classroomRole Role      @default(STUDENT)
 
-  @@id([classroomId, userId])
+  @@unique([classroomId, userId], map: "usersOnClassroomsId")
+  @@index([classroomId, userId])
 }
 
 // Tests
-model Test {
+model TestTemplate {
   id          String        @id @default(cuid())
   name        String
-  questions   MCQQuestion[]
+  questions   Question[]
   classroom   Classroom     @relation(fields: [classroomId], references: [id], onDelete: Cascade)
   classroomId String
   startDate   DateTime
   endDate     DateTime
   duration    Int
   studentTest StudentTest[]
+
+  @@index([classroomId])
+  @@map("testTemplates")
 }
 
 model StudentTest {
-  id            String     @id @default(cuid())
-  test          Test?      @relation(fields: [testId], references: [id])
-  testId        String?
-  score         String?
-  startDate     DateTime   @default(now())
-  endDate       DateTime
-  submittedDate DateTime?
-  userId        String
-  user          User       @relation(fields: [userId], references: [id], onDelete: Cascade)
-  status        TestStatus @default(InProgress)
+  id             String        @id @default(cuid())
+  testTemplate   TestTemplate? @relation(fields: [testTemplateId], references: [id])
+  testTemplateId String?
+  score          String?
+  startDate      DateTime      @default(now())
+  endDate        DateTime
+  submittedDate  DateTime?
+  userId         String
+  user           User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  status         TestStatus    @default(InProgress)
 
   questions QuestionsOnStudentTest[]
+
+  @@index([testTemplateId, userId])
+  @@map("studentTest")
 }
 
-model MCQQuestion {
+model Question {
   id                     String                   @id @default(cuid())
   questionNo             Int
   question               String
-  choices                MCQChoice[]
-  test                   Test?                    @relation(fields: [testId], references: [id])
-  testId                 String?
+  choices                Choice[]
+  test                   TestTemplate?            @relation(fields: [testTemplateId], references: [id])
+  testTemplateId         String?
   questionsOnStudentTest QuestionsOnStudentTest[]
+
+  @@index([testTemplateId])
+  @@map("questions")
 }
 
-model MCQChoice {
+model Choice {
   id                     String                   @id @default(cuid())
   answer                 String
   isCorrect              Boolean
-  question               MCQQuestion?             @relation(fields: [questionId], references: [id], onDelete: Cascade)
+  question               Question?                @relation(fields: [questionId], references: [id], onDelete: Cascade)
   questionId             String?
   questionsOnStudentTest QuestionsOnStudentTest[]
+
+  @@index([questionId])
+  @@map("choices")
 }
 
 model QuestionsOnStudentTest {
@@ -145,16 +164,16 @@ model QuestionsOnStudentTest {
   studentTest   StudentTest @relation(fields: [studentTestId], references: [id], onDelete: Cascade)
   studentTestId String
 
-  question   MCQQuestion @relation(fields: [questionId], references: [id], onDelete: Cascade)
+  question   Question @relation(fields: [questionId], references: [id], onDelete: Cascade)
   questionId String
 
   // This indicates the answer chosen by the student.
-  chosenAnswer   MCQChoice? @relation(fields: [chosenAnswerId], references: [id])
+  chosenAnswer   Choice? @relation(fields: [chosenAnswerId], references: [id])
   chosenAnswerId String?
 
-  @@id([questionId, studentTestId])
+  @@unique([questionId, studentTestId], map: "questionOnStudentTestId")
+  @@index([questionId, studentTestId, chosenAnswerId])
 }
-
 
 // Enums
 enum TestStatus {
