@@ -4,6 +4,7 @@ import CredentialsProvider from 'next-auth/providers/credentials';
 import { PrismaAdapter } from '@next-auth/prisma-adapter';
 
 import { prisma } from '../../../server/db/client';
+import { comparePassword } from '../../../server/trpc/router/auth';
 
 export const authOptions: NextAuthOptions = {
 	session: { strategy: 'jwt' },
@@ -26,11 +27,15 @@ export const authOptions: NextAuthOptions = {
 					password: string;
 				};
 				const user = await prisma.user.findFirstOrThrow({
-					where: { username, password },
+					where: { username },
 				});
-				if (!user) {
+
+				if (!user) return null;
+
+				if (!(await comparePassword(password, user.password)))
 					return null;
-				}
+
+				user.password = '';
 
 				return user;
 			},
