@@ -57,7 +57,6 @@ model User {
   studentTest StudentTest[]
 
   @@index([schoolId])
-  @@map("users")
 }
 
 model VerificationToken {
@@ -76,7 +75,6 @@ model School {
   users      User[]
   code       String      @unique
 
-  @@map("schools")
 }
 
 model Classroom {
@@ -90,7 +88,6 @@ model Classroom {
   grade    Int
 
   @@index([schoolId])
-  @@map("classrooms")
 }
 
 model UsersOnClassrooms {
@@ -117,7 +114,6 @@ model TestTemplate {
   studentTest StudentTest[]
 
   @@index([classroomId])
-  @@map("testTemplates")
 }
 
 model StudentTest {
@@ -135,7 +131,6 @@ model StudentTest {
   questions QuestionsOnStudentTest[]
 
   @@index([testTemplateId, userId])
-  @@map("studentTest")
 }
 
 model Question {
@@ -148,7 +143,6 @@ model Question {
   questionsOnStudentTest QuestionsOnStudentTest[]
 
   @@index([testTemplateId])
-  @@map("questions")
 }
 
 model Choice {
@@ -160,7 +154,6 @@ model Choice {
   questionsOnStudentTest QuestionsOnStudentTest[]
 
   @@index([questionId])
-  @@map("choices")
 }
 
 model QuestionsOnStudentTest {
