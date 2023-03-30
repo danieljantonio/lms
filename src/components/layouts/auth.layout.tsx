@@ -1,13 +1,14 @@
+import { Chalkboard, HouseSimple, Moon, Sun } from '@phosphor-icons/react';
 import { FC, PropsWithChildren, ReactNode, useEffect, useState } from 'react';
-import useAuth from '../../lib/hooks/useAuth';
+
+import JoinClass from './join-class-dialog.layout';
+import Link from 'next/link';
 import { signOut } from 'next-auth/react';
+import { trpc } from '../../lib/trpc';
+import useAuth from '../../lib/hooks/useAuth';
 import { useCustomRoute } from '../../lib/hooks/useCustomRoute';
 import { useRouter } from 'next/router';
-import Link from 'next/link';
-import { Chalkboard, HouseSimple, Moon, Sun } from '@phosphor-icons/react';
 import { useTheme } from 'next-themes';
-import JoinClass from './join-class-dialog.layout';
-import { trpc } from '../../lib/trpc';
 
 interface Props {
 	active?: string;
@@ -132,7 +133,8 @@ const ClassItems = () => {
 
 	if (isLoading)
 		return <button className="btn btn-secondary loading"></button>;
-	if (!data) return <button className="btn btn-disabled">No Classes</button>;
+	if (!data || data.length === 0)
+		return <button className="btn btn-disabled">No Classes</button>;
 
 	return (
 		<>
