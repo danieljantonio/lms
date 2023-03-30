@@ -1,12 +1,13 @@
-import { FC, PropsWithChildren, ReactNode, useEffect } from 'react';
-import { ViewColumnsIcon, UserGroupIcon } from '@heroicons/react/24/solid';
+import { FC, PropsWithChildren, ReactNode, useEffect, useState } from 'react';
 import useAuth from '../../lib/hooks/useAuth';
 import { signOut } from 'next-auth/react';
 import { useCustomRoute } from '../../lib/hooks/useCustomRoute';
 import { useRouter } from 'next/router';
 import Link from 'next/link';
-import { Moon, Plus, Sun } from '@phosphor-icons/react';
+import { Chalkboard, HouseSimple, Moon, Sun } from '@phosphor-icons/react';
 import { useTheme } from 'next-themes';
+import JoinClass from './join-class-dialog.layout';
+import { trpc } from '../../lib/trpc';
 
 interface Props {
 	active?: string;
@@ -15,29 +16,38 @@ interface Props {
 const AuthLayout: FC<PropsWithChildren<Props>> = ({ children }) => {
 	const { user, isLoading, isAuthenticated, role } = useAuth();
 	const { theme, setTheme } = useTheme();
+	const [showContent, setShowContent] = useState(false);
 
-	const { basePath, getNewRoute } = useCustomRoute();
+	const { basePath } = useCustomRoute();
 	const router = useRouter();
-	// const { data, isLoading: classroomIsLoading } = trpc.classroom.getClassrooms.useQuery(undefined, {
-	// 	refetchOnWindowFocus: false,
-	// });
 
 	useEffect(() => {
-		console.log('The current theme is', theme);
-	}, [theme]);
+		// if its still loading, wait
+		if (isLoading) return;
+		// if the user is not authenticated, redirect to /
+		if (!isAuthenticated) {
+			setShowContent(false);
+			router.push('/');
+		}
+		// if the user does not have a school, redirect to /join
+		else if (!user?.schoolId) {
+			setShowContent(false);
+			router.push('/join');
+		} else {
+			setShowContent(true);
+		}
+		return;
+	}, [isLoading, isAuthenticated, user]);
 
-	if (isLoading) return <div>Loading...</div>;
+	// if the user has a school, continue rendering
 
 	if (basePath === '/') return <div>{children}</div>;
 
-	if (!isAuthenticated && ['/admin', '/teacher', '/app'].includes(basePath))
-		router.push('/');
-
-	if (!user?.schoolId) router.push('/join');
+	if (!showContent || isLoading) return <div>Loading...</div>;
 
 	return (
 		<div className="mx-3 mt-4">
-			<div className="navbar bg-base-300 rounded-lg">
+			<div className="navbar bg-base-100 rounded-lg border">
 				<div className="flex-1">
 					<a className="btn btn-ghost normal-case text-xl">Ignosi</a>
 				</div>
@@ -87,28 +97,21 @@ const AuthLayout: FC<PropsWithChildren<Props>> = ({ children }) => {
 				</div>
 			</div>
 			<div className="mt-4 flex min-w-full gap-4">
-				<div className="flex flex-col bg-base-300 rounded-lg min-w-[250px] p-4 space-y-2">
+				<div className="flex flex-col border rounded-lg min-w-[250px] p-4 space-y-2">
 					<SidebarItem
 						href={'/app'}
 						text="Dashboard"
-						icon={<ViewColumnsIcon width={24} height={24} />}
+						icon={<HouseSimple size={24} weight="fill" />}
 					/>
 					{role === 'TEACHER' ? (
 						<SidebarItem
-							href={'/classroom'}
-							text="Classroom"
-							icon={<UserGroupIcon width={24} height={24} />}
+							href={'/app'}
+							text="Manage Students"
+							icon={<Chalkboard size={24} weight="fill" />}
 						/>
 					) : null}
-					<SidebarItem
-						href={'/classroom'}
-						text="Your Classes"
-						icon={<UserGroupIcon width={24} height={24} />}
-					/>
-					<button className="btn btn-accent gap-2">
-						<Plus weight="fill" height={24} width={24} />
-						Join Classroom
-					</button>
+					<ClassItems />
+					<JoinClass />
 				</div>
 				<main className="w-full px-3 py-4">{children}</main>
 			</div>
@@ -116,23 +119,49 @@ const AuthLayout: FC<PropsWithChildren<Props>> = ({ children }) => {
 	);
 };
 
+const ClassItems = () => {
+	// only fetch after all data has been received
+	const { data, isLoading } = trpc.classroom.getClassrooms.useQuery(
+		undefined,
+		{
+			refetchOnWindowFocus: false,
+		},
+	);
+
+	if (isLoading)
+		return <button className="btn btn-secondary loading"></button>;
+	if (!data) return <button className="btn btn-disabled">No Classes</button>;
+
+	return (
+		<>
+			{data.map(({ classroom }) => (
+				<SidebarItem
+					key={classroom.code}
+					href={`/app/classroom/${classroom.code}`}
+					text={classroom.code}
+					type="secondary"
+					icon={<Chalkboard size={24} weight="fill" />}
+				/>
+			))}
+		</>
+	);
+};
+
 type SidebarItemProps = {
 	href: string;
 	text: string;
 	icon: ReactNode;
-	active?: boolean;
+	type?: 'primary' | 'secondary';
 };
 
 const SidebarItem: FC<SidebarItemProps> = ({
 	icon,
-	active = false,
 	href,
 	text,
+	type = 'primary',
 }) => {
 	return (
-		<Link
-			href={href}
-			className={`btn btn-primary ${active ? '' : 'btn-outline'} gap-2`}>
+		<Link href={href} className={`btn btn-${type} gap-2 no-animation`}>
 			{icon}
 			{text}
 		</Link>
