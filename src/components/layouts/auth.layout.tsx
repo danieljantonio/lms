@@ -22,6 +22,8 @@ const AuthLayout: FC<PropsWithChildren<Props>> = ({ children }) => {
 	const router = useRouter();
 
 	useEffect(() => {
+		console.log('useEffect');
+
 		// if its still loading, wait
 		if (isLoading) return;
 		// if the user is not authenticated, redirect to /
@@ -37,7 +39,7 @@ const AuthLayout: FC<PropsWithChildren<Props>> = ({ children }) => {
 			setShowContent(true);
 		}
 		return;
-	}, [isLoading, isAuthenticated, user]);
+	}, [isLoading, isAuthenticated]);
 
 	// if the user has a school, continue rendering
 
