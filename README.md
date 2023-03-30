@@ -26,11 +26,11 @@ If you are confused, here is some [summarized documentation](https://beta.create
 
 ## Todo
 
-1. Username - Password Login
-2. Media Upload (via S3)
-3. Essay Questions
-4. Simplify school and class code UX
-5. Import and Export Test & Results
-6. Pull class data (all tests)
+[x] Username - Password Login
+[ ] Media Upload (via S3)
+[ ] Essay Questions
+[ ] Simplify school and class code UX
+[ ] Import and Export Test & Results
+[ ] Pull class data (all tests)
 
 Crucial = Make sure to be able to handle a load for 2000 students.
