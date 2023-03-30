@@ -24,33 +24,41 @@ const JoinSchool: NextPage = () => {
 	if (user?.schoolId) router.push('/app');
 
 	return (
-		<div className="flex h-fullbar items-center">
-			<div className="w-3/5 py-52 pl-36">
-				<div>
-					<p className="text-6xl">Start your education</p>
-					<p className="text-6xl">journey with us.</p>
+		<div className="flex flex-col-reverse md:flex-row h-screen items-center justify-center">
+			<div className=" md:pl-36">
+				<div className="card shadow-xl mx-2 border border-base-300 w-fit">
+					<div className="card-body sm:min-w-[400px] max-w-[500px]">
+						<form
+							className="flex flex-col gap-4"
+							onSubmit={() =>
+								joinSchool.mutate({ code: schoolCode })
+							}>
+							<p className="text-2xl">Welcome, {user?.name}</p>
+							<input
+								type="text"
+								className="w-full input input-bordered bg-base-200"
+								value={schoolCode}
+								onChange={(e) =>
+									setSchoolCode(e.target.value.toUpperCase())
+								}
+								maxLength={6}
+								minLength={6}
+								placeholder="Enter School Code"
+								required
+							/>
+							<div className="card-actions justify-end">
+								<button
+									type="submit"
+									className="btn w-fit btn-primary ">
+									Join School
+								</button>
+							</div>
+						</form>
+					</div>
 				</div>
-				<form
-					className="mt-12 flex gap-4"
-					onSubmit={() => joinSchool.mutate({ code: schoolCode })}>
-					<TextInput
-						maxLength={6}
-						minLength={6}
-						type="text"
-						id="schoolCode"
-						required
-						placeholder="Enter School Code"
-						className="w-72"
-						value={schoolCode}
-						onChange={(e) =>
-							setSchoolCode(e.target.value.toUpperCase())
-						}
-					/>
-					<Button type="submit">JOIN</Button>
-				</form>
 			</div>
-			<div className="flex w-2/5 justify-end">
-				<div className="rotate-90 text-9xl">Ignosi</div>
+			<div className="flex md:w-2/5 justify-center md:justify-end mb-6">
+				<div className="md:rotate-90 text-7xl md:text-9xl">Ignosi</div>
 			</div>
 		</div>
 	);
