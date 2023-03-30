@@ -87,6 +87,7 @@ model Classroom {
   school   School              @relation(fields: [schoolId], references: [id], onDelete: Cascade)
   users    UsersOnClassrooms[]
   test     TestTemplate[]
+  grade    Int
 
   @@index([schoolId])
   @@map("classrooms")
