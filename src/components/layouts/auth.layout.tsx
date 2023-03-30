@@ -1,16 +1,12 @@
-import React, { FC, PropsWithChildren } from 'react';
-import { Card, Dropdown, Navbar, Sidebar, Spinner } from 'flowbite-react';
-import {
-	ViewColumnsIcon,
-	UserGroupIcon,
-	PencilSquareIcon,
-	BuildingLibraryIcon,
-	UsersIcon,
-} from '@heroicons/react/24/solid';
+import { FC, PropsWithChildren, ReactNode, useEffect, useState } from 'react';
 import useAuth from '../../lib/hooks/useAuth';
 import { signOut } from 'next-auth/react';
 import { useCustomRoute } from '../../lib/hooks/useCustomRoute';
 import { useRouter } from 'next/router';
+import Link from 'next/link';
+import { Chalkboard, HouseSimple, Moon, Sun } from '@phosphor-icons/react';
+import { useTheme } from 'next-themes';
+import JoinClass from './join-class-dialog.layout';
 import { trpc } from '../../lib/trpc';
 
 interface Props {
@@ -19,92 +15,156 @@ interface Props {
 
 const AuthLayout: FC<PropsWithChildren<Props>> = ({ children }) => {
 	const { user, isLoading, isAuthenticated, role } = useAuth();
+	const { theme, setTheme } = useTheme();
+	const [showContent, setShowContent] = useState(false);
 
-	const { basePath, getNewRoute } = useCustomRoute();
+	const { basePath } = useCustomRoute();
 	const router = useRouter();
-	// const { data, isLoading: classroomIsLoading } = trpc.classroom.getClassrooms.useQuery(undefined, {
-	// 	refetchOnWindowFocus: false,
-	// });
 
-	if (isLoading) return <div>Loading...</div>;
+	useEffect(() => {
+		// if its still loading, wait
+		if (isLoading) return;
+		// if the user is not authenticated, redirect to /
+		if (!isAuthenticated) {
+			setShowContent(false);
+			router.push('/');
+		}
+		// if the user does not have a school, redirect to /join
+		else if (!user?.schoolId) {
+			setShowContent(false);
+			router.push('/join');
+		} else {
+			setShowContent(true);
+		}
+		return;
+	}, [isLoading, isAuthenticated, user]);
+
+	// if the user has a school, continue rendering
 
 	if (basePath === '/') return <div>{children}</div>;
 
-	if (!isAuthenticated && ['/admin', '/teacher', '/app'].includes(basePath)) router.push('/');
-
-	if (!user?.schoolId) router.push('/join');
+	if (!showContent || isLoading) return <div>Loading...</div>;
 
 	return (
 		<div className="mx-3 mt-4">
-			<Navbar fluid={true} className="rounded-lg border">
-				<Navbar.Brand href="/">
-					<span className="self-center whitespace-nowrap text-xl font-semibold">Ignosis</span>
-				</Navbar.Brand>
-				<Navbar.Collapse>
-					<Navbar.Link href={basePath} active={true}>
-						Home
-					</Navbar.Link>
-					<Dropdown label={`Hi, ${user?.name}`} inline={true} placement="bottom">
-						<Dropdown.Item onClick={() => router.push('/settings')}>Settings</Dropdown.Item>
-						<Dropdown.Item onClick={() => signOut({ redirect: true, callbackUrl: '/' })}>
-							Sign out
-						</Dropdown.Item>
-					</Dropdown>
-				</Navbar.Collapse>
-			</Navbar>
+			<div className="navbar bg-base-100 rounded-lg border">
+				<div className="flex-1">
+					<a className="btn btn-ghost normal-case text-xl">Ignosi</a>
+				</div>
+				<div className="flex-none gap-4">
+					<div
+						className="btn btn-sm btn-outline btn-square"
+						onClick={() => {
+							console.log('The current theme is', theme);
+
+							setTheme(theme == 'light' ? 'dark' : 'light');
+						}}>
+						{theme && theme === 'light' ? (
+							<Sun size={24} />
+						) : (
+							<Moon size={24} />
+						)}
+					</div>
+					<div className="dropdown dropdown-end">
+						<label
+							tabIndex={0}
+							className="btn btn-ghost btn-circle avatar">
+							<div className="w-10 rounded-full">
+								<img src="https://i.pravatar.cc/300" />
+							</div>
+						</label>
+						<ul
+							tabIndex={0}
+							className="menu menu-compact dropdown-content mt-3 p-2 shadow bg-base-100 rounded-box w-52">
+							<li>
+								<a
+									className="justify-between"
+									onClick={() => router.push('/profile')}>
+									Profile
+									{/* <span className="badge">New</span> */}
+								</a>
+							</li>
+							<li>
+								<label onClick={() => router.push('/settings')}>
+									Settings
+								</label>
+							</li>
+							<li>
+								<span onClick={() => signOut()}>Logout</span>
+							</li>
+						</ul>
+					</div>
+				</div>
+			</div>
 			<div className="mt-4 flex min-w-full gap-4">
-				<Sidebar className="h-fit min-w-sidebar overflow-hidden rounded-lg border">
-					<Sidebar.Items>
-						<Sidebar.ItemGroup>
-							<Sidebar.Item href={basePath} icon={ViewColumnsIcon}>
-								Dashboard
-							</Sidebar.Item>
-							{role === 'ADMIN' || role === 'PRINCIPAL' ? (
-								<Sidebar.Item href={getNewRoute('school')} icon={BuildingLibraryIcon}>
-									Manage School
-								</Sidebar.Item>
-							) : null}
-							{role === 'TEACHER' && (
-								<Sidebar.Item href={getNewRoute('classroom')} icon={UserGroupIcon} label="2">
-									Your Classes
-								</Sidebar.Item>
-							)}
-							{role === 'STUDENT' && (
-								<Sidebar.Collapse icon={UserGroupIcon} label="Your Classes">
-									{/* {classroomIsLoading ? (
-										<Spinner />
-									) : (
-										<>
-											{!data ||
-												(data.length === 0 && <Sidebar.Item>No Class Joined</Sidebar.Item>)}
-											{data &&
-												data.map(({ classroom }) => (
-													<Sidebar.Item
-														key={classroom.code}
-														href={getNewRoute(`classroom/${classroom.code}`)}>
-														{classroom.name}
-													</Sidebar.Item>
-												))}
-										</>
-									)} */}
-								</Sidebar.Collapse>
-							)}
-							{role !== 'STUDENT' && (
-								<>
-									<Sidebar.Item href={getNewRoute('test')} icon={PencilSquareIcon} label="3">
-										Manage Tests
-									</Sidebar.Item>
-									{/* <Sidebar.Item href={getNewRoute('students')} icon={UsersIcon} label="40">
-										Manage Students
-									</Sidebar.Item> */}
-								</>
-							)}
-						</Sidebar.ItemGroup>
-					</Sidebar.Items>
-				</Sidebar>
+				<div className="flex flex-col border rounded-lg min-w-[250px] p-4 space-y-2">
+					<SidebarItem
+						href={'/app'}
+						text="Dashboard"
+						icon={<HouseSimple size={24} weight="fill" />}
+					/>
+					{role === 'TEACHER' ? (
+						<SidebarItem
+							href={'/app'}
+							text="Manage Students"
+							icon={<Chalkboard size={24} weight="fill" />}
+						/>
+					) : null}
+					<ClassItems />
+					<JoinClass />
+				</div>
 				<main className="w-full px-3 py-4">{children}</main>
 			</div>
 		</div>
+	);
+};
+
+const ClassItems = () => {
+	// only fetch after all data has been received
+	const { data, isLoading } = trpc.classroom.getClassrooms.useQuery(
+		undefined,
+		{
+			refetchOnWindowFocus: false,
+		},
+	);
+
+	if (isLoading)
+		return <button className="btn btn-secondary loading"></button>;
+	if (!data) return <button className="btn btn-disabled">No Classes</button>;
+
+	return (
+		<>
+			{data.map(({ classroom }) => (
+				<SidebarItem
+					key={classroom.code}
+					href={`/app/classroom/${classroom.code}`}
+					text={classroom.code}
+					type="secondary"
+					icon={<Chalkboard size={24} weight="fill" />}
+				/>
+			))}
+		</>
+	);
+};
+
+type SidebarItemProps = {
+	href: string;
+	text: string;
+	icon: ReactNode;
+	type?: 'primary' | 'secondary';
+};
+
+const SidebarItem: FC<SidebarItemProps> = ({
+	icon,
+	href,
+	text,
+	type = 'primary',
+}) => {
+	return (
+		<Link href={href} className={`btn btn-${type} gap-2 no-animation`}>
+			{icon}
+			{text}
+		</Link>
 	);
 };
 
