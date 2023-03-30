@@ -46,7 +46,7 @@ model Session {
 model User {
   id          String              @id @default(cuid())
   name        String?
-  username    String
+  username    String @unique
   password    String
   accounts    Account[]
   sessions    Session[]
@@ -57,6 +57,7 @@ model User {
   studentTest StudentTest[]
 
   @@index([schoolId])
+  @@map("users")
 }
 
 model VerificationToken {
@@ -74,6 +75,8 @@ model School {
   classrooms Classroom[]
   users      User[]
   code       String      @unique
+
+  @@map("schools")
 }
 
 model Classroom {
@@ -86,6 +89,7 @@ model Classroom {
   test     TestTemplate[]
 
   @@index([schoolId])
+  @@map("classrooms")
 }
 
 model UsersOnClassrooms {

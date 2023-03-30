@@ -12,7 +12,6 @@ const JoinSchool: NextPage = () => {
 
 	const joinSchool = trpc.school.join.useMutation({
 		onSuccess(data) {
-			console.log('Joined school', data.name);
 			router.push('/app');
 		},
 	});
