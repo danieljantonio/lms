@@ -26,17 +26,17 @@ const MyApp: AppType<{ session: Session | null }> = ({
 				/>
 				<link rel="icon" href="/favicon.ico" />
 			</Head>
-			<AuthProvider>
-				<AuthLayout>
-					<ThemeProvider
-						enableSystem={true}
-						attribute="data-theme"
-						themes={['cupcake', 'dark']}>
-						<main className=""></main>
+			<ThemeProvider
+				enableSystem={true}
+				attribute="data-theme"
+				enableColorScheme={true}
+				themes={['light', 'dark']}>
+				<AuthProvider>
+					<AuthLayout>
 						<Component {...pageProps} />
-					</ThemeProvider>
-				</AuthLayout>
-			</AuthProvider>
+					</AuthLayout>
+				</AuthProvider>
+			</ThemeProvider>
 		</SessionProvider>
 	);
 };
