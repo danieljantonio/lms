@@ -1,4 +1,10 @@
-import { Chalkboard, HouseSimple, Moon, Sun } from '@phosphor-icons/react';
+import {
+	Chalkboard,
+	HouseSimple,
+	Moon,
+	Sun,
+	UsersFour,
+} from '@phosphor-icons/react';
 import { FC, PropsWithChildren, ReactNode, useEffect, useState } from 'react';
 
 import CreateClass from '../classroom/create-dialog.classroom';
@@ -111,7 +117,7 @@ const AuthLayout: FC<PropsWithChildren<Props>> = ({ children }) => {
 						<SidebarItem
 							href={'/app'}
 							text="Manage Students"
-							icon={<Chalkboard size={24} weight="fill" />}
+							icon={<UsersFour size={24} weight="fill" />}
 						/>
 					) : null}
 					<ClassItems />

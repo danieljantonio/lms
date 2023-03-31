@@ -1,4 +1,4 @@
-import { FolderSimplePlus } from '@phosphor-icons/react';
+import { ChalkboardTeacher } from '@phosphor-icons/react';
 import { trpc } from '../../lib/trpc';
 import { useForm } from 'react-hook-form';
 import { useRouter } from 'next/router';
@@ -34,7 +34,7 @@ const CreateClass = () => {
 			<button
 				className="btn btn-accent gap-2"
 				onClick={() => setShow(true)}>
-				<FolderSimplePlus weight="fill" size={24} />
+				<ChalkboardTeacher weight="fill" size={24} />
 				Create Classroom
 			</button>
 			<input
