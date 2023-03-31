@@ -1,7 +1,8 @@
 import { User, UsersOnClassrooms } from '@prisma/client';
+import { protectedProcedure, router } from '../trpc';
+
 import { TRPCError } from '@trpc/server';
 import { z } from 'zod';
-import { protectedProcedure, router } from '../trpc';
 
 export const classRouter = router({
 	classrooms: protectedProcedure.query(async ({ ctx }) => {
@@ -23,6 +24,7 @@ export const classRouter = router({
 	create: protectedProcedure
 		.input(
 			z.object({
+				grade: z.number(),
 				name: z.string(),
 				code: z
 					.string()
@@ -56,6 +58,7 @@ export const classRouter = router({
 
 			const classroom = await ctx.prisma.classroom.create({
 				data: {
+					grade: input.grade,
 					name: input.name,
 					schoolId: school.id,
 					code: `${input.code}`,

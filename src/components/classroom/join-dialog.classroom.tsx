@@ -1,7 +1,7 @@
 import { FolderSimplePlus } from '@phosphor-icons/react';
-import { useState } from 'react';
-import { useRouter } from 'next/router';
 import { trpc } from '../../lib/trpc';
+import { useRouter } from 'next/router';
+import { useState } from 'react';
 
 const JoinClass = () => {
 	const [show, setShow] = useState(false);
@@ -55,6 +55,7 @@ const JoinClass = () => {
 						<div className="card-actions justify-end">
 							<button
 								type="submit"
+								disabled={joinClass.isLoading}
 								className="btn w-fit btn-primary ">
 								Join
 							</button>

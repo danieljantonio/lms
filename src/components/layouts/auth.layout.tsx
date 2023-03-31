@@ -1,7 +1,8 @@
 import { Chalkboard, HouseSimple, Moon, Sun } from '@phosphor-icons/react';
 import { FC, PropsWithChildren, ReactNode, useEffect, useState } from 'react';
 
-import JoinClass from './join-class-dialog.layout';
+import CreateClass from '../classroom/create-dialog.classroom';
+import JoinClass from '../classroom/join-dialog.classroom';
 import Link from 'next/link';
 import { signOut } from 'next-auth/react';
 import { trpc } from '../../lib/trpc';
@@ -114,7 +115,7 @@ const AuthLayout: FC<PropsWithChildren<Props>> = ({ children }) => {
 						/>
 					) : null}
 					<ClassItems />
-					<JoinClass />
+					{role === 'STUDENT' ? <JoinClass /> : <CreateClass />}
 				</div>
 				<main className="w-full px-3 py-4">{children}</main>
 			</div>
