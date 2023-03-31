@@ -26,9 +26,12 @@ export const testRouter = router({
 		)
 		.mutation(async ({ input, ctx }) => {
 			if (ctx.session.user.role !== 'TEACHER')
-				throw new TRPCError({ code: 'FORBIDDEN', message: 'You do not have the permissions to create a test' });
+				throw new TRPCError({
+					code: 'FORBIDDEN',
+					message: 'You do not have the permissions to create a test',
+				});
 
-			const newTest = await ctx.prisma.test.create({
+			const newTest = await ctx.prisma.testTemplate.create({
 				data: {
 					name: input.testName,
 					endDate: new Date(input.endDate),
@@ -39,7 +42,7 @@ export const testRouter = router({
 			});
 
 			input.questions.forEach(async (question, index) => {
-				await ctx.prisma.mCQQuestion.create({
+				await ctx.prisma.question.create({
 					data: {
 						question: question.question,
 						questionNo: index + 1,
@@ -48,7 +51,7 @@ export const testRouter = router({
 								data: question.choices,
 							},
 						},
-						testId: newTest.id,
+						testTemplateId: newTest.id,
 					},
 				});
 			});
@@ -70,7 +73,7 @@ export const testRouter = router({
 
 		const today = new Date();
 
-		const ongoingTests = await ctx.prisma.test.findMany({
+		const ongoingTests = await ctx.prisma.testTemplate.findMany({
 			where: {
 				classroomId: { in: classroomIds },
 				startDate: {
@@ -84,7 +87,7 @@ export const testRouter = router({
 			orderBy: { endDate: 'asc' },
 		});
 
-		const upcomingTests = await ctx.prisma.test.findMany({
+		const upcomingTests = await ctx.prisma.testTemplate.findMany({
 			where: {
 				classroomId: { in: classroomIds },
 				startDate: {
@@ -95,7 +98,7 @@ export const testRouter = router({
 			orderBy: { endDate: 'asc' },
 		});
 
-		const overdueTests = await ctx.prisma.test.findMany({
+		const overdueTests = await ctx.prisma.testTemplate.findMany({
 			where: {
 				classroomId: { in: classroomIds },
 				endDate: {
@@ -115,7 +118,7 @@ export const testRouter = router({
 			}),
 		)
 		.query(async ({ ctx, input }) => {
-			const test = await ctx.prisma.test.findUniqueOrThrow({
+			const test = await ctx.prisma.testTemplate.findUniqueOrThrow({
 				where: { id: input.testId },
 				include: {
 					questions: true,
@@ -144,14 +147,16 @@ export const testRouter = router({
 				submittedDate: {
 					lt: new Date(),
 				},
-				test: {
+				testTemplate: {
 					classroomId: {
-						in: studentClassrooms.map((classroom) => classroom.classroomId),
+						in: studentClassrooms.map(
+							(classroom) => classroom.classroomId,
+						),
 					},
 				},
 			},
 			include: {
-				test: {
+				testTemplate: {
 					include: {
 						classroom: true,
 					},
@@ -159,16 +164,20 @@ export const testRouter = router({
 			},
 		});
 
-		const tests = await ctx.prisma.test.findMany({
+		const tests = await ctx.prisma.testTemplate.findMany({
 			where: {
 				endDate: {
 					gt: new Date(),
 				},
 				classroomId: {
-					in: studentClassrooms.map((classroom) => classroom.classroomId),
+					in: studentClassrooms.map(
+						(classroom) => classroom.classroomId,
+					),
 				},
 				id: {
-					notIn: doneTests.map((dTest) => dTest.testId as string),
+					notIn: doneTests.map(
+						(dTest) => dTest.testTemplateId as string,
+					),
 				},
 			},
 			include: {
