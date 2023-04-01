@@ -107,7 +107,7 @@ const AuthLayout: FC<PropsWithChildren<Props>> = ({ children }) => {
 				</div>
 			</div>
 			<div className="mt-4 flex min-w-full gap-4">
-				<div className="flex flex-col border rounded-lg min-w-[250px] p-4 space-y-2">
+				<div className="flex flex-col border rounded-lg min-w-[250px] h-fit p-4 space-y-2">
 					<SidebarItem
 						href={'/app'}
 						text="Dashboard"
