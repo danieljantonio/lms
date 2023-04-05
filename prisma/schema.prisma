@@ -46,7 +46,7 @@ model Session {
 model User {
   id          String              @id @default(cuid())
   name        String?
-  username    String @unique
+  username    String              @unique
   password    String
   accounts    Account[]
   sessions    Session[]
@@ -74,7 +74,6 @@ model School {
   classrooms Classroom[]
   users      User[]
   code       String      @unique
-
 }
 
 model Classroom {
@@ -101,7 +100,6 @@ model UsersOnClassrooms {
   @@index([classroomId, userId])
 }
 
-// Tests
 model TestTemplate {
   id          String        @id @default(cuid())
   name        String
@@ -111,76 +109,58 @@ model TestTemplate {
   startDate   DateTime
   endDate     DateTime
   duration    Int
-  studentTest StudentTest[]
+  StudentTest StudentTest[]
 
   @@index([classroomId])
 }
 
 model StudentTest {
-  id             String        @id @default(cuid())
-  testTemplate   TestTemplate? @relation(fields: [testTemplateId], references: [id])
-  testTemplateId String?
-  score          String?
-  startDate      DateTime      @default(now())
-  endDate        DateTime
-  submittedDate  DateTime?
-  userId         String
-  user           User          @relation(fields: [userId], references: [id], onDelete: Cascade)
-  status         TestStatus    @default(InProgress)
+  id                 String               @id @default(cuid())
+  student            User                 @relation(fields: [userId], references: [id])
+  test               TestTemplate         @relation(fields: [testTemplateId], references: [id])
+  startDate          DateTime             @default(now())
+  endDate            DateTime
+  userId             String
+  testTemplateId     String
+  StudentTestResults StudentTestResults[]
+}
 
-  questions QuestionsOnStudentTest[]
+model StudentTestResults {
+  studentTest    StudentTest @relation(fields: [studentTestId], references: [id])
+  studentTestId  String
+  question       Question    @relation(fields: [questionId], references: [id])
+  questionId     String
+  chosenAnswer   Choice      @relation(fields: [chosenAnswerId], references: [id])
+  chosenAnswerId String
 
-  @@index([testTemplateId, userId])
+  @@unique([studentTestId, questionId], map: "studentTestResultsId")
+  @@index([studentTestId, questionId])
 }
 
 model Question {
-  id                     String                   @id @default(cuid())
-  questionNo             Int
-  question               String
-  choices                Choice[]
-  test                   TestTemplate?            @relation(fields: [testTemplateId], references: [id])
-  testTemplateId         String?
-  questionsOnStudentTest QuestionsOnStudentTest[]
+  id                 String               @id @default(cuid())
+  questionNo         Int
+  question           String
+  choices            Choice[]
+  testTemplate       TestTemplate?        @relation(fields: [testTemplateId], references: [id])
+  testTemplateId     String?
+  StudentTestResults StudentTestResults[]
 
   @@index([testTemplateId])
 }
 
 model Choice {
-  id                     String                   @id @default(cuid())
-  answer                 String
-  isCorrect              Boolean
-  question               Question?                @relation(fields: [questionId], references: [id], onDelete: Cascade)
-  questionId             String?
-  questionsOnStudentTest QuestionsOnStudentTest[]
+  id                 String               @id @default(cuid())
+  answer             String
+  question           Question?            @relation(fields: [questionId], references: [id], onDelete: Cascade)
+  questionId         String?
+  isCorrect          Boolean
+  StudentTestResults StudentTestResults[]
 
   @@index([questionId])
 }
 
-model QuestionsOnStudentTest {
-  questionNo Int // This tracks the order which the test is done in.
-
-  studentTest   StudentTest @relation(fields: [studentTestId], references: [id], onDelete: Cascade)
-  studentTestId String
-
-  question   Question @relation(fields: [questionId], references: [id], onDelete: Cascade)
-  questionId String
-
-  // This indicates the answer chosen by the student.
-  chosenAnswer   Choice? @relation(fields: [chosenAnswerId], references: [id])
-  chosenAnswerId String?
-
-  @@unique([questionId, studentTestId], map: "questionOnStudentTestId")
-  @@index([questionId, studentTestId, chosenAnswerId])
-}
-
 // Enums
-enum TestStatus {
-  NotStarted
-  InProgress
-  Completed
-  Graded
-}
-
 enum Role {
   ADMIN
   PRINCIPAL
