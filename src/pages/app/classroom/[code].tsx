@@ -2,6 +2,8 @@ import { NextPage } from 'next';
 import { useRouter } from 'next/router';
 import { trpc } from '../../../lib/trpc';
 import date from 'date-and-time';
+import { FilePlus } from '@phosphor-icons/react';
+import Link from 'next/link';
 
 type ClassroomQueryProp = {
 	code: string;
@@ -27,6 +29,17 @@ const Classroom: NextPage = () => {
 			</p>
 			<div className="divider">Tests</div>
 			<div className="space-y-2">
+				{classroom.test?.map((test) => {
+					return (
+						<TestItem
+							key={test.id}
+							name={test.name}
+							startDate={test.startDate}
+							endDate={test.endDate}
+							graded
+						/>
+					);
+				})}
 				<TestItem
 					name="Ujian Akhir Semester"
 					startDate={new Date()}
@@ -38,6 +51,11 @@ const Classroom: NextPage = () => {
 					startDate={new Date()}
 					endDate={new Date()}
 				/>
+				<Link
+					href={`/app/test/create?classroom=${classroom.id}&code=${classroom.code}`}
+					className="btn btn-primary gap-2">
+					<FilePlus size={24} weight="fill" /> Create Test
+				</Link>
 			</div>
 		</div>
 	);
