@@ -1,7 +1,7 @@
-import { FolderSimplePlus } from '@phosphor-icons/react';
-import { useState } from 'react';
-import { useRouter } from 'next/router';
+import { ChalkboardTeacher } from '@phosphor-icons/react';
 import { trpc } from '../../lib/trpc';
+import { useRouter } from 'next/router';
+import { useState } from 'react';
 
 const JoinClass = () => {
 	const [show, setShow] = useState(false);
@@ -20,7 +20,7 @@ const JoinClass = () => {
 			<button
 				className="btn btn-accent gap-2"
 				onClick={() => setShow(true)}>
-				<FolderSimplePlus weight="fill" size={24} />
+				<ChalkboardTeacher weight="fill" size={24} />
 				Join Classroom
 			</button>
 			<input
@@ -55,6 +55,7 @@ const JoinClass = () => {
 						<div className="card-actions justify-end">
 							<button
 								type="submit"
+								disabled={joinClass.isLoading}
 								className="btn w-fit btn-primary ">
 								Join
 							</button>

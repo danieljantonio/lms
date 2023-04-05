@@ -1,10 +1,18 @@
-import { XMarkIcon } from '@heroicons/react/24/solid';
-import { Button, Card, TextInput } from 'flowbite-react';
 import { FC, useEffect, useState } from 'react';
-import { ChoiceData, ChoiceProps, QuestionInputProps } from '../../../types/tests';
+import {
+	ChoiceData,
+	ChoiceProps,
+	QuestionInputProps,
+} from '../../../types/tests';
 import ChoiceInput from '../create/choice-input.tests';
+import { XCircle } from '@phosphor-icons/react';
 
-const QuestionInput: FC<QuestionInputProps> = ({ index, updateQuestion, data, removeQuestion }) => {
+const QuestionInput: FC<QuestionInputProps> = ({
+	index,
+	updateQuestion,
+	data,
+	removeQuestion,
+}) => {
 	const [question, setQuestion] = useState<string>(data?.question || '');
 	const [loading, setLoading] = useState(false);
 	const [choices, setChoices] = useState<ChoiceProps[]>(data?.choices || []);
@@ -46,37 +54,56 @@ const QuestionInput: FC<QuestionInputProps> = ({ index, updateQuestion, data, re
 		await setChoices(_qc);
 	};
 
-	const log = () => {
-		console.log({ question, choices });
-	};
-
 	return (
-		<Card className="relative mt-4 p-4">
-			<XMarkIcon
-				onClick={removeQuestion}
-				className="absolute right-4 top-4 mx-auto w-5 text-gray-500 hover:cursor-pointer hover:text-gray-800"
-			/>
-			<TextInput defaultValue={question} addon={index + 1} onChange={(e) => setQuestion(e.target.value)} />
-			{loading ? (
-				<div>Loading...</div>
-			) : (
-				choices.map((questionChoice, index) => {
-					return (
-						<ChoiceInput
-							key={index}
-							data={questionChoice}
-							setAnswer={(newChoice) => {
-								updateAnswer(newChoice, index);
-							}}
-							removeChoice={() => removeChoice(index)}
-						/>
-					);
-				})
-			)}
-			<Button disabled={choices.length > 4} color="light" onClick={addNewChoice}>
-				Add Choice
-			</Button>
-		</Card>
+		<div className="card border mt-4">
+			<div className="relative card-body">
+				<label className="label text-sm pl-0">
+					Question {index + 1}
+				</label>
+				<input
+					defaultValue={question}
+					type="text"
+					placeholder={`Question ${index + 1}`}
+					className="input input-bordered w-full"
+					onChange={(e) => setQuestion(e.target.value)}
+				/>
+				<XCircle
+					size={24}
+					weight="fill"
+					onClick={removeQuestion}
+					className="absolute right-4 top-4 mx-auto w-5 text-gray-500 hover:cursor-pointer hover:text-gray-800"
+				/>
+				{loading ? (
+					<div>Loading...</div>
+				) : (
+					choices.map((questionChoice, index) => {
+						return (
+							<ChoiceInput
+								key={index}
+								data={questionChoice}
+								setAnswer={(newChoice) => {
+									updateAnswer(newChoice, index);
+								}}
+								removeChoice={() => removeChoice(index)}
+							/>
+						);
+					})
+				)}
+				<div className="card-actions justify-end">
+					<button
+						className="btn btn-info text-white"
+						onClick={addNewChoice}
+						disabled={choices.length >= 4}>
+						Add Choice
+					</button>
+					<button
+						className="btn"
+						onClick={() => console.log(choices)}>
+						log
+					</button>
+				</div>
+			</div>
+		</div>
 	);
 };
 

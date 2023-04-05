@@ -1,13 +1,21 @@
+import {
+	Chalkboard,
+	HouseSimple,
+	Moon,
+	Sun,
+	UsersFour,
+} from '@phosphor-icons/react';
 import { FC, PropsWithChildren, ReactNode, useEffect, useState } from 'react';
-import useAuth from '../../lib/hooks/useAuth';
+
+import CreateClass from '../classroom/create-dialog.classroom';
+import JoinClass from '../classroom/join-dialog.classroom';
+import Link from 'next/link';
 import { signOut } from 'next-auth/react';
+import { trpc } from '../../lib/trpc';
+import useAuth from '../../lib/hooks/useAuth';
 import { useCustomRoute } from '../../lib/hooks/useCustomRoute';
 import { useRouter } from 'next/router';
-import Link from 'next/link';
-import { Chalkboard, HouseSimple, Moon, Sun } from '@phosphor-icons/react';
 import { useTheme } from 'next-themes';
-import JoinClass from './join-class-dialog.layout';
-import { trpc } from '../../lib/trpc';
 
 interface Props {
 	active?: string;
@@ -99,7 +107,7 @@ const AuthLayout: FC<PropsWithChildren<Props>> = ({ children }) => {
 				</div>
 			</div>
 			<div className="mt-4 flex min-w-full gap-4">
-				<div className="flex flex-col border rounded-lg min-w-[250px] p-4 space-y-2">
+				<div className="flex flex-col border rounded-lg min-w-[250px] h-fit p-4 space-y-2">
 					<SidebarItem
 						href={'/app'}
 						text="Dashboard"
@@ -109,11 +117,11 @@ const AuthLayout: FC<PropsWithChildren<Props>> = ({ children }) => {
 						<SidebarItem
 							href={'/app'}
 							text="Manage Students"
-							icon={<Chalkboard size={24} weight="fill" />}
+							icon={<UsersFour size={24} weight="fill" />}
 						/>
 					) : null}
 					<ClassItems />
-					<JoinClass />
+					{role === 'STUDENT' ? <JoinClass /> : <CreateClass />}
 				</div>
 				<main className="w-full px-3 py-4">{children}</main>
 			</div>
@@ -132,7 +140,8 @@ const ClassItems = () => {
 
 	if (isLoading)
 		return <button className="btn btn-secondary loading"></button>;
-	if (!data) return <button className="btn btn-disabled">No Classes</button>;
+	if (!data || data.length === 0)
+		return <button className="btn btn-disabled">No Classes</button>;
 
 	return (
 		<>

@@ -1,7 +1,7 @@
 import { Button, Card, Label, Select, TextInput } from 'flowbite-react';
 import { NextPage } from 'next';
 import { useRouter } from 'next/router';
-import { useState } from 'react';
+import { ReactNode, useState } from 'react';
 import QCInputRequiredModal from '../../../components/tests/common/qc-input-required.modal';
 import QuestionInput from '../../../components/tests/take/question-input.tests';
 import { trpc } from '../../../lib/trpc';
@@ -12,17 +12,20 @@ const CreateTest: NextPage = () => {
 	const [loading, setLoading] = useState<boolean>(false);
 	const [questions, setQuestions] = useState<QuestionProps[]>([]);
 	const [testName, setTestName] = useState<string>('');
-	const [startDate, setStartDate] = useState<string>('');
-	const [endDate, setEndDate] = useState<string>('');
-	const [classroomId, setClassroomId] = useState<string>('');
-	const [testDuration, setTestDuration] = useState<number>(0);
+	const [startDate, setStartDate] = useState<Date>(new Date());
+	const [endDate, setEndDate] = useState<Date>(new Date());
+	const [testDuration, setTestDuration] = useState<number>(90);
 	const [modalShow, setModalShow] = useState<boolean>(false);
 	const router = useRouter();
 
+	const { query } = router;
+	const { classroom: classroomId = '', code: classroomCode = '' } = query;
+
 	// tRPC
-	const { data: classrooms, isLoading: loadingClassroom } = trpc.classroom.getClassrooms.useQuery(undefined, {
-		refetchOnWindowFocus: false,
-	});
+	const { data: classrooms, isLoading: loadingClassroom } =
+		trpc.classroom.getClassrooms.useQuery(undefined, {
+			refetchOnWindowFocus: false,
+		});
 
 	const createTest = trpc.test.create.useMutation({
 		onSuccess(data) {
@@ -50,7 +53,10 @@ const CreateTest: NextPage = () => {
 		setLoading(false);
 	};
 
-	const updateQuestion = async (newQuestion: QuestionProps, index: number) => {
+	const updateQuestion = async (
+		newQuestion: QuestionProps,
+		index: number,
+	) => {
 		let _questions = questions;
 		_questions[index] = newQuestion;
 		await setQuestions(_questions);
@@ -59,10 +65,10 @@ const CreateTest: NextPage = () => {
 	const isDisabled = () => {
 		return (
 			createTest.isLoading ||
+			testName === '' ||
 			questions.length === 0 ||
-			startDate === '' ||
-			endDate === '' ||
-			classroomId === '' ||
+			!startDate ||
+			!endDate ||
 			testDuration === 0
 		);
 	};
@@ -71,7 +77,10 @@ const CreateTest: NextPage = () => {
 		if (isDisabled()) return;
 
 		const allowCreate = questions.every(
-			(q) => q.question !== '' && q.choices.some((c) => c.isCorrect) && q.choices.every((c) => c.answer !== ''),
+			(q) =>
+				q.question !== '' &&
+				q.choices.some((c) => c.isCorrect) &&
+				q.choices.every((c) => c.answer !== ''),
 		);
 
 		if (!allowCreate) {
@@ -84,61 +93,65 @@ const CreateTest: NextPage = () => {
 			startDate: new Date(startDate),
 			endDate: new Date(endDate),
 			questions,
-			classroomId,
+			classroomId: classroomId as string,
 			duration: testDuration,
 		});
 	};
 
 	return (
 		<div className="mx-auto max-w-screen-xl">
-			<Card>
-				<p className="text-xl">Create New Test</p>
-				<div className="flex w-full flex-col justify-between gap-6 lg:flex-row">
-					<div className="lg:w-2/3">
-						<div>
-							<Label>Test Name</Label>
-							<TextInput onChange={(e) => setTestName(e.target.value)} placeholder="Test Name" />
-						</div>
-						<div className="mt-4">
-							<Label>Classroom</Label>
-							<Select id="classrooms" onChange={(e) => setClassroomId(e.target.value)}>
-								<option value="">Select a classroom</option>
-								{!loadingClassroom &&
-									classrooms?.map((classroom) => (
-										<option value={classroom.classroom.id}>{classroom.classroom.name}</option>
-									))}
-							</Select>
-						</div>
-					</div>
-					<div className="lg:w-1/3">
-						<div>
-							<Label>Start Date</Label>
-							<TextInput
-								onChange={(e) => setStartDate(e.target.value)}
-								placeholder="Test Name"
-								type="datetime-local"
+			<div className="card border">
+				<div className="card-body">
+					<p className="card-title">Create New Test</p>
+					<div className="flex flex-wrap">
+						<OptionsInput label="Test Name">
+							<input
+								className="input input-bordered w-full"
+								placeholder="Ujian Akhir Semester"
+								onChange={(e) => setTestName(e.target.value)}
 							/>
-						</div>
-						<div className="mt-4">
-							<Label>End Date</Label>
-							<TextInput
-								onChange={(e) => setEndDate(e.target.value)}
-								placeholder="Test Name"
-								type="datetime-local"
+						</OptionsInput>
+						<OptionsInput label="Classroom">
+							<input
+								className="input input-bordered w-full"
+								disabled
+								value={classroomCode}
+								readOnly
 							/>
-						</div>
-						<div className="mt-4">
-							<Label>Duration (Minutes):</Label>
-							<TextInput
-								min={30}
-								onChange={(e) => setTestDuration(parseInt(e.target.value))}
-								placeholder="Test Duration (in minutes)"
+						</OptionsInput>
+						<OptionsInput label="Start Date">
+							<input
+								className="input input-bordered w-full"
+								type="datetime-local"
+								value={startDate.toISOString().slice(0, 16)}
+								onChange={(e) =>
+									setStartDate(new Date(e.target.value))
+								}
+							/>
+						</OptionsInput>
+						<OptionsInput label="End Date">
+							<input
+								value={endDate.toISOString().slice(0, 16)}
+								type="datetime-local"
+								className="input input-bordered w-full"
+								onChange={(e) =>
+									setEndDate(new Date(e.target.value))
+								}
+							/>
+						</OptionsInput>
+						<OptionsInput label="Duration">
+							<input
+								className="input input-bordered w-full"
+								value={testDuration}
 								type="number"
+								onChange={(e) =>
+									setTestDuration(parseInt(e.target.value))
+								}
 							/>
-						</div>
+						</OptionsInput>
 					</div>
 				</div>
-			</Card>
+			</div>
 
 			{loading ? (
 				<div>Loading...</div>
@@ -158,7 +171,10 @@ const CreateTest: NextPage = () => {
 				))
 			)}
 
-			<QCInputRequiredModal show={modalShow} setClose={() => setModalShow(false)} />
+			<QCInputRequiredModal
+				show={modalShow}
+				setClose={() => setModalShow(false)}
+			/>
 
 			<Button
 				disabled={createTest.isLoading}
@@ -171,7 +187,12 @@ const CreateTest: NextPage = () => {
 				}}>
 				Add Question
 			</Button>
-			<Button onClick={create} disabled={isDisabled()} type="submit" fullSized className="mt-4">
+			<Button
+				onClick={create}
+				disabled={isDisabled()}
+				type="submit"
+				fullSized
+				className="mt-4">
 				Create Test
 			</Button>
 		</div>
@@ -179,3 +200,23 @@ const CreateTest: NextPage = () => {
 };
 
 export default CreateTest;
+
+type OptionsInputProps = {
+	label: string;
+	children: ReactNode;
+};
+
+const OptionsInput = ({ label, children }: OptionsInputProps) => {
+	return (
+		<div className="form-control w-full md:w-1/2">
+			<div className="px-2">
+				<label
+					htmlFor={label.toLowerCase().replace(' ', '-')}
+					className="label !pl-0">
+					<span className="label-text">{label}</span>
+				</label>
+				{children}
+			</div>
+		</div>
+	);
+};
