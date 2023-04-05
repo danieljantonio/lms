@@ -65,6 +65,7 @@ const CreateTest: NextPage = () => {
 	const isDisabled = () => {
 		return (
 			createTest.isLoading ||
+			testName === '' ||
 			questions.length === 0 ||
 			!startDate ||
 			!endDate ||

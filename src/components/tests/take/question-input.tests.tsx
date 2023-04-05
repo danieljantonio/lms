@@ -1,5 +1,3 @@
-import { XMarkIcon } from '@heroicons/react/24/solid';
-import { Button, Card, TextInput } from 'flowbite-react';
 import { FC, useEffect, useState } from 'react';
 import {
 	ChoiceData,
@@ -17,14 +15,7 @@ const QuestionInput: FC<QuestionInputProps> = ({
 }) => {
 	const [question, setQuestion] = useState<string>(data?.question || '');
 	const [loading, setLoading] = useState(false);
-	const [choices, setChoices] = useState<ChoiceProps[]>(
-		data?.choices || [
-			{
-				answer: '',
-				isCorrect: false,
-			},
-		],
-	);
+	const [choices, setChoices] = useState<ChoiceProps[]>(data?.choices || []);
 
 	const addNewChoice = async () => {
 		setLoading(true);
@@ -70,6 +61,7 @@ const QuestionInput: FC<QuestionInputProps> = ({
 					Question {index + 1}
 				</label>
 				<input
+					defaultValue={question}
 					type="text"
 					placeholder={`Question ${index + 1}`}
 					className="input input-bordered w-full"
@@ -103,6 +95,11 @@ const QuestionInput: FC<QuestionInputProps> = ({
 						onClick={addNewChoice}
 						disabled={choices.length >= 4}>
 						Add Choice
+					</button>
+					<button
+						className="btn"
+						onClick={() => console.log(choices)}>
+						log
 					</button>
 				</div>
 			</div>
