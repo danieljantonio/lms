@@ -32,6 +32,7 @@ const Classroom: NextPage = () => {
 				{classroom.test?.map((test) => {
 					return (
 						<TestItem
+							onClick={() => router.push(`/app/test/${test.id}`)}
 							key={test.id}
 							name={test.name}
 							startDate={test.startDate}
@@ -41,12 +42,14 @@ const Classroom: NextPage = () => {
 					);
 				})}
 				<TestItem
+					onClick={() => null}
 					name="Ujian Akhir Semester"
 					startDate={new Date()}
 					endDate={new Date()}
 					graded
 				/>
 				<TestItem
+					onClick={() => null}
 					name="Latihan Ujian Akhir Semester"
 					startDate={new Date()}
 					endDate={new Date()}
@@ -66,6 +69,7 @@ type TestItemProps = {
 	startDate: Date;
 	endDate: Date;
 	graded?: boolean;
+	onClick: () => void;
 };
 
 const TestItem = ({
@@ -73,9 +77,12 @@ const TestItem = ({
 	startDate,
 	endDate,
 	graded = false,
+	onClick,
 }: TestItemProps) => {
 	return (
-		<div className="card border card-compact w-full bg-base-100 hover:cursor-pointer hover:bg-base-200">
+		<div
+			onClick={onClick}
+			className="card border card-compact w-full bg-base-100 hover:cursor-pointer hover:bg-base-200">
 			<div className="card-body flex flex-row items-center justify-between w-full">
 				<div className="flex gap-2">
 					<p>{name}</p>
