@@ -79,11 +79,31 @@ export const studentTestRouter = router({
 	get: protectedProcedure
 		.input(z.object({ testId: z.string() }))
 		.query(async ({ ctx, input }) => {
-			return await ctx.prisma.studentTest.findFirstOrThrow({
+			const studentTest = await ctx.prisma.studentTest.findFirstOrThrow({
 				where: {
 					testTemplateId: input.testId,
 					studentId: ctx.session.user.id,
 				},
+			});
+
+			const questionCount = await ctx.prisma.studentTestResults.count({
+				where: {
+					studentTestId: studentTest.id,
+				},
+			});
+
+			return { ...studentTest, questionCount };
+		}),
+	getQuestion: protectedProcedure
+		.input(
+			z.object({
+				questionOrder: z.number(),
+				studentTestId: z.string(),
+			}),
+		)
+		.query(async ({ ctx, input }) => {
+			return await ctx.prisma.studentTestResults.findFirstOrThrow({
+				where: input,
 			});
 		}),
 });
