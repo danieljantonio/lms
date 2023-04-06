@@ -83,7 +83,7 @@ model Classroom {
   schoolId String
   school   School              @relation(fields: [schoolId], references: [id], onDelete: Cascade)
   users    UsersOnClassrooms[]
-  test     TestTemplate[]
+  testTemplates     TestTemplate[]
   grade    Int
 
   @@index([schoolId])
@@ -116,22 +116,23 @@ model TestTemplate {
 
 model StudentTest {
   id                 String               @id @default(cuid())
-  student            User                 @relation(fields: [userId], references: [id])
-  test               TestTemplate         @relation(fields: [testTemplateId], references: [id])
+  student            User                 @relation(fields: [studentId], references: [id])
+  testTemplate               TestTemplate         @relation(fields: [testTemplateId], references: [id])
   startDate          DateTime             @default(now())
   endDate            DateTime
-  userId             String
+  studentId          String
   testTemplateId     String
   StudentTestResults StudentTestResults[]
 }
 
 model StudentTestResults {
+  questionOrder  Int
   studentTest    StudentTest @relation(fields: [studentTestId], references: [id])
   studentTestId  String
   question       Question    @relation(fields: [questionId], references: [id])
   questionId     String
-  chosenAnswer   Choice      @relation(fields: [chosenAnswerId], references: [id])
-  chosenAnswerId String
+  chosenAnswer   Choice?     @relation(fields: [chosenAnswerId], references: [id])
+  chosenAnswerId String?
 
   @@unique([studentTestId, questionId], map: "studentTestResultsId")
   @@index([studentTestId, questionId])

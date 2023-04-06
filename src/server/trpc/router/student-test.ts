@@ -1,7 +1,9 @@
-import { TRPCError } from '@trpc/server';
 import { z } from 'zod';
 import { protectedProcedure, router } from '../trpc';
 import date from 'date-and-time';
+import { shuffleArray } from '@/lib/helpers/common.helpers';
+import { type StudentTestResults, type Question } from '@prisma/client';
+import { TRPCError } from '@trpc/server';
 
 export const studentTestRouter = router({
 	hasTaken: protectedProcedure
@@ -30,15 +32,58 @@ export const studentTestRouter = router({
 			const startDate = new Date();
 			const endDate = date.addMinutes(startDate, input.duration);
 
+			const testTemplate =
+				await ctx.prisma.testTemplate.findUniqueOrThrow({
+					where: {
+						id: input.testId,
+					},
+					include: {
+						questions: true,
+					},
+				});
+
+			const questionIds: Question[] = shuffleArray(
+				testTemplate.questions,
+			);
+
 			const newStudentTest = await ctx.prisma.studentTest.create({
 				data: {
-					userId: ctx.session.user.id,
+					studentId: ctx.session.user.id,
 					testTemplateId: input.testId,
 					startDate,
 					endDate,
 				},
 			});
 
+			if (!newStudentTest)
+				throw new TRPCError({
+					code: 'INTERNAL_SERVER_ERROR',
+					message: 'Failed to start test',
+				});
+
+			const studentTestResults = questionIds.map(
+				(question, index) =>
+					({
+						questionOrder: index + 1,
+						questionId: question.id,
+						studentTestId: newStudentTest.id,
+					} as StudentTestResults),
+			);
+
+			await ctx.prisma.studentTestResults.createMany({
+				data: studentTestResults,
+			});
+
 			return newStudentTest;
+		}),
+	get: protectedProcedure
+		.input(z.object({ testId: z.string() }))
+		.query(async ({ ctx, input }) => {
+			return await ctx.prisma.studentTest.findFirstOrThrow({
+				where: {
+					testTemplateId: input.testId,
+					studentId: ctx.session.user.id,
+				},
+			});
 		}),
 });
