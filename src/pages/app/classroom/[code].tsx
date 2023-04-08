@@ -1,9 +1,9 @@
-import { NextPage } from 'next';
-import { useRouter } from 'next/router';
-import { trpc } from '../../../lib/trpc';
-import date from 'date-and-time';
 import { FilePlus } from '@phosphor-icons/react';
 import Link from 'next/link';
+import { NextPage } from 'next';
+import date from 'date-and-time';
+import { trpc } from '../../../lib/trpc';
+import { useRouter } from 'next/router';
 
 type ClassroomQueryProp = {
 	code: string;
@@ -29,7 +29,7 @@ const Classroom: NextPage = () => {
 			</p>
 			<div className="divider">Tests</div>
 			<div className="space-y-2">
-				{classroom.test?.map((test) => {
+				{classroom.testTemplates?.map((test) => {
 					return (
 						<TestItem
 							onClick={() => router.push(`/app/test/${test.id}`)}
