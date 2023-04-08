@@ -1,8 +1,9 @@
 import { NextPage } from 'next';
-import { useRouter } from 'next/router';
-import { trpc } from '../../../../lib/trpc';
-import date from 'date-and-time';
 import StartPrompt from '@/components/tests/common/start-prompt.tests';
+import date from 'date-and-time';
+import { trpc } from '../../../../lib/trpc';
+import useAuth from '@/lib/hooks/useAuth';
+import { useRouter } from 'next/router';
 
 type ClassroomQueryProp = {
 	testId: string;
@@ -11,12 +12,14 @@ type ClassroomQueryProp = {
 const TestDetails: NextPage = () => {
 	const router = useRouter();
 	const { testId } = router.query as ClassroomQueryProp;
+	const { role } = useAuth();
 
 	const { data: test, isLoading: fetchingTest } =
 		trpc.test.getTestById.useQuery(
 			{ testId },
 			{ refetchOnWindowFocus: false },
 		);
+
 	const { data: hasTaken, isLoading: hasTakenLoading } =
 		trpc.studentTest.hasTaken.useQuery(
 			{ testId },
@@ -59,12 +62,16 @@ const TestDetails: NextPage = () => {
 					{date.format(test.endDate, 'DD MMM')}
 				</li>
 			</ul>
+			{/* {role === 'STUDENT' ? (
+				) : (
+					<button className="btn w-fit btn-disabled">Edit Test</button>
+				)} */}
 			<label
 				htmlFor="test-start-prompt"
 				className={`btn w-fit ${
 					hasTaken || hasTakenLoading ? 'btn-disabled' : ''
 				}`}>
-				Take Test
+				{hasTaken ? 'Taken' : 'Take Test'}
 			</label>
 			<StartPrompt
 				testDetails={test}
