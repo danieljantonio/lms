@@ -2,7 +2,7 @@ import { FilePlus } from '@phosphor-icons/react';
 import Link from 'next/link';
 import { NextPage } from 'next';
 import date from 'date-and-time';
-import { trpc } from '../../../lib/trpc';
+import { trpc } from '@/lib/trpc';
 import { useRouter } from 'next/router';
 
 type ClassroomQueryProp = {

@@ -1,5 +1,5 @@
 import { FC, useState } from 'react';
-import { ChoiceInputProps } from '../../../types/tests';
+import { ChoiceInputProps } from '@/types/tests';
 import { Check, X } from '@phosphor-icons/react';
 
 const ChoiceInput: FC<ChoiceInputProps> = ({

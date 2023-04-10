@@ -1,8 +1,8 @@
 import { NextPage } from 'next';
 import { useRouter } from 'next/router';
 import { ReactNode, useState } from 'react';
-import { trpc, type RouterTypes } from '../../../lib/trpc';
-import { QuestionProps } from '../../../types/tests';
+import { trpc, type RouterTypes } from '@/lib/trpc';
+import { QuestionProps } from '@/types/tests';
 import { useForm } from 'react-hook-form';
 import { Check, X } from '@phosphor-icons/react';
 

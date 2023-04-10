@@ -1,7 +1,7 @@
 import { NextPage } from 'next';
 import StartPrompt from '@/components/tests/common/start-prompt.tests';
 import date from 'date-and-time';
-import { trpc } from '../../../../lib/trpc';
+import { trpc } from '@/lib/trpc';
 import useAuth from '@/lib/hooks/useAuth';
 import { useRouter } from 'next/router';
 

@@ -1,17 +1,16 @@
 import { User } from '@prisma/client';
 import { useSession } from 'next-auth/react';
 import { createContext, PropsWithChildren, useContext } from 'react';
-import { IAuthProviderContext } from '../../types/contexts';
+import { IAuthProviderContext } from '@/types/contexts';
 
 const useProvideAuth = () => {
 	const _user: User = {
 		id: '',
 		name: null,
-		email: null,
-		emailVerified: null,
+		username: '',
 		schoolId: null,
+		password: '',
 		role: 'STUDENT',
-		image: null,
 	};
 	const session = useSession();
 	const user: User = session?.data?.user || _user;
@@ -22,12 +21,16 @@ const useProvideAuth = () => {
 	return { user, isAuthenticated, isLoading, role };
 };
 
-const AuthContext = createContext<IAuthProviderContext>({} as IAuthProviderContext);
+const AuthContext = createContext<IAuthProviderContext>(
+	{} as IAuthProviderContext,
+);
 
 export function AuthProvider({ children }: PropsWithChildren) {
 	const state = useProvideAuth();
 
-	return <AuthContext.Provider value={state}>{children}</AuthContext.Provider>;
+	return (
+		<AuthContext.Provider value={state}>{children}</AuthContext.Provider>
+	);
 }
 
 export default function useAuth() {

@@ -2,7 +2,7 @@ import { FC, HTMLInputTypeAttribute, useState } from 'react';
 import { UseFormRegister, useForm } from 'react-hook-form';
 
 import { signIn } from 'next-auth/react';
-import { trpc } from '../../lib/trpc';
+import { trpc } from '@/lib/trpc';
 
 export type AuthDto = {
 	name?: string;
