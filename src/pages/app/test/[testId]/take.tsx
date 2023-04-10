@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 
 import { NextPage } from 'next';
 import { useRouter } from 'next/router';
+import date from 'date-and-time';
 
 const TakeTest: NextPage = () => {
 	const [questionNo, _setQuestionNo] = useState(1);
@@ -30,6 +31,15 @@ const TakeTest: NextPage = () => {
 
 	if (isLoading) return <div>Loading...</div>;
 	if (!test) return <div>Failed to fetch test data</div>;
+
+	if (date.subtract(new Date(test.endDate), new Date()).toSeconds() < 0)
+		return (
+			<div className="card border w-full h-56">
+				<div className="loading m-auto">
+					Test has ended: Time limit reached
+				</div>
+			</div>
+		);
 
 	const questionNumbers = () => {
 		const arr = [];
@@ -146,7 +156,7 @@ const RenderQuestion = ({
 							});
 						}}
 						className={`btn no-animation ${
-							selected === id ? '' : 'btn-outline'
+							selected === id ? 'btn-success' : 'btn-outline'
 						} ${updateIsLoading ? 'btn-disabled' : ''}`}>
 						{answer}
 					</button>
