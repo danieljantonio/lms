@@ -1,5 +1,4 @@
 import { type TestTemplate } from '@prisma/client';
-import { Button, Modal } from 'flowbite-react';
 import { FC, PropsWithChildren } from 'react';
 
 type Props = {

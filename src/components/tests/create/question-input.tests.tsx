@@ -1,10 +1,6 @@
 import { FC, useEffect, useState } from 'react';
-import {
-	ChoiceData,
-	ChoiceProps,
-	QuestionInputProps,
-} from '../../../types/tests';
-import ChoiceInput from '../create/choice-input.tests';
+import { ChoiceData, ChoiceProps, QuestionInputProps } from '@/types/tests';
+import ChoiceInput from './choice-input.tests';
 import { XCircle } from '@phosphor-icons/react';
 
 const QuestionInput: FC<QuestionInputProps> = ({
