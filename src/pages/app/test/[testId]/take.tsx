@@ -31,6 +31,14 @@ const TakeTest: NextPage = () => {
 	if (isLoading) return <div>Loading...</div>;
 	if (!test) return <div>Failed to fetch test data</div>;
 
+	const questionNumbers = () => {
+		const arr = [];
+		for (let i = 0; i < test.questionCount; i++) {
+			arr.push(i + 1);
+		}
+		return arr;
+	};
+
 	const setQuestionNo = (num: number) => {
 		if (!(num > 0 && num <= test.questionCount)) return;
 		_setQuestionNo(num);
@@ -56,14 +64,21 @@ const TakeTest: NextPage = () => {
 				questionOrder={questionNo}
 				studentTestId={test.id}
 			/>
-			<div className="btn-group mx-auto mt-4">
+			<div className="input-group w-fit mx-auto mt-4">
 				<button
 					className="btn"
 					onClick={() => setQuestionNo(questionNo - 1)}
 					disabled={questionNo === 1}>
 					«
 				</button>
-				<button className="btn">Q{questionNo}</button>
+				<select
+					value={questionNo}
+					className="select select-bordered"
+					onChange={(e) => setQuestionNo(parseInt(e.target.value))}>
+					{questionNumbers().map((qNo) => (
+						<option value={qNo}>Q{qNo}</option>
+					))}
+				</select>
 				<button
 					className="btn"
 					onClick={() => setQuestionNo(questionNo + 1)}
