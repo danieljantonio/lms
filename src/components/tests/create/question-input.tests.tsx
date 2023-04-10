@@ -15,7 +15,7 @@ const QuestionInput: FC<QuestionInputProps> = ({
 
 	const addNewChoice = async () => {
 		setLoading(true);
-		let qc = choices;
+		const qc = choices;
 		qc.push({
 			answer: '',
 			isCorrect: false,
@@ -26,7 +26,7 @@ const QuestionInput: FC<QuestionInputProps> = ({
 
 	const removeChoice = async (index: number) => {
 		setLoading(true);
-		let qc = choices;
+		const qc = choices;
 		qc.splice(index, 1);
 		await setChoices(qc);
 		setLoading(false);

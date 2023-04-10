@@ -37,7 +37,7 @@ const AuthForm: FC = () => {
 			title: 'Sign In',
 			not: (
 				<p className="text-sm mt-1">
-					Don't have an account? Sign up{' '}
+					Don&apos;t have an account? Sign up{' '}
 					<a
 						onClick={() => setAction('signup')}
 						className="link link-primary hover:text-white">

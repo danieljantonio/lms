@@ -35,7 +35,7 @@ const CreateTest: NextPage = () => {
 	// Methods
 	const addNewQuestion = async () => {
 		setLoading(true);
-		let _questions = questions;
+		const _questions = questions;
 		_questions.push({
 			question: '',
 			choices: [],
@@ -46,7 +46,7 @@ const CreateTest: NextPage = () => {
 
 	const removeQuestion = async (index: number) => {
 		setLoading(true);
-		let _questions = questions;
+		const _questions = questions;
 		_questions.splice(index, 1);
 		await setQuestions(_questions);
 		setLoading(false);
@@ -56,7 +56,7 @@ const CreateTest: NextPage = () => {
 		newQuestion: QuestionProps,
 		index: number,
 	) => {
-		let _questions = questions;
+		const _questions = questions;
 		_questions[index] = newQuestion;
 		await setQuestions(_questions);
 	};

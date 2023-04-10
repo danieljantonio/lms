@@ -86,7 +86,9 @@ const TakeTest: NextPage = () => {
 					className="select select-bordered"
 					onChange={(e) => setQuestionNo(parseInt(e.target.value))}>
 					{questionNumbers().map((qNo) => (
-						<option value={qNo}>Q{qNo}</option>
+						<option value={qNo} key={qNo}>
+							Q{qNo}
+						</option>
 					))}
 				</select>
 				<button
