@@ -84,6 +84,9 @@ export const studentTestRouter = router({
 					testTemplateId: input.testId,
 					studentId: ctx.session.user.id,
 				},
+				include: {
+					testTemplate: true,
+				},
 			});
 
 			const questionCount = await ctx.prisma.studentTestResults.count({
@@ -102,8 +105,45 @@ export const studentTestRouter = router({
 			}),
 		)
 		.query(async ({ ctx, input }) => {
-			return await ctx.prisma.studentTestResults.findFirstOrThrow({
-				where: input,
+			const question =
+				await ctx.prisma.studentTestResults.findFirstOrThrow({
+					where: input,
+					include: {
+						question: {
+							include: {
+								choices: {
+									select: {
+										id: true,
+										answer: true,
+									},
+								},
+							},
+						},
+					},
+				});
+			return question;
+		}),
+	updateQuestion: protectedProcedure
+		.input(
+			z.object({
+				questionId: z.string(),
+				studentTestId: z.string(),
+				chosenAnswerId: z.string(),
+			}),
+		)
+		.mutation(async ({ ctx, input }) => {
+			const updatedQuestion = await ctx.prisma.studentTestResults.update({
+				where: {
+					studentTestId_questionId: {
+						questionId: input.questionId,
+						studentTestId: input.studentTestId,
+					},
+				},
+				data: {
+					chosenAnswerId: input.chosenAnswerId,
+				},
 			});
+
+			return updatedQuestion;
 		}),
 });
