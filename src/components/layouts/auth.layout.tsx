@@ -11,9 +11,9 @@ import CreateClass from '../classroom/create-dialog.classroom';
 import JoinClass from '../classroom/join-dialog.classroom';
 import Link from 'next/link';
 import { signOut } from 'next-auth/react';
-import { trpc } from '../../lib/trpc';
-import useAuth from '../../lib/hooks/useAuth';
-import { useCustomRoute } from '../../lib/hooks/useCustomRoute';
+import { trpc } from '@/lib/trpc';
+import useAuth from '@/lib/hooks/useAuth';
+import { useCustomRoute } from '@/lib/hooks/useCustomRoute';
 import { useRouter } from 'next/router';
 import { useTheme } from 'next-themes';
 

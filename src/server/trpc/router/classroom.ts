@@ -145,7 +145,7 @@ export const classRouter = router({
 		.query(async ({ ctx, input }) => {
 			const classroom = await ctx.prisma.classroom.findUniqueOrThrow({
 				where: { code: input.code },
-				include: { school: true, users: true, test: true },
+				include: { school: true, users: true, testTemplates: true },
 			});
 
 			const teacher = await ctx.prisma.usersOnClassrooms.findFirstOrThrow(

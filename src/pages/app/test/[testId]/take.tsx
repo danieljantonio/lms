@@ -1,117 +1,169 @@
-import date from 'date-and-time';
-import { Button, Card, Pagination } from 'flowbite-react';
+import { RouterTypes, trpc } from '@/lib/trpc';
+import { useEffect, useState } from 'react';
+
 import { NextPage } from 'next';
 import { useRouter } from 'next/router';
-import { useState } from 'react';
-import QuestionDetails from '../../../../components/tests/take/question-details.tests';
-import { trpc } from '../../../../lib/trpc';
-
-type ClassroomQueryProp = {
-	testId: string;
-};
+import date from 'date-and-time';
 
 const TakeTest: NextPage = () => {
-	const [questionNo, setQuestionNo] = useState<number>(1);
-	const [selectedId, setSelected] = useState<string>();
-	const router = useRouter();
-	const { testId } = router.query as ClassroomQueryProp;
+	const [questionNo, _setQuestionNo] = useState(1);
 
-	const trpcUtil = trpc.useContext();
-	const { data: testData, isLoading: testIsLoading } = trpc.test.getTestById.useQuery(
-		{ testId },
+	const router = useRouter();
+	const { testId } = router.query;
+
+	const utils = trpc.useContext();
+
+	const { data: test, isLoading } = trpc.studentTest.get.useQuery(
+		{
+			testId: testId as string,
+		},
 		{ refetchOnWindowFocus: false },
 	);
-	const { data, isLoading } = trpc.studentTest.get.useQuery({ testId }, { refetchOnWindowFocus: false });
-	const answerQuestion = trpc.studentTest.answer.useMutation({
+
+	const answer = trpc.studentTest.updateQuestion.useMutation({
 		onSuccess: (data) => {
-			setSelected(undefined); // set the selected to
-			setQuestionNo(data.newPage);
-			trpcUtil.studentTest.get.invalidate();
-		},
-	});
-
-	const submitTest = trpc.studentTest.submit.useMutation({
-		onSuccess: (success) => {
-			if (success) trpcUtil.studentTest.get.invalidate();
-		},
-	});
-
-	if (isLoading || testIsLoading) return <div>Loading...</div>;
-
-	if (!testData || !data) {
-		router.push(`/app/test/${testId}`);
-		return null;
-	}
-
-	const mutate = (newPage?: number) => {
-		if (selectedId)
-			answerQuestion.mutate({
-				studentTestId: data.id,
-				questionId: data.questions[questionNo - 1]?.questionId || '',
-				chosenAnswerId: selectedId,
-				newPage: newPage || 1,
+			utils.studentTest.getQuestion.invalidate({
+				questionOrder: data.questionOrder,
+				studentTestId: data.studentTestId,
 			});
+		},
+	});
+
+	if (isLoading) return <div>Loading...</div>;
+	if (!test) return <div>Failed to fetch test data</div>;
+
+	if (date.subtract(new Date(test.endDate), new Date()).toSeconds() < 0)
+		return (
+			<div className="card border w-full h-56">
+				<div className="loading m-auto">
+					Test has ended: Time limit reached
+				</div>
+			</div>
+		);
+
+	const questionNumbers = () => {
+		const arr = [];
+		for (let i = 0; i < test.questionCount; i++) {
+			arr.push(i + 1);
+		}
+		return arr;
 	};
 
-	if (date.subtract(data.endDate, new Date()).toMilliseconds() < 1 || data.submittedDate) {
-		mutate();
-		return <Card>Test has ended</Card>;
-	}
-
-	const onSubmitTest = () => {
-		mutate();
-		submitTest.mutate({ id: data.id });
-	};
-
-	const onPageChange = (newPage: number) => {
-		if (!selectedId) setQuestionNo(newPage);
-		mutate(newPage);
+	const setQuestionNo = (num: number) => {
+		if (!(num > 0 && num <= test.questionCount)) return;
+		_setQuestionNo(num);
 	};
 
 	return (
 		<div className="flex w-full flex-col text-center">
-			<p className="mx-auto text-3xl font-semibold">
-				{testData.test.classroom.name} - {testData.test.name}
-			</p>
+			<div className="mb-4">
+				<p className="mx-auto text-3xl font-semibold">
+					{/* Countdown Timer */}
+					{/* Test Stats */}
 
-			<div className="my-8 flex gap-6 mx-auto">
-				<Card className="max-w-5xl">
-					Time Left: {date.subtract(data.endDate, new Date()).toMinutes().toFixed()} minutes
-				</Card>
-				<Card className="max-w-5xl">
-					Questions left: {data.questions.filter((q) => q.chosenAnswerId).length}/{data.questions.length}
-				</Card>
+					{/* Question and Answer */}
+					{test.testTemplate.name}
+				</p>
+				<p className="text-lg">
+					Question {questionNo} of {test.questionCount}
+				</p>
 			</div>
-
-			<Pagination
-				className="mb-10 flex items-center justify-center text-center"
-				currentPage={questionNo}
-				layout="pagination"
-				onPageChange={onPageChange}
-				showIcons={true}
-				totalPages={testData.test.questions.length}
+			<RenderQuestion
+				updateIsLoading={answer.isLoading}
+				answerQuestion={(data) => answer.mutate(data)}
+				questionOrder={questionNo}
+				studentTestId={test.id}
 			/>
+			<div className="input-group w-fit mx-auto mt-4">
+				<button
+					className="btn"
+					onClick={() => setQuestionNo(questionNo - 1)}
+					disabled={questionNo === 1}>
+					«
+				</button>
+				<select
+					value={questionNo}
+					className="select select-bordered"
+					onChange={(e) => setQuestionNo(parseInt(e.target.value))}>
+					{questionNumbers().map((qNo) => (
+						<option value={qNo} key={qNo}>
+							Q{qNo}
+						</option>
+					))}
+				</select>
+				<button
+					className="btn"
+					onClick={() => setQuestionNo(questionNo + 1)}
+					disabled={questionNo === test.questionCount}>
+					»
+				</button>
+			</div>
+		</div>
+	);
+};
 
-			{answerQuestion.isLoading ? (
-				<div>Loading...</div>
-			) : (
-				data.questions.length >= questionNo && (
-					<div className="relative">
-						<QuestionDetails
-							studentTestId={data.id}
-							selectedAnswer={setSelected}
-							questionId={data.questions[questionNo - 1]?.questionId || ''}
-						/>
-						<div className="max-w-screen-md mx-auto">
-							{questionNo === data.questions.length && (
-								<Button className="float-right mt-6" onClick={onSubmitTest}>
-									Save & Submit
-								</Button>
-							)}
-						</div>
-					</div>
-				)
-			)}
+type RenderQuestionProps = {
+	questionOrder: number;
+	studentTestId: string;
+	updateIsLoading: boolean;
+	answerQuestion: (
+		data: RouterTypes['studentTest']['updateQuestion']['input'],
+	) => void;
+};
+
+const RenderQuestion = ({
+	questionOrder,
+	studentTestId,
+	answerQuestion,
+	updateIsLoading,
+}: RenderQuestionProps) => {
+	const [selected, setSelected] = useState<string>();
+	const [mounted, setMounted] = useState<boolean>(false);
+
+	const { data, isLoading } = trpc.studentTest.getQuestion.useQuery(
+		{
+			questionOrder,
+			studentTestId,
+		},
+		{ refetchOnWindowFocus: false },
+	);
+
+	useEffect(() => {
+		if (data?.chosenAnswerId) {
+			setSelected(data.chosenAnswerId);
+			setMounted(true);
+		}
+	}, [data]);
+
+	if (isLoading || !data || !mounted)
+		return (
+			<div className="card border w-full h-56">
+				<div className="loading m-auto">Loading...</div>
+			</div>
+		);
+
+	return (
+		<div className="card border">
+			<div className="card-body">
+				<p className="text-xl">{data.question.question}</p>
+				{data.question.choices.map(({ id, answer }) => (
+					<button
+						key={id}
+						onClick={() => {
+							setSelected(id);
+							answerQuestion({
+								chosenAnswerId: id,
+								studentTestId,
+								questionId: data.questionId,
+							});
+						}}
+						className={`btn no-animation ${
+							selected === id ? 'btn-success' : 'btn-outline'
+						} ${updateIsLoading ? 'btn-disabled' : ''}`}>
+						{answer}
+					</button>
+				))}
+			</div>
 		</div>
 	);
 };

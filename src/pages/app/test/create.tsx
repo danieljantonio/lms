@@ -1,11 +1,10 @@
-import { Button, Card, Label, Select, TextInput } from 'flowbite-react';
 import { NextPage } from 'next';
 import { useRouter } from 'next/router';
 import { ReactNode, useState } from 'react';
-import QCInputRequiredModal from '../../../components/tests/common/qc-input-required.modal';
-import QuestionInput from '../../../components/tests/take/question-input.tests';
-import { trpc } from '../../../lib/trpc';
-import { QuestionProps } from '../../../types/tests';
+import QCInputRequiredModal from '@/components/tests/common/qc-input-required.modal';
+import QuestionInput from '@/components/tests/create/question-input.tests';
+import { trpc } from '@/lib/trpc';
+import { QuestionProps } from '@/types/tests';
 
 const CreateTest: NextPage = () => {
 	// Hooks
@@ -36,7 +35,7 @@ const CreateTest: NextPage = () => {
 	// Methods
 	const addNewQuestion = async () => {
 		setLoading(true);
-		let _questions = questions;
+		const _questions = questions;
 		_questions.push({
 			question: '',
 			choices: [],
@@ -47,7 +46,7 @@ const CreateTest: NextPage = () => {
 
 	const removeQuestion = async (index: number) => {
 		setLoading(true);
-		let _questions = questions;
+		const _questions = questions;
 		_questions.splice(index, 1);
 		await setQuestions(_questions);
 		setLoading(false);
@@ -57,7 +56,7 @@ const CreateTest: NextPage = () => {
 		newQuestion: QuestionProps,
 		index: number,
 	) => {
-		let _questions = questions;
+		const _questions = questions;
 		_questions[index] = newQuestion;
 		await setQuestions(_questions);
 	};
@@ -176,25 +175,22 @@ const CreateTest: NextPage = () => {
 				setClose={() => setModalShow(false)}
 			/>
 
-			<Button
+			<button
 				disabled={createTest.isLoading}
-				fullSized
-				color="light"
-				className="mt-4 shadow-md"
 				onClick={() => {
 					console.log(questions);
 					addNewQuestion();
-				}}>
+				}}
+				className="btn mt-4 border border-inherit btn-ghost w-full">
 				Add Question
-			</Button>
-			<Button
+			</button>
+
+			<button
+				className="btn btn-primary w-full mt-4"
 				onClick={create}
-				disabled={isDisabled()}
-				type="submit"
-				fullSized
-				className="mt-4">
+				disabled={isDisabled()}>
 				Create Test
-			</Button>
+			</button>
 		</div>
 	);
 };

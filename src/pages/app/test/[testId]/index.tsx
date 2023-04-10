@@ -1,73 +1,83 @@
-import { Button, Card } from 'flowbite-react';
 import { NextPage } from 'next';
+import StartPrompt from '@/components/tests/common/start-prompt.tests';
+import date from 'date-and-time';
+import { trpc } from '@/lib/trpc';
+import useAuth from '@/lib/hooks/useAuth';
 import { useRouter } from 'next/router';
-import { useState } from 'react';
-import StartPrompt from '../../../../components/tests/common/start-prompt.tests';
-import { formatDate, validateTestIsOver } from '../../../../lib/helpers/date.helpers';
-import { trpc } from '../../../../lib/trpc';
 
 type ClassroomQueryProp = {
 	testId: string;
 };
 
 const TestDetails: NextPage = () => {
-	const [modalState, toggleModal] = useState<boolean>(false);
-
 	const router = useRouter();
 	const { testId } = router.query as ClassroomQueryProp;
+	const { role } = useAuth();
 
-	const { data, isLoading } = trpc.test.getTestById.useQuery({ testId }, { refetchOnWindowFocus: false });
+	const { data: test, isLoading: fetchingTest } =
+		trpc.test.getTestById.useQuery(
+			{ testId },
+			{ refetchOnWindowFocus: false },
+		);
 
-	const takeTest = trpc.studentTest.create.useMutation({
+	const { data: hasTaken, isLoading: hasTakenLoading } =
+		trpc.studentTest.hasTaken.useQuery(
+			{ testId },
+			{ refetchOnWindowFocus: false },
+		);
+	const createStudentTest = trpc.studentTest.create.useMutation({
 		onSuccess: () => {
 			router.push(`/app/test/${testId}/take`);
 		},
 	});
 
-	if (isLoading) return <div>Loading...</div>;
-	if (!data) return <div>Test not found</div>;
+	if (fetchingTest) return <div>Loading...</div>;
+	if (!test) return <div>Test not found</div>;
 
-	const { test, existingTest } = data;
-
-	const getButtonMessage = () => {
-		if (existingTest) {
-			if (validateTestIsOver(existingTest.endDate)) return { disabled: true, text: 'Test Over' };
-			if (existingTest.submittedDate) return { disabled: true, text: 'Test Submitted' };
-			return { disabled: false, text: 'Continue Test' };
-		}
-		if (validateTestIsOver(test.endDate)) return { disabled: true, text: 'Test overdue' };
-		return { disabled: false, text: 'Take test' };
-	};
-
-	const onStartTest = () => {
-		takeTest.mutate({ testId, classroomId: test.classroomId });
-	};
-
-	const onButtonClick = () => {
-		if (existingTest) router.push(`/app/test/${existingTest.testId}/take`);
-		else toggleModal(true);
+	const takeTest = () => {
+		createStudentTest.mutate({
+			testId: test.id,
+			duration: test.duration,
+		});
 	};
 
 	return (
-		<div className="mt-6">
-			<Card>
-				<div className="mb-6 text-2xl">{test?.name}</div>
-				<div>
-					<p>Duration: {test.duration} minutes</p>
-					<p>Start Date: {formatDate(test.startDate)}</p>
-					<p>End Date: {formatDate(test.endDate)}</p>
-					<p>Questions: {test.questions.length}</p>
-					<StartPrompt
-						isOpen={modalState}
-						toggle={toggleModal}
-						onStartTest={onStartTest}
-						testDetails={test}
-					/>
-					<Button className="mt-8" disabled={getButtonMessage().disabled} onClick={onButtonClick}>
-						{getButtonMessage().text}
-					</Button>
-				</div>
-			</Card>
+		<div className="mt-6 flex flex-col gap-4">
+			<div className="divider text-xl">Test Details</div>
+			<ul className="steps steps-vertical">
+				<li data-content="" className="step step-primary">
+					{test.classroom.name}: {test.name}
+				</li>
+				<li
+					data-content={test.questions.length}
+					className="step step-primary">
+					Questions
+				</li>
+				<li data-content={test.duration} className="step step-primary">
+					Minutes Duration
+				</li>
+				<li data-content="" className="step step-primary">
+					Between {date.format(test.startDate, 'DD MMM')}
+					{' - '}
+					{date.format(test.endDate, 'DD MMM')}
+				</li>
+			</ul>
+			{/* {role === 'STUDENT' ? (
+				) : (
+					<button className="btn w-fit btn-disabled">Edit Test</button>
+				)} */}
+			<label
+				htmlFor="test-start-prompt"
+				className={`btn w-fit ${
+					hasTaken || hasTakenLoading ? 'btn-disabled' : ''
+				}`}>
+				{hasTaken ? 'Taken' : 'Take Test'}
+			</label>
+			<StartPrompt
+				testDetails={test}
+				onTakeTest={takeTest}
+				loading={createStudentTest.isLoading}
+			/>
 		</div>
 	);
 };

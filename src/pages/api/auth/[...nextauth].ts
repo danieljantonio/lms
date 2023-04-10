@@ -3,8 +3,8 @@ import CredentialsProvider from 'next-auth/providers/credentials';
 // Prisma adapter for NextAuth, optional and can be removed
 import { PrismaAdapter } from '@next-auth/prisma-adapter';
 
-import { prisma } from '../../../server/db/client';
-import { comparePassword } from '../../../server/trpc/router/auth';
+import { prisma } from '@/server/db/client';
+import { comparePassword } from '@/server/trpc/router/auth';
 
 export const authOptions: NextAuthOptions = {
 	session: { strategy: 'jwt' },

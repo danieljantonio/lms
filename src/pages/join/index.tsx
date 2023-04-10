@@ -1,9 +1,8 @@
-import { Button, TextInput } from 'flowbite-react';
 import { NextPage } from 'next';
 import { useRouter } from 'next/router';
 import { useState } from 'react';
-import useAuth from '../../lib/hooks/useAuth';
-import { trpc } from '../../lib/trpc';
+import useAuth from '@/lib/hooks/useAuth';
+import { trpc } from '@/lib/trpc';
 
 const JoinSchool: NextPage = () => {
 	const { user, isLoading, isAuthenticated } = useAuth();

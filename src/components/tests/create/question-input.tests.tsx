@@ -1,10 +1,6 @@
 import { FC, useEffect, useState } from 'react';
-import {
-	ChoiceData,
-	ChoiceProps,
-	QuestionInputProps,
-} from '../../../types/tests';
-import ChoiceInput from '../create/choice-input.tests';
+import { ChoiceData, ChoiceProps, QuestionInputProps } from '@/types/tests';
+import ChoiceInput from './choice-input.tests';
 import { XCircle } from '@phosphor-icons/react';
 
 const QuestionInput: FC<QuestionInputProps> = ({
@@ -19,7 +15,7 @@ const QuestionInput: FC<QuestionInputProps> = ({
 
 	const addNewChoice = async () => {
 		setLoading(true);
-		let qc = choices;
+		const qc = choices;
 		qc.push({
 			answer: '',
 			isCorrect: false,
@@ -30,7 +26,7 @@ const QuestionInput: FC<QuestionInputProps> = ({
 
 	const removeChoice = async (index: number) => {
 		setLoading(true);
-		let qc = choices;
+		const qc = choices;
 		qc.splice(index, 1);
 		await setChoices(qc);
 		setLoading(false);

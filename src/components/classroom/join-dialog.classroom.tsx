@@ -1,5 +1,5 @@
 import { ChalkboardTeacher } from '@phosphor-icons/react';
-import { trpc } from '../../lib/trpc';
+import { trpc } from '@/lib/trpc';
 import { useRouter } from 'next/router';
 import { useState } from 'react';
 
