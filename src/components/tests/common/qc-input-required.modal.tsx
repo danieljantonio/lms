@@ -15,6 +15,7 @@ const QCInputRequiredModal: FC<Props> = ({ show, setClose }) => {
 				id="my-modal-2"
 				className="modal-toggle"
 				checked={show}
+				onChange={setClose}
 			/>
 
 			<div className="modal" id="my-modal-2">

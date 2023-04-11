@@ -17,10 +17,12 @@ export type ChoiceProps = {
 export type QuestionProps = {
 	question: string;
 	choices: ChoiceProp[];
+	imageUrl?: string;
+	imageFile?: File;
 };
 
 export type QuestionInputProps = {
-	updateQuestion: any;
+	updateQuestion: (newQuestion: QuestionProps) => void;
 	removeQuestion: () => void;
 	index: number;
 	data?: QuestionProps;

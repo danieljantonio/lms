@@ -21,11 +21,6 @@ const CreateTest: NextPage = () => {
 	const { classroom: classroomId = '', code: classroomCode = '' } = query;
 
 	// tRPC
-	const { data: classrooms, isLoading: loadingClassroom } =
-		trpc.classroom.getClassrooms.useQuery(undefined, {
-			refetchOnWindowFocus: false,
-		});
-
 	const createTest = trpc.test.create.useMutation({
 		onSuccess(data) {
 			router.push(`/app/test/${data.id}`);
@@ -38,6 +33,8 @@ const CreateTest: NextPage = () => {
 		const _questions = questions;
 		_questions.push({
 			question: '',
+			imageFile: undefined,
+			imageUrl: undefined,
 			choices: [],
 		});
 		await setQuestions(_questions);
@@ -56,9 +53,11 @@ const CreateTest: NextPage = () => {
 		newQuestion: QuestionProps,
 		index: number,
 	) => {
+		setLoading(true);
 		const _questions = questions;
 		_questions[index] = newQuestion;
 		await setQuestions(_questions);
+		setLoading(false);
 	};
 
 	const isDisabled = () => {
