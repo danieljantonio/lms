@@ -77,14 +77,14 @@ model School {
 }
 
 model Classroom {
-  id       String              @id @default(cuid())
-  name     String
-  code     String              @unique
-  schoolId String
-  school   School              @relation(fields: [schoolId], references: [id], onDelete: Cascade)
-  users    UsersOnClassrooms[]
-  testTemplates     TestTemplate[]
-  grade    Int
+  id            String              @id @default(cuid())
+  name          String
+  code          String              @unique
+  schoolId      String
+  school        School              @relation(fields: [schoolId], references: [id], onDelete: Cascade)
+  users         UsersOnClassrooms[]
+  testTemplates TestTemplate[]
+  grade         Int
 
   @@index([schoolId])
 }
@@ -117,7 +117,7 @@ model TestTemplate {
 model StudentTest {
   id                 String               @id @default(cuid())
   student            User                 @relation(fields: [studentId], references: [id])
-  testTemplate               TestTemplate         @relation(fields: [testTemplateId], references: [id])
+  testTemplate       TestTemplate         @relation(fields: [testTemplateId], references: [id])
   startDate          DateTime             @default(now())
   endDate            DateTime
   studentId          String
@@ -146,6 +146,7 @@ model Question {
   testTemplate       TestTemplate?        @relation(fields: [testTemplateId], references: [id])
   testTemplateId     String?
   StudentTestResults StudentTestResults[]
+  imageUrl           String?
 
   @@index([testTemplateId])
 }
