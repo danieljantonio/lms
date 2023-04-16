@@ -5,37 +5,40 @@ import QCInputRequiredModal from '@/components/tests/common/qc-input-required.mo
 import QuestionInput from '@/components/tests/create/question-input.tests';
 import { trpc } from '@/lib/trpc';
 import { QuestionProps } from '@/types/tests';
+import { uploadPresignedImage } from '@/lib/helpers/common.helpers';
 
 const CreateTest: NextPage = () => {
 	// Hooks
+	const router = useRouter();
 	const [loading, setLoading] = useState<boolean>(false);
+
+	// Form Hooks
 	const [questions, setQuestions] = useState<QuestionProps[]>([]);
 	const [testName, setTestName] = useState<string>('');
 	const [startDate, setStartDate] = useState<Date>(new Date());
 	const [endDate, setEndDate] = useState<Date>(new Date());
 	const [testDuration, setTestDuration] = useState<number>(90);
 	const [modalShow, setModalShow] = useState<boolean>(false);
-	const router = useRouter();
 
 	const { query } = router;
 	const { classroom: classroomId = '', code: classroomCode = '' } = query;
 
 	// tRPC
-	const createTest = trpc.test.create.useMutation({
-		onSuccess(data) {
-			router.push(`/app/test/${data.id}`);
-		},
-	});
+	const createTest = trpc.test.create.useMutation();
+
+	const { mutateAsync: getPresignedUrl } =
+		trpc.s3.getStandardUploadPresignedUrl.useMutation();
 
 	// Methods
 	const addNewQuestion = async () => {
 		setLoading(true);
 		const _questions = questions;
 		_questions.push({
+			questionNo: _questions.length + 1,
 			question: '',
 			imageFile: undefined,
-			imageUrl: undefined,
 			choices: [],
+			hasImage: false,
 		});
 		await setQuestions(_questions);
 		setLoading(false);
@@ -86,14 +89,33 @@ const CreateTest: NextPage = () => {
 			return;
 		}
 
-		createTest.mutate({
-			testName,
-			startDate: new Date(startDate),
-			endDate: new Date(endDate),
-			questions,
-			classroomId: classroomId as string,
-			duration: testDuration,
-		});
+		createTest
+			.mutateAsync({
+				testName,
+				startDate: new Date(startDate),
+				endDate: new Date(endDate),
+				questions,
+				classroomId: classroomId as string,
+				duration: testDuration,
+			})
+			.then((data) => {
+				const asdf = data.questions.map((question) => {
+					if (question.hasImage) {
+						return getPresignedUrl({
+							key: `${question.testTemplateId}/${question.id}`,
+						}).then((url) => {
+							return uploadPresignedImage(
+								url,
+								questions[question.questionNo - 1]?.imageFile,
+							);
+						});
+					}
+				});
+				Promise.all(asdf).then(() => {
+					console.log('All of the images has been uploaded');
+					router.push(`/app/test/${data.id}`);
+				});
+			});
 	};
 
 	return (
@@ -177,7 +199,6 @@ const CreateTest: NextPage = () => {
 			<button
 				disabled={createTest.isLoading}
 				onClick={() => {
-					console.log(questions);
 					addNewQuestion();
 				}}
 				className="btn mt-4 border border-inherit btn-ghost w-full">

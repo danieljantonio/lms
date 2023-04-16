@@ -143,10 +143,11 @@ model Question {
   questionNo         Int
   question           String
   choices            Choice[]
-  testTemplate       TestTemplate?        @relation(fields: [testTemplateId], references: [id])
+  testTemplate       TestTemplate?        @relation(fields: [testTemplateId], references: [id], onDelete: Cascade)
   testTemplateId     String?
   StudentTestResults StudentTestResults[]
   imageUrl           String?
+  hasImage           Boolean              @default(false)
 
   @@index([testTemplateId])
 }

@@ -14,7 +14,7 @@ const QuestionInput: FC<QuestionInputProps> = ({
 	const [choices, setChoices] = useState<ChoiceProps[]>(data?.choices || []);
 	const [image, setImage] = useState<File | undefined>(data?.imageFile);
 	const [previewImage, setPreviewImage] = useState<string | undefined>(
-		data?.imageUrl,
+		data?.imageFile ? URL.createObjectURL(data?.imageFile) : undefined,
 	);
 
 	const addNewChoice = async () => {
@@ -37,13 +37,12 @@ const QuestionInput: FC<QuestionInputProps> = ({
 	};
 
 	useEffect(() => {
-		console.log('useEffect', data);
-
 		updateQuestion({
 			question,
 			choices,
 			imageFile: image,
-			imageUrl: previewImage,
+			questionNo: index + 1,
+			hasImage: image ? true : false,
 		});
 	}, [choices, question, image]);
 
@@ -65,8 +64,8 @@ const QuestionInput: FC<QuestionInputProps> = ({
 		const { files } = event.target;
 
 		if (files?.length === 1) {
-			console.log(files[0]);
-			const previewImage = URL.createObjectURL(files[0] as Blob);
+			const file = files[0] as File;
+			const previewImage = URL.createObjectURL(file);
 			setPreviewImage(previewImage);
 			setImage(files[0]);
 		}
@@ -145,9 +144,6 @@ const QuestionInput: FC<QuestionInputProps> = ({
 						onClick={addNewChoice}
 						disabled={choices.length >= 4}>
 						Add Choice
-					</button>
-					<button className="btn" onClick={() => console.log(data)}>
-						log
 					</button>
 				</div>
 			</div>

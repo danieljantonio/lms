@@ -1,6 +1,7 @@
 import { TRPCError } from '@trpc/server';
 import { z } from 'zod';
 import { protectedProcedure, router } from '../trpc';
+import { Question } from '@prisma/client';
 
 const MCQChoices = z.object({
 	answer: z.string(),
@@ -9,7 +10,9 @@ const MCQChoices = z.object({
 
 const MCQQuestions = z.object({
 	question: z.string(),
+	questionNo: z.number(),
 	choices: z.array(MCQChoices),
+	hasImage: z.boolean().optional(),
 });
 
 export const testRouter = router({
@@ -41,22 +44,26 @@ export const testRouter = router({
 				},
 			});
 
-			input.questions.forEach(async (question, index) => {
-				await ctx.prisma.question.create({
+			const questions: Question[] = [];
+
+			for (const question of input.questions) {
+				let newQuestion = await ctx.prisma.question.create({
 					data: {
 						question: question.question,
-						questionNo: index + 1,
+						questionNo: question.questionNo,
 						choices: {
 							createMany: {
 								data: question.choices,
 							},
 						},
+						hasImage: question.hasImage,
 						testTemplateId: newTest.id,
 					},
 				});
-			});
+				questions.push(newQuestion);
+			}
 
-			return newTest;
+			return { ...newTest, questions };
 		}),
 	getTestById: protectedProcedure
 		.input(
