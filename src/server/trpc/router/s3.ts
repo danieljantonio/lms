@@ -5,15 +5,22 @@ import { PutObjectCommand } from '@aws-sdk/client-s3';
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 
 export const s3Router = router({
-	getObjects: protectedProcedure.query(async ({ ctx }) => {
-		const { s3 } = ctx;
+	getObjects: protectedProcedure
+		.input(
+			z.object({
+				prefix: z.string(),
+			}),
+		)
+		.query(async ({ ctx, input }) => {
+			const { s3 } = ctx;
 
-		const listObjectsOutput = await s3.listObjectsV2({
-			Bucket: env.AWS_BUCKET_NAME,
-		});
+			const listObjectsOutput = await s3.listObjectsV2({
+				Bucket: env.AWS_BUCKET_NAME,
+				Prefix: input.prefix,
+			});
 
-		return listObjectsOutput.Contents ?? [];
-	}),
+			return listObjectsOutput.Contents ?? [];
+		}),
 	getStandardUploadPresignedUrl: protectedProcedure
 		.input(
 			z.object({

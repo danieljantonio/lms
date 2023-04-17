@@ -102,7 +102,7 @@ const CreateTest: NextPage = () => {
 				const asdf = data.questions.map((question) => {
 					if (question.hasImage) {
 						return getPresignedUrl({
-							key: `${question.testTemplateId}/${question.id}`,
+							key: `test-template/${question.testTemplateId}/${question.id}`,
 						}).then((url) => {
 							return uploadPresignedImage(
 								url,

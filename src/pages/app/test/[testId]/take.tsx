@@ -118,7 +118,16 @@ const RenderQuestion = ({
 	updateIsLoading,
 }: RenderQuestionProps) => {
 	const [selected, setSelected] = useState<string>();
-	const [mounted, setMounted] = useState<boolean>(false);
+	const [imagePrefix, setImagePrefix] = useState<string | undefined>();
+
+	const image = trpc.s3.getObjects.useQuery(
+		{
+			prefix: imagePrefix || '/',
+		},
+		{
+			enabled: false,
+		},
+	);
 
 	const { data, isLoading } = trpc.studentTest.getQuestion.useQuery(
 		{
@@ -131,11 +140,21 @@ const RenderQuestion = ({
 	useEffect(() => {
 		if (data?.chosenAnswerId) {
 			setSelected(data.chosenAnswerId);
-			setMounted(true);
+		}
+		if (data && data.question.hasImage) {
+			setImagePrefix(
+				`${data.question.testTemplateId}/${data.question.id}`,
+			);
 		}
 	}, [data]);
 
-	if (isLoading || !data || !mounted)
+	useEffect(() => {
+		if (imagePrefix && data && data.question.hasImage) {
+			image.refetch();
+		}
+	}, [imagePrefix]);
+
+	if (isLoading || !data)
 		return (
 			<div className="card border w-full h-56">
 				<div className="loading m-auto">Loading...</div>
@@ -145,6 +164,19 @@ const RenderQuestion = ({
 	return (
 		<div className="card border">
 			<div className="card-body">
+				{data.question.hasImage &&
+					image.data &&
+					image.data.map((object) => {
+						return (
+							<div className="w-fit mx-auto">
+								<img
+									src={`https://ignosi-lms.s3.ap-southeast-1.amazonaws.com/test-template/${object.Key}`}
+									alt="Uploaded Image"
+									className="max-h-52"
+								/>
+							</div>
+						);
+					})}
 				<p className="text-xl">{data.question.question}</p>
 				{data.question.choices.map(({ id, answer }) => (
 					<button
