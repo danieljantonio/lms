@@ -117,7 +117,7 @@ model TestTemplate {
 model StudentTest {
   id                 String               @id @default(cuid())
   student            User                 @relation(fields: [studentId], references: [id])
-  testTemplate       TestTemplate         @relation(fields: [testTemplateId], references: [id])
+  testTemplate       TestTemplate         @relation(fields: [testTemplateId], references: [id], onDelete: Cascade)
   startDate          DateTime             @default(now())
   endDate            DateTime
   studentId          String
@@ -127,7 +127,7 @@ model StudentTest {
 
 model StudentTestResults {
   questionOrder  Int
-  studentTest    StudentTest @relation(fields: [studentTestId], references: [id])
+  studentTest    StudentTest @relation(fields: [studentTestId], references: [id], onDelete: Cascade)
   studentTestId  String
   question       Question    @relation(fields: [questionId], references: [id])
   questionId     String
@@ -146,7 +146,6 @@ model Question {
   testTemplate       TestTemplate?        @relation(fields: [testTemplateId], references: [id], onDelete: Cascade)
   testTemplateId     String?
   StudentTestResults StudentTestResults[]
-  imageUrl           String?
   hasImage           Boolean              @default(false)
 
   @@index([testTemplateId])
