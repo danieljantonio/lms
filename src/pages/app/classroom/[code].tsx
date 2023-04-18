@@ -41,19 +41,11 @@ const Classroom: NextPage = () => {
 						/>
 					);
 				})}
-				<TestItem
-					onClick={() => null}
-					name="Ujian Akhir Semester"
-					startDate={new Date()}
-					endDate={new Date()}
-					graded
-				/>
-				<TestItem
-					onClick={() => null}
-					name="Latihan Ujian Akhir Semester"
-					startDate={new Date()}
-					endDate={new Date()}
-				/>
+				{classroom.testTemplates?.length === 0 ? (
+					<div className="border h-24 w-full rounded-lg flex">
+						<p className="m-auto">No Tests Available</p>
+					</div>
+				) : null}
 				<Link
 					href={`/app/test/create?classroom=${classroom.id}&code=${classroom.code}`}
 					className="btn btn-primary gap-2">
