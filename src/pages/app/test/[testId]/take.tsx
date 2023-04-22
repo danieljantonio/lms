@@ -143,7 +143,7 @@ const RenderQuestion = ({
 		}
 		if (data && data.question.hasImage) {
 			setImagePrefix(
-				`${data.question.testTemplateId}/${data.question.id}`,
+				`test-template/${data.question.testTemplateId}/${data.question.id}`,
 			);
 		}
 	}, [data]);
@@ -168,9 +168,9 @@ const RenderQuestion = ({
 					image.data &&
 					image.data.map((object) => {
 						return (
-							<div className="w-fit mx-auto">
+							<div className="w-fit mx-auto" key={object.Key}>
 								<img
-									src={`https://ignosi-lms.s3.ap-southeast-1.amazonaws.com/test-template/${object.Key}`}
+									src={`https://ignosi-lms.s3.ap-southeast-1.amazonaws.com/${object.Key}`}
 									alt="Uploaded Image"
 									className="max-h-52"
 								/>
