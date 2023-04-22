@@ -16,6 +16,7 @@ const QuestionInput: FC<QuestionInputProps> = ({
 	const [previewImage, setPreviewImage] = useState<string | undefined>(
 		data?.imageFile ? URL.createObjectURL(data?.imageFile) : undefined,
 	);
+	const [isEssay, _setIsEssay] = useState(data?.isEssay || false);
 
 	const addNewChoice = async () => {
 		setLoading(true);
@@ -36,6 +37,11 @@ const QuestionInput: FC<QuestionInputProps> = ({
 		setLoading(false);
 	};
 
+	const setIsEssay = (value: boolean) => {
+		_setIsEssay(value);
+		setChoices([]);
+	};
+
 	useEffect(() => {
 		updateQuestion({
 			question,
@@ -43,6 +49,7 @@ const QuestionInput: FC<QuestionInputProps> = ({
 			imageFile: image,
 			questionNo: index + 1,
 			hasImage: image ? true : false,
+			isEssay,
 		});
 	}, [choices, question, image]);
 
@@ -80,7 +87,8 @@ const QuestionInput: FC<QuestionInputProps> = ({
 		<div className="card border mt-4">
 			<div className="relative card-body">
 				<label className="label text-sm pl-0">
-					Question {index + 1}
+					Question {index + 1}:{' '}
+					{isEssay ? 'Essay' : 'Multiple Choice'}
 				</label>
 				{previewImage ? (
 					<div className="w-fit mx-auto relative">
@@ -125,26 +133,36 @@ const QuestionInput: FC<QuestionInputProps> = ({
 						);
 					})
 				)}
-				<div className="card-actions justify-end">
-					{previewImage ? null : (
-						// <button
-						// 	className="btn btn-warning"
-						// 	onClick={clearImage}>
-						// 	Remove Image
-						// </button>
-						<input
-							onChange={(e) => handleImage(e)}
-							type="file"
-							accept="image/jpeg, image/png, image/jpg"
-							className="file-input file-input-bordered file-input-info w-full max-w-xs"
-						/>
-					)}
-					<button
-						className="btn btn-info text-white"
-						onClick={addNewChoice}
-						disabled={choices.length >= 4}>
-						Add Choice
-					</button>
+				<div className="card-actions w-full justify-between">
+					<div className="form-control w-44 justify-start">
+						<label className="cursor-pointer label">
+							<span className="label-text">Essay Question</span>
+							<input
+								type="checkbox"
+								className="toggle toggle-accent"
+								onChange={() => setIsEssay(!isEssay)}
+								checked={isEssay}
+							/>
+						</label>
+					</div>
+					<div className="justify-end card-actions">
+						{previewImage ? null : (
+							<input
+								onChange={(e) => handleImage(e)}
+								type="file"
+								accept="image/jpeg, image/png, image/jpg"
+								className="file-input file-input-bordered file-input-info w-full max-w-xs"
+							/>
+						)}
+						{isEssay ? null : (
+							<button
+								className="btn btn-info text-white"
+								onClick={addNewChoice}
+								disabled={choices.length >= 4}>
+								Add Choice
+							</button>
+						)}
+					</div>
 				</div>
 			</div>
 		</div>

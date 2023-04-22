@@ -133,6 +133,7 @@ model StudentTestResults {
   questionId     String
   chosenAnswer   Choice?     @relation(fields: [chosenAnswerId], references: [id])
   chosenAnswerId String?
+  essayAnswer    String?
 
   @@unique([studentTestId, questionId], map: "studentTestResultsId")
   @@index([studentTestId, questionId])
@@ -147,6 +148,7 @@ model Question {
   testTemplateId     String?
   StudentTestResults StudentTestResults[]
   hasImage           Boolean              @default(false)
+  isEssay            Boolean              @default(false)
 
   @@index([testTemplateId])
 }

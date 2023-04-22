@@ -39,6 +39,7 @@ const CreateTest: NextPage = () => {
 			imageFile: undefined,
 			choices: [],
 			hasImage: false,
+			isEssay: false,
 		});
 		await setQuestions(_questions);
 		setLoading(false);
@@ -74,20 +75,34 @@ const CreateTest: NextPage = () => {
 		);
 	};
 
-	const create = () => {
-		if (isDisabled()) return;
+	const filterQuestions = () => {
+		// non essay questions should have its choices validated.
+		const nonEssayQuestions = questions.filter((q) => !q.isEssay);
+		const essayQuestions = questions.filter((q) => q.isEssay);
 
-		const allowCreate = questions.every(
+		// neq stands for (n)on (e)ssay (q)uestions
+		const neqValidate = nonEssayQuestions.every(
 			(q) =>
 				q.question !== '' &&
 				q.choices.some((c) => c.isCorrect) &&
 				q.choices.every((c) => c.answer !== ''),
 		);
 
-		if (!allowCreate) {
+		// eq stands for (e)ssay (q)uestions
+		const eqValidate = essayQuestions.every((q) => q.question !== '');
+
+		if (!neqValidate || !eqValidate) {
 			setModalShow(true);
-			return;
+			return false;
 		}
+
+		return true;
+	};
+
+	const create = () => {
+		if (isDisabled()) return;
+
+		if (!filterQuestions()) return;
 
 		createTest
 			.mutateAsync({
