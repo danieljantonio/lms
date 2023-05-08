@@ -166,9 +166,9 @@ const RenderQuestion = ({
 			<div className="card-body">
 				{data.question.hasImage &&
 					image.data &&
-					image.data.map((object) => {
+					image.data.map((object, i) => {
 						return (
-							<div className="w-fit mx-auto">
+							<div key={i} className="w-fit mx-auto">
 								<img
 									src={`https://ignosi-lms.s3.ap-southeast-1.amazonaws.com/test-template/${object.Key}`}
 									alt="Uploaded Image"
