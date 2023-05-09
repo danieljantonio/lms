@@ -1,7 +1,8 @@
+import { protectedProcedure, router } from '../trpc';
+
+import { Question } from '@prisma/client';
 import { TRPCError } from '@trpc/server';
 import { z } from 'zod';
-import { protectedProcedure, router } from '../trpc';
-import { Question } from '@prisma/client';
 
 const MCQChoices = z.object({
 	answer: z.string(),
@@ -48,7 +49,7 @@ export const testRouter = router({
 			const questions: Question[] = [];
 
 			for (const question of input.questions) {
-				let newQuestion = await ctx.prisma.question.create({
+				const newQuestion = await ctx.prisma.question.create({
 					data: {
 						question: question.question,
 						questionNo: question.questionNo,
