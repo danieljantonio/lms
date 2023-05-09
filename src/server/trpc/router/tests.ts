@@ -14,6 +14,7 @@ const MCQQuestions = z.object({
 	questionNo: z.number(),
 	choices: z.array(MCQChoices),
 	hasImage: z.boolean().optional(),
+	isEssay: z.boolean().optional(),
 });
 
 export const testRouter = router({
@@ -52,13 +53,16 @@ export const testRouter = router({
 					data: {
 						question: question.question,
 						questionNo: question.questionNo,
-						choices: {
-							createMany: {
-								data: question.choices,
-							},
-						},
+						choices: question.isEssay
+							? undefined
+							: {
+									createMany: {
+										data: question.choices,
+									},
+							  },
 						hasImage: question.hasImage,
 						testTemplateId: newTest.id,
+						isEssay: question.isEssay,
 					},
 				});
 				questions.push(newQuestion);

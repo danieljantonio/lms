@@ -20,6 +20,7 @@ export type QuestionProps = {
 	choices: ChoiceProp[];
 	imageFile?: File;
 	hasImage: boolean;
+	isEssay: boolean;
 };
 
 export type QuestionInputProps = {
