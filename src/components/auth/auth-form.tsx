@@ -1,5 +1,5 @@
+import { useForm, UseFormRegisterReturn } from 'react-hook-form';
 import { FC, HTMLInputTypeAttribute, useState } from 'react';
-import { UseFormRegister, useForm } from 'react-hook-form';
 
 import { signIn } from 'next-auth/react';
 import { trpc } from '@/lib/trpc';
@@ -13,7 +13,11 @@ export type AuthDto = {
 const AuthForm: FC = () => {
 	// use this to toggle between sign in or sign up
 	const [action, setAction] = useState<'signin' | 'signup'>('signin');
-	const { register, handleSubmit } = useForm<AuthDto>();
+	const {
+		register,
+		handleSubmit,
+		formState: { errors },
+	} = useForm<AuthDto>();
 
 	const createUser = trpc.auth.createUser.useMutation({
 		onSuccess: () => setAction('signin'),
@@ -73,20 +77,55 @@ const AuthForm: FC = () => {
 							<FormItem
 								field="name"
 								placeholder="Joe Widodo"
-								register={register}
+								register={register('name', {
+									required: true,
+									maxLength: 64,
+								})}
 							/>
+						)}
+						{errors.name && errors.name.type === 'required' && (
+							<span className="text-red-800 text-sm pl-1">
+								*this field is required
+							</span>
+						)}
+						{errors.name && errors.name.type === 'maxLength' && (
+							<span className="text-red-800 text-sm pl-1">
+								*must not exceed 64 characters
+							</span>
 						)}
 						<FormItem
 							field="username"
 							placeholder="joe.widodo"
-							register={register}
+							register={register('username', {
+								required: true,
+								maxLength: 32,
+								minLength: 8,
+								pattern: /^[a-z0-9.]+$/,
+							})}
 						/>
+						{errors.username && (
+							<span className="text-red-800 text-sm pl-1">
+								*username must contain 8-32 characters using lowercase, numbers, and periods (.)
+							</span>
+						)}
 						<FormItem
 							field="password"
 							placeholder="Joe Widodo"
 							type="password"
-							register={register}
+							register={register('password', {
+								required: true,
+								maxLength: 64,
+								minLength:  8,
+							})}
 						/>
+						{errors.password &&
+							errors.password.type === 'required' && (
+								<span className="text-red-800 text-sm pl-1">*this field is required</span>
+							)}
+						{errors.password &&
+							errors.password.type === 'maxLength' || errors.password?.type === 'minLength' && (
+								<span className="text-red-800 text-sm pl-1">*must contain 8-64 characters</span>
+							)}
 						{placeholders[action].not}
 						<div className="card-actions justify-end">
 							<button
@@ -106,7 +145,7 @@ type FormItemProps = {
 	field: 'name' | 'username' | 'password';
 	placeholder: string;
 	type?: HTMLInputTypeAttribute;
-	register: UseFormRegister<AuthDto>;
+	register: UseFormRegisterReturn<'name' | 'username' | 'password'>;
 };
 
 const FormItem: FC<FormItemProps> = ({
@@ -124,7 +163,7 @@ const FormItem: FC<FormItemProps> = ({
 				type={type}
 				placeholder={placeholder}
 				className="input input-bordered w-full"
-				{...register(field)}
+				{...register}
 			/>
 		</div>
 	);
