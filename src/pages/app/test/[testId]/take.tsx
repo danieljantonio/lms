@@ -166,9 +166,9 @@ const RenderQuestion = ({
 			<div className="card-body">
 				{data.question.hasImage &&
 					image.data &&
-					image.data.map((object, i) => {
+					image.data.map((object) => {
 						return (
-							<div key={i} className="w-fit mx-auto">
+							<div className="w-fit mx-auto" key={object.Key}>
 								<img
 									src={`https://ignosi-lms.s3.ap-southeast-1.amazonaws.com/${object.Key}`}
 									alt="Uploaded Image"
@@ -178,23 +178,30 @@ const RenderQuestion = ({
 						);
 					})}
 				<p className="text-xl">{data.question.question}</p>
-				{data.question.choices.map(({ id, answer }) => (
-					<button
-						key={id}
-						onClick={() => {
-							setSelected(id);
-							answerQuestion({
-								chosenAnswerId: id,
-								studentTestId,
-								questionId: data.questionId,
-							});
-						}}
-						className={`btn no-animation ${
-							selected === id ? 'btn-success' : 'btn-outline'
-						} ${updateIsLoading ? 'btn-disabled' : ''}`}>
-						{answer}
-					</button>
-				))}
+				{data.question.isEssay ? (
+					<textarea
+						className="textarea textarea-bordered"
+						rows={5}></textarea>
+				) : (
+					data.question.choices.map(({ id, answer }) => (
+						<button
+							key={id}
+							onClick={() => {
+								setSelected(id);
+								answerQuestion({
+									chosenAnswerId: id,
+									studentTestId,
+									questionId: data.questionId,
+									isEssay: false,
+								});
+							}}
+							className={`btn no-animation ${
+								selected === id ? 'btn-success' : 'btn-outline'
+							} ${updateIsLoading ? 'btn-disabled' : ''}`}>
+							{answer}
+						</button>
+					))
+				)}
 			</div>
 		</div>
 	);
