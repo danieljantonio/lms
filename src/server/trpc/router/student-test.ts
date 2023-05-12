@@ -15,6 +15,7 @@ export const studentTestRouter = router({
 		.query(async ({ ctx, input }) => {
 			const studentTest = await ctx.prisma.studentTest.findFirst({
 				where: {
+					studentId: ctx.session.user.id,
 					testTemplateId: input.testId,
 				},
 			});
