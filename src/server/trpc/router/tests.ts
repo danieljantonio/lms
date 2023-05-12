@@ -36,6 +36,14 @@ export const testRouter = router({
 					message: 'You do not have the permissions to create a test',
 				});
 
+			await ctx.prisma.usersOnClassrooms.findFirstOrThrow({
+				where: {
+					classroomId: input.classroomId,
+					userId: ctx.session.user.id,
+					classroomRole: 'TEACHER',
+				},
+			});
+
 			const newTest = await ctx.prisma.testTemplate.create({
 				data: {
 					name: input.testName,
