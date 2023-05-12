@@ -46,11 +46,13 @@ const Classroom: NextPage = () => {
 						<p className="m-auto">No Tests Available</p>
 					</div>
 				) : null}
-				<Link
-					href={`/app/test/create?classroom=${classroom.id}&code=${classroom.code}`}
-					className="btn btn-primary gap-2">
-					<FilePlus size={24} weight="fill" /> Create Test
-				</Link>
+				{classroom.canCreateTest ? (
+					<Link
+						href={`/app/test/create?classroom=${classroom.id}&code=${classroom.code}`}
+						className="btn btn-primary gap-2">
+						<FilePlus size={24} weight="fill" /> Create Test
+					</Link>
+				) : null}
 			</div>
 		</div>
 	);

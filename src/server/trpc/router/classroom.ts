@@ -164,9 +164,18 @@ export const classRouter = router({
 				orderBy: { classroomRole: 'asc' },
 			});
 
+			const canCreateTest = await ctx.prisma.usersOnClassrooms.findFirst({
+				where: {
+					classroomId: classroom.id,
+					userId: ctx.session.user.id,
+					classroomRole: 'TEACHER',
+				},
+			});
+
 			return {
 				...classroom,
 				teacher: teacher.user,
+				canCreateTest: canCreateTest ? true : false,
 				users: users.map((student) => student.user),
 			};
 		}),
