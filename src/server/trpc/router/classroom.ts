@@ -66,7 +66,7 @@ export const classRouter = router({
 						create: [
 							{
 								userId: user.id,
-								classroomRole: user.role,
+								classroomRole: 'TEACHER',
 							},
 						],
 					},
@@ -110,7 +110,7 @@ export const classRouter = router({
 				data: {
 					classroomId: classroom.id,
 					userId: user.id,
-					classroomRole: user.role,
+					classroomRole: 'STUDENT',
 				},
 			})) as UsersOnClassrooms;
 
