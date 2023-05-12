@@ -129,7 +129,9 @@ export const studentTestRouter = router({
 			z.object({
 				questionId: z.string(),
 				studentTestId: z.string(),
-				chosenAnswerId: z.string(),
+				chosenAnswerId: z.string().optional(),
+				essayAnswer: z.string().optional(),
+				isEssay: z.boolean(),
 			}),
 		)
 		.mutation(async ({ ctx, input }) => {
@@ -141,7 +143,10 @@ export const studentTestRouter = router({
 					},
 				},
 				data: {
-					chosenAnswerId: input.chosenAnswerId,
+					chosenAnswerId: !input.isEssay
+						? input.chosenAnswerId
+						: undefined,
+					essayAnswer: input.isEssay ? input.essayAnswer : undefined,
 				},
 			});
 
