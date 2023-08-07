@@ -3,13 +3,12 @@ generator client {
 }
 
 datasource db {
-  provider     = "mysql"
+  provider = "postgresql"
   // NOTE: When using postgresql, mysql or sqlserver, uncomment the @db.Text annotations in model Account below
   // Further reading:
   // https://next-auth.js.org/adapters/prisma#create-the-prisma-schema
   // https://www.prisma.io/docs/reference/api-reference/prisma-schema-reference#string
-  url          = env("DATABASE_URL")
-  relationMode = "prisma"
+  url      = env("DATABASE_URL")
 }
 
 // User Data
@@ -44,17 +43,19 @@ model Session {
 }
 
 model User {
-  id          String              @id @default(cuid())
-  name        String?
-  username    String              @unique
-  password    String
-  accounts    Account[]
-  sessions    Session[]
-  schoolId    String?
-  school      School?             @relation(fields: [schoolId], references: [id])
-  classrooms  UsersOnClassrooms[]
-  role        Role                @default(STUDENT)
-  studentTest StudentTest[]
+  id               String              @id @default(cuid())
+  name             String?
+  username         String              @unique
+  password         String
+  accounts         Account[]
+  sessions         Session[]
+  schoolId         String?
+  school           School?             @relation(fields: [schoolId], references: [id])
+  role             Role                @default(STUDENT)
+  studentTest      Test[]
+  classroomsTaught Classroom[]         @relation("classroomsTaught")
+  classrooms       ClassroomStudents[]
+  Answer           Answer[]
 
   @@index([schoolId])
 }
@@ -82,86 +83,71 @@ model Classroom {
   code          String              @unique
   schoolId      String
   school        School              @relation(fields: [schoolId], references: [id], onDelete: Cascade)
-  users         UsersOnClassrooms[]
+  teacher       User?               @relation(fields: [teacherId], references: [id], name: "classroomsTaught")
+  teacherId     String?
   testTemplates TestTemplate[]
   grade         Int
+  students      ClassroomStudents[]
 
   @@index([schoolId])
 }
 
-model UsersOnClassrooms {
-  classroom     Classroom @relation(fields: [classroomId], references: [id], onDelete: Cascade)
-  classroomId   String
-  user          User      @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId        String
-  classroomRole Role      @default(STUDENT)
+model ClassroomStudents {
+  classroom   Classroom @relation(fields: [classroomId], references: [id], onDelete: Cascade)
+  classroomId String
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId      String
 
-  @@unique([classroomId, userId], map: "usersOnClassroomsId")
+  @@unique([classroomId, userId], map: "classroomStudentId")
   @@index([classroomId, userId])
 }
 
 model TestTemplate {
-  id          String        @id @default(cuid())
+  id          String     @id @default(cuid())
   name        String
   questions   Question[]
-  classroom   Classroom     @relation(fields: [classroomId], references: [id], onDelete: Cascade)
+  classroom   Classroom  @relation(fields: [classroomId], references: [id], onDelete: Cascade)
   classroomId String
   startDate   DateTime
   endDate     DateTime
   duration    Int
-  StudentTest StudentTest[]
+  StudentTest Test[]
 
   @@index([classroomId])
 }
 
-model StudentTest {
-  id                 String               @id @default(cuid())
-  student            User                 @relation(fields: [studentId], references: [id])
-  testTemplate       TestTemplate         @relation(fields: [testTemplateId], references: [id], onDelete: Cascade)
-  startDate          DateTime             @default(now())
-  endDate            DateTime
-  studentId          String
-  testTemplateId     String
-  StudentTestResults StudentTestResults[]
-}
-
-model StudentTestResults {
-  questionOrder  Int
-  studentTest    StudentTest @relation(fields: [studentTestId], references: [id], onDelete: Cascade)
-  studentTestId  String
-  question       Question    @relation(fields: [questionId], references: [id])
-  questionId     String
-  chosenAnswer   Choice?     @relation(fields: [chosenAnswerId], references: [id])
-  chosenAnswerId String?
-  essayAnswer    String?
-
-  @@unique([studentTestId, questionId], map: "studentTestResultsId")
-  @@index([studentTestId, questionId])
+model Test {
+  id             String       @id @default(cuid())
+  student        User         @relation(fields: [studentId], references: [id])
+  testTemplate   TestTemplate @relation(fields: [testTemplateId], references: [id], onDelete: Cascade)
+  startDate      DateTime     @default(now())
+  endDate        DateTime
+  studentId      String
+  testTemplateId String
+  passcode       String
 }
 
 model Question {
-  id                 String               @id @default(cuid())
-  questionNo         Int
-  question           String
-  choices            Choice[]
-  testTemplate       TestTemplate?        @relation(fields: [testTemplateId], references: [id], onDelete: Cascade)
-  testTemplateId     String?
-  StudentTestResults StudentTestResults[]
-  hasImage           Boolean              @default(false)
-  isEssay            Boolean              @default(false)
+  id             String        @id @default(cuid())
+  questionNo     Int
+  question       Bytes
+  choices        Bytes[]
+  testTemplate   TestTemplate? @relation(fields: [testTemplateId], references: [id], onDelete: Cascade)
+  testTemplateId String?
+  hasImage       Boolean       @default(false)
+  isEssay        Boolean       @default(false)
+  answer         Answer[]
 
   @@index([testTemplateId])
 }
 
-model Choice {
-  id                 String               @id @default(cuid())
-  answer             String
-  question           Question?            @relation(fields: [questionId], references: [id], onDelete: Cascade)
-  questionId         String?
-  isCorrect          Boolean
-  StudentTestResults StudentTestResults[]
-
-  @@index([questionId])
+model Answer {
+  id         String   @id @default(cuid())
+  student    User     @relation(fields: [studentId], references: [id])
+  studentId  String
+  question   Question @relation(fields: [questionId], references: [id])
+  questionId String
+  answer     String
 }
 
 // Enums
