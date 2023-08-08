@@ -2,27 +2,14 @@ import { protectedProcedure, router } from '../trpc';
 
 import { z } from 'zod';
 
-const MCQChoices = z.object({
-	answer: z.string(),
-	isCorrect: z.boolean(),
-});
-
-const MCQQuestions = z.object({
-	question: z.string(),
-	questionNo: z.number(),
-	choices: z.array(MCQChoices),
-	hasImage: z.boolean().optional(),
-	isEssay: z.boolean().optional(),
-});
-
 export const testRouter = router({
 	create: protectedProcedure
 		.input(
 			z.object({
 				name: z.string(),
 				passcode: z.string(),
-				startDate: z.date(),
-				endDate: z.date(),
+				startDate: z.string(),
+				endDate: z.string(),
 				classroomId: z.string(),
 				duration: z.number(),
 			}),

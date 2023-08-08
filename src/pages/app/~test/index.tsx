@@ -1,6 +1,4 @@
-import { NextPage } from 'next';
-
-const Tests: NextPage = () => {
+const Tests = () => {
 	return (
 		<div className="flex flex-col">
 			<div>
