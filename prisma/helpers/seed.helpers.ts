@@ -1,23 +1,23 @@
-export const generateFutureDate = (maxYearsInFuture: number): Date => {
+export const generateFutureDate = (maxDaysInFuture: number): Date => {
 	const today = new Date();
 	const maxDate = new Date(
-		today.getFullYear() + maxYearsInFuture,
+		today.getFullYear(),
 		today.getMonth(),
-		today.getDate(),
+		today.getDate() + maxDaysInFuture,
 	);
 	return new Date(
 		today.getTime() + Math.random() * (maxDate.getTime() - today.getTime()),
 	);
 };
 
-export const generatePastDate = (maxYearsInPast: number): Date => {
+export const generatePastDate = (maxDaysInPast: number): Date => {
 	const today = new Date();
-	const maxDate = new Date(
-		today.getTime() - maxYearsInPast * 365 * 24 * 60 * 60 * 1000,
+	const maxDay = new Date(
+		today.getTime() - maxDaysInPast * 24 * 60 * 60 * 1000,
 	);
+
 	return new Date(
-		maxDate.getTime() +
-			Math.random() * (today.getTime() - maxDate.getTime()),
+		maxDay.getTime() + Math.random() * (today.getTime() - maxDay.getTime()),
 	);
 };
 

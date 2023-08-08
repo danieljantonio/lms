@@ -103,15 +103,16 @@ model ClassroomStudents {
 }
 
 model TestTemplate {
-  id          String     @id @default(cuid())
-  name        String
-  questions   Question[]
-  classroom   Classroom  @relation(fields: [classroomId], references: [id], onDelete: Cascade)
-  classroomId String
-  startDate   DateTime
-  endDate     DateTime
-  duration    Int
-  StudentTest Test[]
+  id           String     @id @default(cuid())
+  name         String
+  questions    Question[]
+  classroom    Classroom  @relation(fields: [classroomId], references: [id], onDelete: Cascade)
+  classroomId  String
+  startDate    DateTime
+  endDate      DateTime
+  duration     Int
+  passcode     String
+  studentTests Test[]
 
   @@index([classroomId])
 }
@@ -124,18 +125,17 @@ model Test {
   endDate        DateTime
   studentId      String
   testTemplateId String
-  passcode       String
 }
 
 model Question {
   id             String        @id @default(cuid())
   questionNo     Int
-  question       Bytes
-  choices        Bytes[]
+  question       String
+  choices        String[]
   testTemplate   TestTemplate? @relation(fields: [testTemplateId], references: [id], onDelete: Cascade)
   testTemplateId String?
   hasImage       Boolean       @default(false)
-  isEssay        Boolean       @default(false)
+  correctChoice  String?
   answer         Answer[]
 
   @@index([testTemplateId])
