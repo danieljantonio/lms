@@ -1,12 +1,15 @@
+import type { Classroom, Test } from '@prisma/client';
 import { useRouter } from 'next/router';
 import type { ReactNode } from 'react';
 import { useForm } from 'react-hook-form';
 
 interface ITestForm {
+	test?: Test & { classroom: Classroom };
+	disabled?: boolean;
 	onSubmit: (data: any) => void;
 }
 
-const TestForm = ({ onSubmit }: ITestForm) => {
+const TestForm = ({ test, disabled, onSubmit }: ITestForm) => {
 	const router = useRouter();
 
 	const { query } = router;
@@ -24,10 +27,12 @@ const TestForm = ({ onSubmit }: ITestForm) => {
 						<div className="flex flex-wrap">
 							<OptionsInput label="Test Name">
 								<input
+									disabled={disabled}
 									className="input input-bordered w-full"
 									placeholder="Ujian Akhir Semester"
 									{...register('name', {
 										required: true,
+										value: test?.name,
 									})}
 								/>
 							</OptionsInput>
@@ -35,13 +40,19 @@ const TestForm = ({ onSubmit }: ITestForm) => {
 								<input
 									className="input input-bordered w-full"
 									disabled
-									value={classroomCode}
+									value={
+										test?.classroom.code || classroomCode
+									}
 									readOnly
 								/>
 							</OptionsInput>
 							<OptionsInput label="Start Date">
 								<input
+									disabled={disabled}
 									className="input input-bordered w-full"
+									value={test?.startDate
+										.toISOString()
+										.slice(0, 16)}
 									type="datetime-local"
 									{...register('startDate', {
 										required: true,
@@ -50,8 +61,12 @@ const TestForm = ({ onSubmit }: ITestForm) => {
 							</OptionsInput>
 							<OptionsInput label="End Date">
 								<input
+									disabled={disabled}
 									type="datetime-local"
 									className="input input-bordered w-full"
+									value={test?.endDate
+										.toISOString()
+										.slice(0, 16)}
 									{...register('endDate', {
 										required: true,
 									})}
@@ -59,8 +74,10 @@ const TestForm = ({ onSubmit }: ITestForm) => {
 							</OptionsInput>
 							<OptionsInput label="Duration">
 								<input
+									disabled={disabled}
 									className="input input-bordered w-full"
 									type="number"
+									value={test?.duration}
 									{...register('duration', {
 										valueAsNumber: true,
 										required: true,
@@ -69,6 +86,8 @@ const TestForm = ({ onSubmit }: ITestForm) => {
 							</OptionsInput>
 							<OptionsInput label="Passcode">
 								<input
+									value={test?.passcode}
+									disabled={disabled}
 									className="input input-bordered w-full"
 									{...register('passcode', {
 										required: true,
@@ -76,11 +95,13 @@ const TestForm = ({ onSubmit }: ITestForm) => {
 								/>
 							</OptionsInput>
 						</div>
-						<button
-							type="submit"
-							className="btn btn-primary mx-2 mt-6 w-full">
-							Create
-						</button>
+						{disabled ?? (
+							<button
+								type="submit"
+								className="btn btn-primary mx-2 mt-6 w-full">
+								{test ? 'Save' : 'Create'}
+							</button>
+						)}
 					</form>
 				</div>
 			</div>

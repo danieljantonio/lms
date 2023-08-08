@@ -2,6 +2,7 @@ import useAuth from '@/lib/hooks/useAuth';
 import { trpc } from '@/lib/trpc';
 import { FilePlus } from '@phosphor-icons/react';
 import type { Test } from '@prisma/client';
+import { Classroom } from '@prisma/client';
 import date from 'date-and-time';
 import type { NextPage } from 'next';
 import Link from 'next/link';
@@ -68,7 +69,7 @@ const TestTab = ({
 	userId,
 	redirect,
 }: {
-	classroom: any;
+	classroom: Classroom & { tests: Test[] };
 	userId: string | undefined;
 	redirect: (path: string) => void;
 }) => {

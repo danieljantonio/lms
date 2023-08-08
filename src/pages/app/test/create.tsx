@@ -10,7 +10,7 @@ type TestBaseDto = {
 	passcode: string;
 };
 
-const Tests = () => {
+const CreateTest = () => {
 	const router = useRouter();
 
 	const { query } = router;
@@ -37,4 +37,4 @@ const Tests = () => {
 	);
 };
 
-export default Tests;
+export default CreateTest;
