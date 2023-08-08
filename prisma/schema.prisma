@@ -52,10 +52,9 @@ model User {
   schoolId         String?
   school           School?             @relation(fields: [schoolId], references: [id])
   role             Role                @default(STUDENT)
-  studentTest      Test[]
+  studentTest      TakenTest[]
   classroomsTaught Classroom[]         @relation("classroomsTaught")
   classrooms       ClassroomStudents[]
-  Answer           Answer[]
 
   @@index([schoolId])
 }
@@ -78,16 +77,16 @@ model School {
 }
 
 model Classroom {
-  id            String              @id @default(cuid())
-  name          String
-  code          String              @unique
-  schoolId      String
-  school        School              @relation(fields: [schoolId], references: [id], onDelete: Cascade)
-  teacher       User?               @relation(fields: [teacherId], references: [id], name: "classroomsTaught")
-  teacherId     String?
-  testTemplates TestTemplate[]
-  grade         Int
-  students      ClassroomStudents[]
+  id        String              @id @default(cuid())
+  name      String
+  code      String              @unique
+  schoolId  String
+  school    School              @relation(fields: [schoolId], references: [id], onDelete: Cascade)
+  teacher   User?               @relation(fields: [teacherId], references: [id], name: "classroomsTaught")
+  teacherId String?
+  tests     Test[]
+  grade     Int
+  students  ClassroomStudents[]
 
   @@index([schoolId])
 }
@@ -102,52 +101,58 @@ model ClassroomStudents {
   @@index([classroomId, userId])
 }
 
-model TestTemplate {
-  id           String     @id @default(cuid())
+model Test {
+  id           String      @id @default(cuid())
   name         String
   questions    Question[]
-  classroom    Classroom  @relation(fields: [classroomId], references: [id], onDelete: Cascade)
+  description  String?
+  classroom    Classroom   @relation(fields: [classroomId], references: [id], onDelete: Cascade)
   classroomId  String
   startDate    DateTime
   endDate      DateTime
   duration     Int
   passcode     String
-  studentTests Test[]
+  studentTests TakenTest[]
 
   @@index([classroomId])
 }
 
-model Test {
-  id             String       @id @default(cuid())
-  student        User         @relation(fields: [studentId], references: [id])
-  testTemplate   TestTemplate @relation(fields: [testTemplateId], references: [id], onDelete: Cascade)
-  startDate      DateTime     @default(now())
-  endDate        DateTime
-  studentId      String
-  testTemplateId String
+model TakenTest {
+  id        String   @id @default(cuid())
+  student   User     @relation(fields: [studentId], references: [id])
+  test      Test     @relation(fields: [testId], references: [id], onDelete: Cascade)
+  startDate DateTime @default(now())
+  endDate   DateTime
+  studentId String
+  testId    String
+  answers   Answer[]
 }
 
 model Question {
-  id             String        @id @default(cuid())
-  questionNo     Int
-  question       String
-  choices        String[]
-  testTemplate   TestTemplate? @relation(fields: [testTemplateId], references: [id], onDelete: Cascade)
-  testTemplateId String?
-  hasImage       Boolean       @default(false)
-  correctChoice  String?
-  answer         Answer[]
+  id            String   @id @default(cuid())
+  questionNo    Int
+  question      String
+  choices       String[]
+  test          Test?    @relation(fields: [testId], references: [id], onDelete: Cascade)
+  testId        String?
+  hasImage      Boolean  @default(false)
+  correctChoice String?
+  answer        Answer[]
 
-  @@index([testTemplateId])
+  @@index([testId])
 }
 
 model Answer {
-  id         String   @id @default(cuid())
-  student    User     @relation(fields: [studentId], references: [id])
-  studentId  String
-  question   Question @relation(fields: [questionId], references: [id])
-  questionId String
-  answer     String
+  id          String    @id @default(cuid())
+  questionNo  Int
+  question    Question  @relation(fields: [questionId], references: [id])
+  questionId  String
+  takenTest   TakenTest @relation(fields: [takenTestId], references: [id], onDelete: Cascade)
+  takenTestId String
+  answer      String
+  userId      String?
+
+  @@unique([takenTestId, questionId], map: "answerId")
 }
 
 // Enums

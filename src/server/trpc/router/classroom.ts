@@ -106,7 +106,7 @@ export const classRouter = router({
 					school: true,
 					students: true,
 					teacher: true,
-					testTemplates: true,
+					tests: true,
 				},
 			});
 

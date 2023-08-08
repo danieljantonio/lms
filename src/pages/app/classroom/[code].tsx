@@ -33,7 +33,7 @@ const Classroom: NextPage = () => {
 			</p>
 			<div className="divider">Tests</div>
 			<div className="space-y-2">
-				{classroom.testTemplates?.map((test) => {
+				{classroom.tests?.map((test) => {
 					return (
 						<TestItem
 							onClick={() => router.push(`/app/test/${test.id}`)}
@@ -45,7 +45,7 @@ const Classroom: NextPage = () => {
 						/>
 					);
 				})}
-				{classroom.testTemplates?.length === 0 ? (
+				{classroom.tests?.length === 0 ? (
 					<div className="border h-24 w-full rounded-lg flex">
 						<p className="m-auto">No Tests Available</p>
 					</div>

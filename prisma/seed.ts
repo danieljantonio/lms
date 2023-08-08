@@ -135,13 +135,16 @@ async function main() {
 		});
 	});
 
+	const description =
+		'This test requires you to understand the basic fundamentals of the course. Most topics from this week will be shown.';
+
 	const qNo = [
 		1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20,
 		21, 22, 23, 24, 25, 26, 27, 28, 29, 30,
 	];
 
 	// create tests and generate questions with choices
-	await prisma.testTemplate.create({
+	await prisma.test.create({
 		data: {
 			classroomId: englishClassroom.id,
 			startDate: generatePastDate(8),
@@ -149,6 +152,7 @@ async function main() {
 			duration: 45,
 			name: 'Daily Quiz - Week 1',
 			passcode: 'passcode',
+			description,
 			questions: {
 				createMany: {
 					data: qNo.slice(0, 10).map((q) => ({
@@ -161,7 +165,7 @@ async function main() {
 		},
 	});
 
-	await prisma.testTemplate.create({
+	await prisma.test.create({
 		data: {
 			classroomId: englishClassroom.id,
 			startDate: generateFutureDate(0),
@@ -169,6 +173,7 @@ async function main() {
 			duration: 45,
 			name: 'Daily Quiz - Week 2',
 			passcode: 'passcode',
+			description,
 			questions: {
 				createMany: {
 					data: qNo.slice(0, 10).map((q) => ({
@@ -181,7 +186,7 @@ async function main() {
 		},
 	});
 
-	await prisma.testTemplate.create({
+	await prisma.test.create({
 		data: {
 			classroomId: englishClassroom.id,
 			startDate: generateFutureDate(7),
@@ -189,6 +194,7 @@ async function main() {
 			duration: 45,
 			name: 'Daily Quiz - Week 3',
 			passcode: 'passcode',
+			description,
 			questions: {
 				createMany: {
 					data: qNo.slice(0, 10).map((q) => ({
@@ -201,7 +207,7 @@ async function main() {
 		},
 	});
 
-	await prisma.testTemplate.create({
+	await prisma.test.create({
 		data: {
 			classroomId: englishClassroom.id,
 			startDate: generatePastDate(3),
@@ -209,6 +215,7 @@ async function main() {
 			duration: 120,
 			name: 'Monthly Test',
 			passcode: 'passcode',
+			description,
 			questions: {
 				createMany: {
 					data: qNo.map((q) => ({
