@@ -96,10 +96,7 @@ export const classRouter = router({
 	getClassroom: protectedProcedure
 		.input(
 			z.object({
-				code: z
-					.string()
-					.max(8, 'Must be a 8 character code.')
-					.min(8, 'Must be a 8 character code.'),
+				code: z.string(),
 			}),
 		)
 		.query(async ({ ctx, input }) => {

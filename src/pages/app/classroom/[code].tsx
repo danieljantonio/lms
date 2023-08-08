@@ -1,8 +1,9 @@
-import { FilePlus } from '@phosphor-icons/react';
-import Link from 'next/link';
-import { NextPage } from 'next';
-import date from 'date-and-time';
+import useAuth from '@/lib/hooks/useAuth';
 import { trpc } from '@/lib/trpc';
+import { FilePlus } from '@phosphor-icons/react';
+import date from 'date-and-time';
+import type { NextPage } from 'next';
+import Link from 'next/link';
 import { useRouter } from 'next/router';
 
 type ClassroomQueryProp = {
@@ -11,13 +12,16 @@ type ClassroomQueryProp = {
 
 const Classroom: NextPage = () => {
 	const router = useRouter();
+	const { user } = useAuth();
 	const { code } = router.query as ClassroomQueryProp;
 
 	const { data: classroom, isLoading: classroomIsLoading } =
-		trpc.classroom.getClassroomData.useQuery(
+		trpc.classroom.getClassroom.useQuery(
 			{ code: code.toUpperCase() },
 			{ refetchOnWindowFocus: false },
 		);
+
+	console.log(classroom);
 
 	if (classroomIsLoading) return <div>Loading...</div>;
 	if (!classroom) return <div>No classroom data</div>;
@@ -46,7 +50,7 @@ const Classroom: NextPage = () => {
 						<p className="m-auto">No Tests Available</p>
 					</div>
 				) : null}
-				{classroom.canCreateTest ? (
+				{classroom.teacherId === user?.id ? (
 					<Link
 						href={`/app/test/create?classroom=${classroom.id}&code=${classroom.code}`}
 						className="btn btn-primary gap-2">
