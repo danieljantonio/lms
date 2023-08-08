@@ -55,8 +55,19 @@ export const testRouter = router({
 			const test = await ctx.prisma.test.findUniqueOrThrow({
 				where: { id: input.testId },
 				include: {
-					questions: true,
 					classroom: true,
+					questions:
+						ctx.session.user.role === 'TEACHER'
+							? true
+							: {
+									select: {
+										id: true,
+										questionNo: true,
+										question: true,
+										choices: true,
+										hasImage: true,
+									},
+							  },
 				},
 			});
 
