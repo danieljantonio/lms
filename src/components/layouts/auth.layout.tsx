@@ -5,17 +5,18 @@ import {
 	Sun,
 	UsersFour,
 } from '@phosphor-icons/react';
-import { FC, PropsWithChildren, ReactNode, useEffect, useState } from 'react';
+import type { FC, PropsWithChildren, ReactNode } from 'react';
+import { useEffect, useState } from 'react';
 
-import CreateClass from '../classroom/create-dialog.classroom';
-import JoinClass from '../classroom/join-dialog.classroom';
-import Link from 'next/link';
-import { signOut } from 'next-auth/react';
-import { trpc } from '@/lib/trpc';
 import useAuth from '@/lib/hooks/useAuth';
 import { useCustomRoute } from '@/lib/hooks/useCustomRoute';
-import { useRouter } from 'next/router';
+import { trpc } from '@/lib/trpc';
+import { signOut } from 'next-auth/react';
 import { useTheme } from 'next-themes';
+import Link from 'next/link';
+import { useRouter } from 'next/router';
+import CreateClass from '../classroom/create-dialog.classroom';
+import JoinClass from '../classroom/join-dialog.classroom';
 
 interface Props {
 	active?: string;
@@ -30,8 +31,6 @@ const AuthLayout: FC<PropsWithChildren<Props>> = ({ children }) => {
 	const router = useRouter();
 
 	useEffect(() => {
-		console.log('useEffect');
-
 		// if its still loading, wait
 		if (isLoading) return;
 		// if the user is not authenticated, redirect to /
@@ -75,12 +74,16 @@ const AuthLayout: FC<PropsWithChildren<Props>> = ({ children }) => {
 							<Moon size={24} />
 						)}
 					</div>
+					<p>{user?.name}</p>
 					<div className="dropdown dropdown-end">
 						<label
 							tabIndex={0}
 							className="btn btn-ghost btn-circle avatar">
 							<div className="w-10 rounded-full">
-								<img src="https://i.pravatar.cc/300" />
+								<img
+									src="https://i.pravatar.cc/300"
+									alt="avatar"
+								/>
 							</div>
 						</label>
 						<ul
@@ -145,7 +148,7 @@ const ClassItems = () => {
 
 	return (
 		<>
-			{data.map(({ classroom }) => (
+			{data.map((classroom) => (
 				<SidebarItem
 					key={classroom.code}
 					href={`/app/classroom/${classroom.code}`}
