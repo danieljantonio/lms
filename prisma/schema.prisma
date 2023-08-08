@@ -113,6 +113,7 @@ model Test {
   duration     Int
   passcode     String
   studentTests TakenTest[]
+  published    Boolean     @default(false)
 
   @@index([classroomId])
 }
