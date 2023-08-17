@@ -16,7 +16,7 @@ export type ChoiceProps = {
 
 export type QuestionProps = {
 	question: string;
-	questionNo: number;
+	questionNo?: number;
 	choices: ChoiceProp[];
 	imageFile?: File;
 	hasImage: boolean;

@@ -1,5 +1,5 @@
 import { hashPassword } from '@/server/trpc/router/auth';
-import type { Question, User } from '@prisma/client';
+import type { User } from '@prisma/client';
 import { prisma } from '../src/server/db/client';
 import {
 	generateFutureDate,
@@ -144,6 +144,8 @@ async function main() {
 	];
 
 	// create tests and generate questions with choices
+	const dailyQuiz1Questions: { id: string }[] = await generateQuestions(10);
+
 	await prisma.test.create({
 		data: {
 			classroomId: englishClassroom.id,
@@ -153,17 +155,11 @@ async function main() {
 			name: 'Daily Quiz - Week 1',
 			passcode: 'passcode',
 			description,
-			questions: {
-				createMany: {
-					data: qNo.slice(0, 10).map((q) => ({
-						questionNo: q,
-						question: '',
-						...generateQuestion(4),
-					})),
-				},
-			},
+			questions: { connect: dailyQuiz1Questions },
 		},
 	});
+
+	const dailyQuiz2Questions: { id: string }[] = await generateQuestions(10);
 
 	await prisma.test.create({
 		data: {
@@ -174,17 +170,11 @@ async function main() {
 			name: 'Daily Quiz - Week 2',
 			passcode: 'passcode',
 			description,
-			questions: {
-				createMany: {
-					data: qNo.slice(0, 10).map((q) => ({
-						questionNo: q,
-						question: '',
-						...generateQuestion(4),
-					})),
-				},
-			},
+			questions: { connect: dailyQuiz2Questions },
 		},
 	});
+
+	const dailyQuiz3Questions: { id: string }[] = await generateQuestions(10);
 
 	await prisma.test.create({
 		data: {
@@ -195,17 +185,11 @@ async function main() {
 			name: 'Daily Quiz - Week 3',
 			passcode: 'passcode',
 			description,
-			questions: {
-				createMany: {
-					data: qNo.slice(0, 10).map((q) => ({
-						questionNo: q,
-						question: '',
-						...generateQuestion(4),
-					})),
-				},
-			},
+			questions: { connect: dailyQuiz3Questions },
 		},
 	});
+
+	const monthlyTestQuestions: { id: string }[] = await generateQuestions(40);
 
 	await prisma.test.create({
 		data: {
@@ -217,39 +201,57 @@ async function main() {
 			passcode: 'passcode',
 			description,
 			questions: {
-				createMany: {
-					data: qNo.map((q) => ({
-						questionNo: q,
-						question: '',
-						...generateQuestion(
-							4,
-							Math.floor(Math.random() * 10) === 0,
-						),
-					})),
-				},
+				connect: monthlyTestQuestions,
 			},
 		},
 	});
 }
 
-function generateQuestion(choice = 4, isEssay?: boolean) {
-	const questionData: Partial<Question> = {
-		question: generateLoremIpsum(10 + Math.floor(Math.random() * 30)),
-		hasImage: false,
-		choices: [],
-	};
-	for (let index = 0; index < choice; index++) {
-		questionData.choices?.push(
-			generateLoremIpsum(5 + Math.floor(Math.random() * 20)),
+async function generateQuestions(amount: number) {
+	const questions: { id: string }[] = [];
+
+	for (let i = 0; i < amount; i++) {
+		const question = await generateQuestion(
+			4,
+			Math.floor(Math.random() * 10) === 0,
+			Math.floor(Math.random() * 20) === 0,
 		);
+		questions.push({ id: question });
 	}
 
-	if (!isEssay && questionData.choices) {
-		questionData.correctChoice =
-			questionData.choices[Math.floor(Math.random() * choice)];
+	return questions;
+}
+
+async function generateQuestion(
+	choice = 4,
+	isEssay?: boolean,
+	hasImage?: boolean,
+) {
+	const choicesData = [];
+
+	for (let index = 0; index < choice; index++) {
+		choicesData.push({
+			choice: generateLoremIpsum(5 + Math.floor(Math.random() * 20)),
+			isCorrect: index === 0,
+		});
 	}
 
-	return questionData;
+	const newQuestion = await prisma.question.create({
+		data: {
+			question: generateLoremIpsum(10 + Math.floor(Math.random() * 30)),
+			isEssay,
+			image: hasImage
+				? 'https://pbs.twimg.com/media/F3A2njiakAAe60w?format=jpg&name=large'
+				: undefined,
+			choices: {
+				createMany: {
+					data: choicesData,
+				},
+			},
+		},
+	});
+
+	return newQuestion.id;
 }
 
 main()

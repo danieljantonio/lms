@@ -7,9 +7,10 @@ interface ITestForm {
 	test?: Test & { classroom: Classroom };
 	disabled?: boolean;
 	onSubmit: (data: any) => void;
+	action?: JSX.Element;
 }
 
-const TestForm = ({ test, disabled, onSubmit }: ITestForm) => {
+const TestForm = ({ test, disabled, action, onSubmit }: ITestForm) => {
 	const router = useRouter();
 
 	const { query } = router;
@@ -18,7 +19,7 @@ const TestForm = ({ test, disabled, onSubmit }: ITestForm) => {
 
 	return (
 		<div
-			className="mx-auto max-w-screen-xl"
+			className="mx-auto max-w-screen-lg"
 			onSubmit={handleSubmit(onSubmit)}>
 			<div className="card border">
 				<div className="card-body">
@@ -102,6 +103,7 @@ const TestForm = ({ test, disabled, onSubmit }: ITestForm) => {
 								{test ? 'Save' : 'Create'}
 							</button>
 						)}
+						{action}
 					</form>
 				</div>
 			</div>

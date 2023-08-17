@@ -4,7 +4,7 @@ import { useState, type FC } from 'react';
 export interface ChoiceInputProps {
 	choice: string;
 	isCorrect: boolean;
-	onChange: (data: string, isCorrect?: boolean) => void;
+	onChange: (data: string | undefined, isCorrect?: boolean) => void;
 	onRemove: () => void;
 }
 
@@ -15,13 +15,14 @@ const ChoiceInput: FC<ChoiceInputProps> = ({
 	onRemove,
 }) => {
 	const [text, setText] = useState(choice);
+
 	return (
 		<div className="join">
 			<button
 				className={`btn btn-square join-item btn-success ${
 					isCorrect ? '' : 'btn-outline'
 				}`}
-				onClick={() => onChange(text, true)}
+				onClick={() => onChange(undefined, true)}
 				type="button">
 				<Check weight="bold" size={18} />
 			</button>

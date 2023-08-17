@@ -1,72 +1,99 @@
+import { trpc } from '@/lib/trpc';
 import { FloppyDisk, Plus, XCircle } from '@phosphor-icons/react';
 import type { Question } from '@prisma/client';
-import { useEffect, useState, type FC } from 'react';
+import { useState, type FC } from 'react';
 import ChoiceInput from './choice-input.tests';
 
 export interface QuestionInputProps {
-	question: Question;
+	question: Question & {
+		choices: {
+			id?: string;
+			choice: string;
+			isCorrect: boolean;
+		}[];
+	};
+	index: number;
+	onRemove: (id: string) => void;
 }
 
-const QuestionInput: FC<QuestionInputProps> = ({ question }) => {
-	const [isEssay, setIsEssay] = useState(
-		question.correctChoice ? false : true,
-	);
-	const [choices, setChoices] = useState<string[]>(question.choices);
-	const [correctChoice, setCorrectChoice] = useState<string | undefined>(
-		question?.correctChoice || undefined,
-	);
+const QuestionInput: FC<QuestionInputProps> = ({
+	index,
+	question: data,
+	onRemove,
+}) => {
+	const [isEssay, setIsEssay] = useState(data.isEssay);
 	const [isChanged, setIsChanged] = useState(false);
+	const [question, setQuestion] = useState(data.question);
+	const [choices, setChoices] = useState(data.choices);
+	const utils = trpc.useContext();
 
-	useEffect(() => {
-		console.log('re-render');
-	}, [correctChoice]);
+	const updateQuestion = trpc.question.updateQuestion.useMutation({
+		onSuccess: () => {
+			utils.question.getQuestions.invalidate();
+		},
+	});
 
-	const saveChanges = () => {
-		setIsChanged(false);
+	const onSave = () => {
+		console.log({ ...data, choices });
+		// setIsChanged(false);
+		updateQuestion.mutate({
+			questionId: data.id,
+			question: {
+				question,
+				choices,
+				isEssay,
+			},
+		});
 	};
 
 	return (
-		<div className="card border mt-4">
+		<div className="card border mt-4 mx-auto max-w-screen-md">
 			<div className="relative card-body">
 				<div className="join">
 					<button className="btn join-item">
-						Question {question.questionNo}
+						Question {index + 1}
 					</button>
 					<input
-						defaultValue={question.question}
+						defaultValue={question}
 						type="text"
-						placeholder={`Question ${question.questionNo}`}
+						placeholder={`Question ${index + 1}`}
 						className="input input-bordered w-full join-item"
 					/>
 				</div>
 				<XCircle
 					size={24}
 					weight="fill"
-					// onClick={removeQuestion}
+					onClick={() => onRemove(data.id)}
 					className="absolute right-2 top-2 mx-auto w-5 text-gray-500 hover:cursor-pointer hover:text-gray-800"
 				/>
 				{!isEssay &&
-					choices.map((questionChoice, index) => (
+					choices?.map(({ id, choice, isCorrect }, index) => (
 						<ChoiceInput
 							onRemove={() => {
-								setChoices((_choices: string[]) => {
+								setChoices((_choices) => {
 									const _choice = [..._choices];
 									return _choice.filter(
-										(choice) => choice !== questionChoice,
+										(_, i) => index !== i,
 									);
 								});
 								setIsChanged(true);
 							}}
-							key={questionChoice + index}
-							choice={questionChoice}
-							isCorrect={questionChoice === correctChoice}
-							onChange={(data, isCorrect) => {
-								if (isCorrect) {
-									setCorrectChoice(data);
-								}
-								setChoices((_choices: string[]) => {
-									const _choice = [..._choices];
-									_choice[index] = data;
+							key={id || Math.random()}
+							choice={choice}
+							isCorrect={isCorrect}
+							onChange={(data, _isCorrect) => {
+								setChoices((_choices) => {
+									const _choice = _choices.map((c, i) => ({
+										...c,
+										choice:
+											data && index === i
+												? data
+												: c.choice, // on updated index, replace
+										isCorrect:
+											_isCorrect && index === i
+												? true
+												: false,
+									}));
 									return _choice;
 								});
 								setIsChanged(true);
@@ -80,7 +107,10 @@ const QuestionInput: FC<QuestionInputProps> = ({ question }) => {
 							<input
 								type="checkbox"
 								className="toggle toggle-accent"
-								onChange={() => setIsEssay(!isEssay)}
+								onChange={() => {
+									setIsEssay(!isEssay);
+									setIsChanged(true);
+								}}
 								checked={isEssay}
 							/>
 						</label>
@@ -90,7 +120,13 @@ const QuestionInput: FC<QuestionInputProps> = ({ question }) => {
 							<button
 								className="btn btn-info text-white"
 								onClick={() => {
-									setChoices([...choices, '']);
+									setChoices([
+										...choices,
+										{
+											isCorrect: false,
+											choice: '',
+										},
+									]);
 									setIsChanged(true);
 								}}
 								disabled={choices.length >= 5}>
@@ -100,7 +136,7 @@ const QuestionInput: FC<QuestionInputProps> = ({ question }) => {
 						{isChanged && (
 							<button
 								className="btn btn-primary text-white"
-								onClick={saveChanges}>
+								onClick={onSave}>
 								<FloppyDisk size={16} /> Save
 							</button>
 						)}

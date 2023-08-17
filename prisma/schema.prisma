@@ -130,17 +130,25 @@ model TakenTest {
 }
 
 model Question {
-  id            String   @id @default(cuid())
-  questionNo    Int
-  question      String
-  choices       String[]
-  test          Test?    @relation(fields: [testId], references: [id], onDelete: Cascade)
-  testId        String?
-  hasImage      Boolean  @default(false)
-  correctChoice String?
-  answer        Answer[]
+  id       String   @id @default(cuid())
+  question String
+  test     Test?    @relation(fields: [testId], references: [id], onDelete: Cascade)
+  testId   String?
+  image    String?
+  isEssay  Boolean  @default(false)
+  answer   Answer[]
+  choices  Choice[]
 
   @@index([testId])
+}
+
+model Choice {
+  id         String   @id @default(cuid())
+  question   Question @relation(fields: [questionId], references: [id])
+  questionId String
+  choice     String
+  isCorrect  Boolean  @default(false)
+  Answer     Answer[]
 }
 
 model Answer {
@@ -150,7 +158,8 @@ model Answer {
   questionId  String
   takenTest   TakenTest @relation(fields: [takenTestId], references: [id], onDelete: Cascade)
   takenTestId String
-  answer      String
+  choice      Choice    @relation(fields: [choiceId], references: [id])
+  choiceId    String
   userId      String?
 
   @@unique([takenTestId, questionId], map: "answerId")

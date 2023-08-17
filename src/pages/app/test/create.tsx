@@ -30,11 +30,7 @@ const CreateTest = () => {
 		createTest.mutate({ ...formData, classroomId: classroomId as string });
 	};
 
-	return (
-		<div className="mx-auto max-w-screen-xl">
-			<TestForm onSubmit={onSubmit} />
-		</div>
-	);
+	return <TestForm onSubmit={onSubmit} />;
 };
 
 export default CreateTest;

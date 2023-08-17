@@ -32,19 +32,6 @@ export const testRouter = router({
 
 			return newTest;
 		}),
-	createQuestion: protectedProcedure
-		.input(
-			z.object({
-				testId: z.string(),
-				question: z.string(),
-				choices: z.array(z.string()),
-				correctChoice: z.string(),
-				hasImage: z.boolean(),
-			}),
-		)
-		.mutation(async ({ input, ctx }) => {
-			return null;
-		}),
 	getTestById: protectedProcedure
 		.input(
 			z.object({
@@ -56,18 +43,6 @@ export const testRouter = router({
 				where: { id: input.testId },
 				include: {
 					classroom: true,
-					questions:
-						ctx.session.user.role === 'TEACHER'
-							? true
-							: {
-									select: {
-										id: true,
-										questionNo: true,
-										question: true,
-										choices: true,
-										hasImage: true,
-									},
-							  },
 				},
 			});
 
