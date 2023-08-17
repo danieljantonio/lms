@@ -30,12 +30,12 @@ const QuestionInput: FC<QuestionInputProps> = ({
 	const updateQuestion = trpc.question.updateQuestion.useMutation({
 		onSuccess: () => {
 			utils.question.getQuestions.invalidate();
+			setIsChanged(false);
 		},
 	});
 
 	const onSave = () => {
 		console.log({ ...data, choices });
-		// setIsChanged(false);
 		updateQuestion.mutate({
 			questionId: data.id,
 			question: {
@@ -56,6 +56,10 @@ const QuestionInput: FC<QuestionInputProps> = ({
 					<input
 						defaultValue={question}
 						type="text"
+						onChange={(e) => {
+							setQuestion(e.target.value);
+							setIsChanged(true);
+						}}
 						placeholder={`Question ${index + 1}`}
 						className="input input-bordered w-full join-item"
 					/>
